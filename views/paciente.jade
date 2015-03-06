@@ -1,0 +1,74 @@
+extends layout
+
+block content
+  h1= title
+  form#formAdicionaPaciente(name="adicionaPaciente", method="post", action="#{address}")
+    if locals._id
+      input(type="hidden", name="_id", value="#{_id}")
+    p Nome
+      input(type="text", placeholder="Nome do paciente", name="nome", value="#{nome}")
+    p Data de nascimento
+      input(type="text", placeholder="Data de nascimento", name="dataNascimento" value="#{dataNascimento}")
+    p Sexo
+      span.radio
+        input(type="radio", name="sexo", value="m", checked=sexo)
+        label.radio Masculino
+        input(type="radio", name="sexo", value="f", checked=!sexo)
+        label.radio Feminino
+    p CPF
+      input(type="text", placeholder="CPF do paciente", name="cpf", value="#{cpf}")
+
+    p Endereço
+      input(type="text", placeholder="Logradouro", name="logradouro", value="#{logradouro}")
+    p &nbsp;
+      input(type="text", placeholder="Complemento", name="complemento" value="#{complemento}")
+    p &nbsp;
+      input(type="text", placeholder="Bairro", name="bairro" value="#{bairro}")
+    p &nbsp;
+      input(type="text", placeholder="CEP", name="cep" value="#{cep}")
+
+    // Morbidades
+    div#lista
+      input#morbidades(type="hidden", value="#{morbidades.length}")
+      input(type="hidden", name="morbidades", value="")
+      each morbidade, i in morbidades
+        div(id="#{'itemMorbidade' + i}")
+          if i == 0
+            p Morbidade principal
+              input(type="text", placeholder="Morbidade", name="morbidades", value="#{morbidade}")
+          else
+            p Comorbidade
+              input(type="text", placeholder="Comorbidade", name="morbidades", value="#{morbidade}")
+
+    p
+      button(onclick="return adicionaMorbidade();") Adicionar Morbidade
+      script.
+        var adicionaMorbidade = function() {
+          var $morbidades = $("input#morbidades");
+          var num = $morbidades.val();
+          var $div = $("<div></div>");
+          $div.attr("id", "itemMorbidade" + num);
+          var $input = $("<input type='text'></input>");
+          $input.attr("name", "morbidades");
+          var $p;
+
+          if (num > 0) {
+            $input.attr("placeholder", "Comorbidade");
+            $p = $('<p>Comorbidade</p>');
+          } else {
+            $input.attr("placeholder", "Morbidade");
+            $p = $('<p>Morbidade principal</p>');
+          }
+
+          $p.append($input);
+          $div.append($p);
+          $("div#lista").append($div);
+          $morbidades.val(parseInt($morbidades.val()) + 1);
+          console.log("div#lista");
+
+          return false;
+        }
+
+    span
+      button#btnSubmit.inline(type="submit") Salvar
+      button.inline(onclick="window.location='/paciente/lista'; return false;") Cancelar

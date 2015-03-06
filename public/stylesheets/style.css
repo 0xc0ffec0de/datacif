@@ -1,0 +1,44 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+input[type=text] {
+  display: run-in;
+  position: absolute;
+  left: 250px;
+}
+
+input[type=radio] {
+  display: inline-block;
+}
+
+span.radio {
+  position: absolute;
+  left: 250px;
+}
+
+label.radio {
+  margin-left: 10px;
+  margin-right: 30px;
+}
+
+button {
+  display: block;
+}
+
+button.inline {
+  display: inline;
+}
+
+/*
+ * Table stuff
+ */
+ td,th {
+   text-align: center;
+   background-color: lightgrey;
+ }

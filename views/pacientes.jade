@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1= title
+  ul
+    table
+      tr
+        th(width="550px") Nome
+        th(width="170px") Data de Nascimento
+        th(width="150px") Sexo
+        th(width="120px") CPF
+        th CIF
+
+      each paciente, i in pacientes
+        tr
+          td
+            a(href="/paciente/edita/#{paciente._id}")= paciente.nome
+          td= paciente.dataNascimento
+          td= paciente.sexo
+          td= paciente.cpf
+          td
+            button.inline(onclick="window.location='/cif/#{paciente._id}'; return false;") CIF
+
+
+  form#formNovoPaciente(name="novoPaciente", method="get", action="/paciente/novo")
+    button#novo(type="submit") Novo paciente
