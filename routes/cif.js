@@ -11,9 +11,9 @@ router.get('/:id', function(req, res) {
       res.send("Erro ao tentar editar um paciente");
     } else if (docs) {
       var queryResult = {
-        title : "Edita CIF do paciente",
-        _id : docs._id,
+        title : docs.nome,
         nome : docs.nome,
+        _id : docs._id,
         dataNascimento : docs.dataNascimento,
         sexo : docs.sexo == 'm' ? true : false,
       };

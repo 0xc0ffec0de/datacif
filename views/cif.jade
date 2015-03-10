@@ -1,0 +1,20 @@
+extends jquery-ui-layout
+
+block content
+  h1= title
+
+  #abas
+    ul
+      li
+        a(href="/html/cif/cif-1.html") Funções do Corpo
+      li
+        a(href="/html/cif/cif-2.html") Estrutura do Corpo
+      li
+        a(href="/html/cif/cif-3.html") Atividades e Participação
+      li
+        a(href="/html/cif/cif-4.html") Fatores ambientais
+
+  script.
+    $(document).ready(function() {
+      $("#abas").tabs({ heightStyle: "content" });
+    });
