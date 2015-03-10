@@ -1,0 +1,70 @@
+<div id="accordion-3">
+    <h3><a href="accordion-3.1.html">Aprendizagem a Aplicação do Conhecimento</a></h3>
+    <div id="aba-3.1">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.2.html">Tarefas e Exigências Gerais</a></h3>
+    <div id="aba-3.2">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.3.html">Comunicação</a></h3>
+    <div id="aba-3.3">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.4.html">Mobilidade</a></h3>
+    <div id="aba-3.4">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.5.html">Autos cuidados</a></h3>
+    <div id="aba-3.5">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.6.html">Vida Doméstica</h3>
+    <div id="aba-3.6">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.7.html">Interações e Relacionamentos Interpessoais</h3>
+    <div id="aba-3.7">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.8.html">Áreas principais da Vida</h3>
+    <div id="aba-3.8">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-3.9.html">Vida Comunitária, Social e Cívica</h3>
+    <div id="aba-3.9">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+</div>
+
+<script>
+
+var _loadedTab = {};
+
+// Carrega acordeon dinamicamente.
+$(document).ready(function() {
+    $("#accordion-3").accordion({
+        collapsible: true,
+        active : false,
+        heightStyle: "content",
+        activate: function (e, ui) {
+          $tab = $(ui.newHeader[0]).next();
+          url = $(ui.newHeader[0]).children('a').attr('href');
+          if (url != undefined && !(url in _loadedTab)) {
+              $.get(url, function (data) {
+                  $tab.html(data);
+              });
+              _loadedTab[url] = true;
+          }
+        }
+     });
+});
+</script>

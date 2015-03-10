@@ -1,0 +1,50 @@
+<div id="accordion-4">
+    <h3><a href="accordion-4.1.html">Produtos e Tecnologia</a></h3>
+    <div id="aba-4.1">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-4.2.html">Ambiente Natural e Mudanças Ambientais Feitas pelo Homem</a></h3>
+    <div id="aba-4.2">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-4.3.html">Apoio e Relacionamento</a></h3>
+    <div id="aba-4.3">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-4.4.html">Atitudes</a></h3>
+    <div id="aba-4.4">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+
+    <h3><a href="accordion-4.5.html">Serviços, Sistemas e Políticas</a></h3>
+    <div id="aba-4.5">
+        <p>Carregando página. Aguarde...</p>
+    </div>
+</div>
+
+<script>
+
+var _loadedTab = {};
+
+// Carrega acordeon dinamicamente.
+$(document).ready(function() {
+    $("#accordion-4").accordion({
+        collapsible: true,
+        active : false,
+        heightStyle: "content",
+        activate: function (e, ui) {
+          $tab = $(ui.newHeader[0]).next();
+          url = $(ui.newHeader[0]).children('a').attr('href');
+          if (url != undefined && !(url in _loadedTab)) {
+              $.get(url, function (data) {
+                  $tab.html(data);
+              });
+              _loadedTab[url] = true;
+          }
+        }
+     });
+});
+</script>
