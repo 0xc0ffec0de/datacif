@@ -2,7 +2,6 @@
 
 accordion = function(pagePrefix, prefix, numButtons) {
 
-    console.log("LIL1");
     dialogFunction = function(pagePrefix, prefix, i) {
         return function(event, ui) {
             console.log("Opening dialog " + pagePrefix + "-" + i + ".html...");
@@ -19,7 +18,6 @@ accordion = function(pagePrefix, prefix, numButtons) {
         }
     };
 
-    console.log("LIL3");
     $("#radioset-" + e(prefix)).buttonset();
     console.log("accordion() called: #radioset-" + e(prefix));
 
