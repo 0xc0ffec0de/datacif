@@ -2,36 +2,42 @@
 
 //
 onSelectMenu = function(e, ui) {
-    var li = e.currentTarget;
-    var select = $(this);
-    //b = ui.selectTarget;
-    //console.log("this.q = [" + select.text() + "]");
-    var a = select.find("span.ui-selectmenu-text");
+  //var li = e.currentTarget;
+  var select = $(this);
+  var option = select.find("option:selected").val().match(/\d/);
+  var div = $(this).parent().parent();
+  var span = div.find("span[name='cif']");
+  var cif = span.text();
+  var pacient = window.location.href.match(/[0-9a-z]+$/);
 
-    //a.html("a");
-    console.log("a = ", a.html());
-    //console.log("e = ", e);
-    //console.log("ui = ", ui);
+  if (pacient != undefined && option != undefined) {
+    var address = "/cif/save/" + pacient[0];
+    var data = { cif: cif, value: option[0] };
+
+    $.post(address, data, function(response) {
+      console.log("OK");
+    });
+  }
 }
 
 // Escape de seletor jquery.
 e = function(s) {
-    return s.replace( /(:|\.|\[|\])/g, "\\$1" );
+  return s.replace( /(:|\.|\[|\])/g, "\\$1" );
 };
 
 addTopic = function(node, text, cif) {
-    var div = $("<div>");
-    var label = $("<label>");
+  var div = $("<div>");
+  var label = $("<label>");
 
-    if (cif != undefined) {
-      text = text + " (" + cif + ")";
-    }
+  if (cif != undefined) {
+    text = text + " (" + cif + ")";
+  }
 
-    label.text(text);
-    div.append(label);
-    div.addClass("topic");
+  label.text(text);
+  div.append(label);
+  div.addClass("topic");
 
-    node.append(div);
+  node.append(div);
 };
 
 createFunctionalityOptions = function(cif, name) {
@@ -76,6 +82,7 @@ addBodyItem = function(node, cif, text) {
     span.addClass("fix-down");
 
     // CIF
+    headText.attr("name", "cif"); // new
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
@@ -233,56 +240,3 @@ selectCIF = function(queries, anchor, func) {
 
   });
 }
-
-// Faz parsing do arquivo contendo tabela CIF lida do arquivo XCL.
-processCIF = function(url, anchor, func) {
-
-    $.get(url, function(data) {
-        var lines = data.split("\n");
-        var maybeTitle = true;
-        var oldLine;
-
-        for (i = 0; i < lines.length; ++i) {
-            var line = lines[i].split("\t");
-
-            // Linha pode ser um título? Sim.
-            if (line.length > 1 && line[1].length == 0) {
-                if (maybeTitle && oldLine) {
-                    cif = parseCIF(oldLine[0]);
-                    // Imprime linha antiga como item já que a próxima linha pode ser um título.
-                    console.log("ITEM1: ", cif, oldLine[0]);
-                    func(anchor, cif[1], cif[0]);
-                }
-
-                maybeTitle = true;
-                oldLine = line;
-
-            // Não.
-            } else if (line.length > 1) {
-                if (maybeTitle && oldLine) {
-                    addSeparator(anchor);
-                    // Se a próxima linha é um item e a anterior pode ser um título, imprime linha anterior como título.
-                    console.log("TITLE: ", oldLine[0]);
-                    addTopic(anchor, oldLine[0]);
-                }
-
-                maybeTitle = false;
-                // Se linha anterior é um item, imprime esta linha como item também.
-                console.log("ITEM2: ", line[0], line[1]);
-                func(anchor, line[0], line[1]);
-
-            } else if (line[0].length > 0) {
-                cif = parseCIF(line[0]);
-                // Por exclusão, linha é um item.
-                func(anchor, cif[1], cif[0]);
-            }
-        }
-
-        if (maybeTitle && oldLine) {
-            cif = parseCIF(oldLine[0]);
-            // Última linha não pode ser título, então imprime como item.
-            console.log("ITEM3: ", line[0], line[1]);
-            func(anchor, cif[1], cif[0]);
-        }
-    });
-};

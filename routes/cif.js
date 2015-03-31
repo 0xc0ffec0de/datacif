@@ -37,4 +37,12 @@ router.get('/:id', function(req, res) {
   });
 });
 
+router.post('/save/:cif', function(req, res) {
+  var id = req.params['cif'];
+  var db = req.db;
+  var bla = req.body
+  var cif = req.body.cif;
+  var value = req.body.value;
+});
+
 module.exports = router;
