@@ -1,6 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
+router.get('/items/:cif', function(req, res) {
+  var cif = req.params['cif'];
+  var db = req.db;
+  var items = db.get('items');
+
+  items.findOne({ cif: cif }, {}, function(err, docs) {
+    if (err) {
+      res.send("Erro ao tentar ler dados de CIF");
+    } else if (docs) {
+      res.send(docs);
+    }
+  });
+});
+
 router.get('/:id', function(req, res) {
   var id = req.params['id'];
   var db = req.db;

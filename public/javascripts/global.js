@@ -19,13 +19,15 @@ e = function(s) {
     return s.replace( /(:|\.|\[|\])/g, "\\$1" );
 };
 
-addTopic = function(node, text) {
+addTopic = function(node, text, cif) {
     var div = $("<div>");
     var label = $("<label>");
 
-    label.text(text);
-    //label.addClass("topic");
+    if (cif != undefined) {
+      text = text + " (" + cif + ")";
+    }
 
+    label.text(text);
     div.append(label);
     div.addClass("topic");
 
@@ -35,13 +37,13 @@ addTopic = function(node, text) {
 createFunctionalityOptions = function(cif, name) {
     var select = $("<select id='" + cif + "-" + name + "'>");
     var options = [
-	"0 : funcional",
-	"1 : disfunção level",
-	"2 : disfunção moderada",
-	"3 : disfunção severa",
-	"4 : disfunção total",
-	"8 : outra disfunção especificada",
-	"9 : disfunção não especificada"
+    	"0 : funcional",
+    	"1 : disfunção level",
+    	"2 : disfunção moderada",
+    	"3 : disfunção severa",
+    	"4 : disfunção total",
+    	"8 : outra disfunção especificada",
+    	"9 : disfunção não especificada"
     ];
 
     select.attr("name", cif + "-" + name).css({ height: '59px', width: '50px' });
@@ -210,6 +212,26 @@ parseCIF = function(line) {
         var match = line.match(/(.*)\((\w[0-9]+)\)/);
         return [match[1], match[2]]; // line.match(/b[0-9]+/)[0];
     }
+}
+
+selectCIF = function(queries, anchor, func) {
+  console.log(queries);
+
+  queries.forEach(function(query) {
+    var address = "/cif/items/" + query;
+    console.log(address);
+
+    $.get(address, function(group) {
+      console.log(group);
+      addTopic(anchor, group.description, group.cif);
+
+      group.items.forEach(function(item) {
+        func(anchor, item.cif, item.description);
+      });
+
+    });
+
+  });
 }
 
 // Faz parsing do arquivo contendo tabela CIF lida do arquivo XCL.
