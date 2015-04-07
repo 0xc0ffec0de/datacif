@@ -2,7 +2,6 @@
 
 //
 onSelectMenu = function(e, ui) {
-  //var li = e.currentTarget;
   var select = $(this);
   var option = select.find("option:selected").val().match(/\d/);
   var div = $(this).parent().parent();
@@ -11,11 +10,14 @@ onSelectMenu = function(e, ui) {
   var pacient = window.location.href.match(/[0-9a-z]+$/);
 
   if (pacient != undefined && option != undefined) {
-    var address = "/cif/save/" + pacient[0];
-    var data = { cif: cif, value: option[0] };
+    var address = "/cif/save";
+    var data = { p: pacient, c: cif, v: option };
 
     $.post(address, data, function(response) {
-      console.log("OK");
+      if (response['r'] != 'OK') {
+        // Do stuff on error.
+        console.log(response);
+      }
     });
   }
 }
@@ -221,7 +223,7 @@ parseCIF = function(line) {
     }
 }
 
-selectCIF = function(queries, anchor, func) {
+selectCIF = function(queries, anchor) {
   console.log(queries);
 
   queries.forEach(function(query) {
@@ -233,7 +235,7 @@ selectCIF = function(queries, anchor, func) {
       addTopic(anchor, group.description, group.cif);
 
       group.items.forEach(function(item) {
-        func(anchor, item.cif, item.description);
+        addBodyItem(anchor, item.cif, item.description);
       });
 
     });

@@ -37,12 +37,26 @@ router.get('/:id', function(req, res) {
   });
 });
 
-router.post('/save/:cif', function(req, res) {
+router.post('/save', function(req, res) {
   var id = req.params['cif'];
   var db = req.db;
-  var bla = req.body
-  var cif = req.body.cif;
-  var value = req.body.value;
+  var data = db.get('dados');
+  var pacient = req.body['p[]'];
+  var cif = req.body['c'];
+  var value = req.body['v[]'];
+
+  data.findAndModify(
+    { p: pacient, c: cif }, // query
+    { $set: { v: value } }, // replacement
+    { upsert: true }, // options
+    function(err, docs) {
+      if (err) {
+        console.log(err.message);
+      } else {
+        res.send({ r: 'OK' });
+      }
+    }
+  );
 });
 
 module.exports = router;
