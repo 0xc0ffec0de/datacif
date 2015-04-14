@@ -13,6 +13,12 @@ input[type=text] {
   left: 250px;
 }
 
+input[type=password] {
+  display: run-in;
+  position: absolute;
+  left: 250px;
+}
+
 input[type=radio] {
   display: inline-block;
 }
