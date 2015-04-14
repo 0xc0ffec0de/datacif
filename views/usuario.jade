@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+  form#formAdicionaUsuario(name="adicionaUsuario", method="post", action="#{address}")
+    if locals._id
+      input(type="hidden", name="_id", value="#{_id}")
+    p Nome
+      if locals.nome
+        input(type="text", placeholder="Nome do usuário", name="nome", value="#{nome}")
+      else
+        input(type="text", placeholder="Nome do usuário", name="nome", value="")
+    p Login
+      if locals.login
+        input(type="text", placeholder="Login de acesso", name="login" value="#{login}")
+      else
+        input(type="text", placeholder="Login de acesso", name="login" value="")
+    p Senha
+      input(type="text", placeholder="Senha", name="senha" value="")
+    p Verificar senha
+      input(type="text", placeholder="Verificar senha", name="senha2" value="")
+
+    span
+      button#btnSubmit.inline(type="submit") Salvar
+      button.inline(onclick="window.location='/usuario/lista'; return false;") Cancelar

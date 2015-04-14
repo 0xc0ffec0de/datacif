@@ -18,12 +18,10 @@ var db = monk('localhost/pf');
 
 // Passport session setup
 passport.serializeUser(function(user, done) {
-  console.log("lo2");
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-  console.log("lo1");
   users = db.get('usuarios');
   users.findById(id, function(err, user) {
     done(err, user);
@@ -31,25 +29,35 @@ passport.deserializeUser(function(id, done) {
 });
 
 // Passport authentication
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    console.log("bla!");
+passport.use('local-login', new LocalStrategy(
+  {
+    usernameField : 'login',
+    passwordField : 'senha',
+    passReqToCallback : true
+  },
+  function(req, login, pass, done) {
     var users = db.get('usuarios');
 
-    users.findOne({ username: username }, function (err, user) {
+    process.nextTick(function() {
+    users.findOne({ login: login }, function (err, user) {
       if (err) { return done(err); }
+
       if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
+        console.log("Usuário não encontrado.");
+        return done(null, false, req.flash('loginMessage', 'Usuário não encontrado.'));
       }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
+
+      if (user.senha != pass) {
+        console.log("Senha incorreta.");
+        return done(null, false, req.flash('loginMessage', 'Senha incorreta.'));
       }
+
+      console.log("OK")
       return done(null, user);
     });
+  });
   }
 ));
-
-//var base = require('./routes/index');
 
 // configure Express
 var app = express();
@@ -66,11 +74,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Session stuff
-app.use(session({
-                  secret: 'whatdoesthefoxsay?',
+app.use(session({ secret: 'whatdoesthefoxsay?',
                   resave: false,
-                  saveUninitialized: false
-                }));
+                  saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -90,15 +96,24 @@ app.isLoggedIn = function(req, res, next) {
   res.redirect('/login');
 }
 
+// Simple route middleware to ensure user is admin.
+app.isAdmin = function(req, res, next) {
+  console.log(req);
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/paciente/lista');
+}
+
 // Define routes
 var paciente = require('./routes/paciente')(app, passport);
 var cif      = require('./routes/cif')(app, passport);
 var login    = require('./routes/login')(app, passport);
+var usuario  = require('./routes/usuario')(app, passport);
 
 //app.use('/', base);
-app.use('/login', login);
 app.use('/paciente', paciente);
 app.use('/cif', cif);
+app.use('/login', login);
+app.use('/usuario', usuario);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
