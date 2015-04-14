@@ -10,21 +10,25 @@ var session       = require('express-session');
 var flash         = require('connect-flash');
 
 // New dependencies
-var mongo = require('mongodb');
-var monk  = require('monk');
+var Mongolian = require('mongolian');
+var ObjectId  = require("mongolian").ObjectId;
+var server    = new Mongolian;
 
 // Load database.
-var db = monk('localhost/pf');
+var db = server.db('pf');
 
 // Passport session setup
 passport.serializeUser(function(user, done) {
-  done(null, user._id);
+  done(null, user._id.toString());
 });
 
 passport.deserializeUser(function(id, done) {
-  users = db.get('usuarios');
-  users.findById(id, function(err, user) {
+  var users = db.collection('usuarios');
+
+  users.findOne({ _id: new ObjectId(id) }, function(err, user) {
+    console.log('user2 = ', user);
     done(err, user);
+    console.log('user3 = ', user);
   });
 });
 
@@ -36,10 +40,11 @@ passport.use('local-login', new LocalStrategy(
     passReqToCallback : true
   },
   function(req, login, pass, done) {
-    var users = db.get('usuarios');
+    var users = db.collection('usuarios');
 
-    process.nextTick(function() {
+    //process.nextTick(function() {
     users.findOne({ login: login }, function (err, user) {
+      console.log("user1 = ", user);
       if (err) { return done(err); }
 
       if (!user) {
@@ -55,7 +60,7 @@ passport.use('local-login', new LocalStrategy(
       console.log("OK")
       return done(null, user);
     });
-  });
+  //});
   }
 ));
 

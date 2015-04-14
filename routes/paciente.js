@@ -8,9 +8,16 @@ module.exports = function(app, passport) {
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
+    console.log("123");
     var db = req.db;
-    var pacientes = db.get('pacientes');
-    pacientes.find({}, { sort : 'nome' }, function(e, docs) {
+    var pacientes = db.collection('pacientes');
+    pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, docs) {
+      console.log("456");
+
+      if (err) {
+        res.send("Erro ao tentar listar pacientes");
+      }
+
       res.render('pacientes', {
         title : 'Lista de todos os pacientes',
         pacientes : docs
@@ -21,7 +28,7 @@ module.exports = function(app, passport) {
   router.get('/edita/:id', app.isLoggedIn, function(req, res) {
     var id = req.params['id'];
     var db = req.db;
-    var pacientes = db.get('pacientes');
+    var pacientes = db.collection('pacientes');
 
     pacientes.findOne({ _id: id }, {}, function(err, docs) {
       if (err) {
@@ -84,7 +91,7 @@ module.exports = function(app, passport) {
 
     paciente.endereco = endereco;
 
-    var pacientes = db.get('pacientes');
+    var pacientes = db.collection('pacientes');
     pacientes.insert(paciente, function(err, doc) {
       if (err) {
         res.send("Erro ao tentar inserir um novo paciente");
@@ -117,7 +124,7 @@ module.exports = function(app, passport) {
     paciente.endereco = endereco;
     console.log(req.body);
 
-    var pacientes = db.get('pacientes');
+    var pacientes = db.collection('pacientes');
     pacientes.update({ _id: req.body._id }, paciente,
       function(err, doc) {
         if (err) {

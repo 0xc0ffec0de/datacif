@@ -18,7 +18,7 @@ module.exports = function(app, passport) {
 
   router.post('/adiciona', app.isLoggedIn, function(req, res) {
     var db = req.db;
-    var users = db.get('usuarios');
+    var users = db.collection('usuarios');
 
     var user = {
       nome : req.body.nome,
@@ -41,9 +41,13 @@ module.exports = function(app, passport) {
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
     var db = req.db;
-    var users = db.get('usuarios');
+    var users = db.collection('usuarios');
 
-    users.find({}, { sort : 'nome' }, function(e, result) {
+    users.find().sort({ 'nome' : 1 }).toArray(function(err, result) {
+      if (err) {
+        res.send("Erro ao tentar listar usuários");
+      }
+
       res.render('usuarios', {
         title : 'Lista de todos os usuários',
         usuarios : result

@@ -5,7 +5,7 @@ module.exports = function(app, passport) {
   router.get('/items/:cif', function(req, res) {
     var cif = req.params['cif'];
     var db = req.db;
-    var items = db.get('items');
+    var items = db.collection('items');
 
     items.findOne({ cif: cif }, {}, function(err, docs) {
       if (err) {
@@ -19,7 +19,7 @@ module.exports = function(app, passport) {
   router.get('/:id', function(req, res) {
     var id = req.params['id'];
     var db = req.db;
-    var pacientes = db.get('pacientes');
+    var pacientes = db.collection('pacientes');
 
     pacientes.findOne({ _id: id }, {}, function(err, docs) {
       if (err) {
@@ -41,7 +41,7 @@ module.exports = function(app, passport) {
   router.post('/save', function(req, res) {
     var id = req.params['cif'];
     var db = req.db;
-    var data = db.get('dados');
+    var data = db.collection('dados');
     var pacient = req.body['p[]'];
     var cif = req.body['c'];
     var value = req.body['v[]'];
