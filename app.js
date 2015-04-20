@@ -1,3 +1,4 @@
+// Dependencies
 var express       = require('express');
 var path          = require('path');
 var favicon       = require('serve-favicon');
@@ -8,13 +9,11 @@ var passport      = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var session       = require('express-session');
 var flash         = require('connect-flash');
-
-// New dependencies
-var Mongolian = require('mongolian');
-var ObjectId  = require("mongolian").ObjectId;
-var server    = new Mongolian;
+var Mongolian     = require('mongolian');
+var ObjectId      = require("mongolian").ObjectId;
 
 // Load database.
+var server    = new Mongolian;
 var db = server.db('pf');
 
 // Passport session setup
@@ -23,12 +22,10 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  var users = db.collection('usuarios');
+  var users = db.collection('users');
 
   users.findOne({ _id: new ObjectId(id) }, function(err, user) {
-    console.log('user2 = ', user);
     done(err, user);
-    console.log('user3 = ', user);
   });
 });
 
@@ -40,27 +37,29 @@ passport.use('local-login', new LocalStrategy(
     passReqToCallback : true
   },
   function(req, login, pass, done) {
-    var users = db.collection('usuarios');
+    var users = db.collection('users');
 
-    //process.nextTick(function() {
-    users.findOne({ login: login }, function (err, user) {
-      console.log("user1 = ", user);
-      if (err) { return done(err); }
+    process.nextTick(function() {
+      users.findOne({ login: login }, function(err, user) {
+        if (err) {
+          console.log("Erro detectado: " + err);
+          return done(err);
+        }
 
-      if (!user) {
-        console.log("Usuário não encontrado.");
-        return done(null, false, req.flash('loginMessage', 'Usuário não encontrado.'));
-      }
+        if (!user) {
+          console.log("Usuário não encontrado.");
+          return done(null, false, req.flash('loginMessage', 'Usuário não encontrado.'));
+        }
 
-      if (user.senha != pass) {
-        console.log("Senha incorreta.");
-        return done(null, false, req.flash('loginMessage', 'Senha incorreta.'));
-      }
+        if (user.senha != pass) {
+          console.log("Senha incorreta.");
+          return done(null, false, req.flash('loginMessage', 'Senha incorreta.'));
+        }
 
-      console.log("OK")
-      return done(null, user);
+        console.log("OK")
+        return done(null, user);
+      });
     });
-  //});
   }
 ));
 
