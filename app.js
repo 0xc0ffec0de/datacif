@@ -14,7 +14,7 @@ var ObjectId      = require("mongolian").ObjectId;
 
 // Load database.
 var server    = new Mongolian;
-var db = server.db('pf');
+var db        = server.db('pf');
 
 // Passport session setup
 passport.serializeUser(function(user, done) {
