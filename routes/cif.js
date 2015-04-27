@@ -2,16 +2,16 @@ module.exports = function(app, passport) {
   var express = require('express');
   var router = express.Router();
 
-  router.get('/items/:cif', function(req, res) {
+  router.get('/itens/:cif', function(req, res) {
     var cif = req.params['cif'];
     var db = req.db;
-    var items = db.collection('items');
+    var itens = db.collection('itens');
 
-    items.findOne({ cif: cif }, {}, function(err, docs) {
+    itens.findOne({ cif: cif }, {}, function(err, item) {
       if (err) {
         res.send("Erro ao tentar ler dados de CIF");
-      } else if (docs) {
-        res.send(docs);
+      } else if (item) {
+        res.send(item);
       }
     });
   });

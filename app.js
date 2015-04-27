@@ -22,7 +22,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  var users = db.collection('users');
+  var users = db.collection('usuarios');
 
   users.findOne({ _id: new ObjectId(id) }, function(err, user) {
     done(err, user);
@@ -37,7 +37,7 @@ passport.use('local-login', new LocalStrategy(
     passReqToCallback : true
   },
   function(req, login, pass, done) {
-    var users = db.collection('users');
+    var users = db.collection('usuarios');
 
     process.nextTick(function() {
       users.findOne({ login: login }, function(err, user) {
@@ -108,12 +108,14 @@ app.isAdmin = function(req, res, next) {
 }
 
 // Define routes
+var cid      = require('./routes/cid')(app, passport);
 var paciente = require('./routes/paciente')(app, passport);
 var cif      = require('./routes/cif')(app, passport);
 var login    = require('./routes/login')(app, passport);
 var usuario  = require('./routes/usuario')(app, passport);
 
 //app.use('/', base);
+app.use('/cid', cid);
 app.use('/paciente', paciente);
 app.use('/cif', cif);
 app.use('/login', login);

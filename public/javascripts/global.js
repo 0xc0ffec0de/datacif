@@ -1,5 +1,13 @@
 // Funções comuns
 
+onChangeCID = function(input) {
+  var address = "/cid/descricao/" + input.val();
+  console.log("address = " + address);
+  $.get(address, function(response) {
+    console.log("response = ", response);
+  });
+}
+
 //
 onSelectMenu = function(e, ui) {
   var select = $(this);
@@ -227,7 +235,7 @@ selectCIF = function(queries, anchor) {
   console.log(queries);
 
   queries.forEach(function(query) {
-    var address = "/cif/items/" + query;
+    var address = "/cif/itens/" + query;
     console.log(address);
 
     $.get(address, function(group) {

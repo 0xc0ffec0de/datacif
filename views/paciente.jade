@@ -60,6 +60,13 @@ block content
             $p = $('<p>Morbidade principal</p>');
           }
 
+          // Set on change function.
+          $input.attr("class", "ui-widget");
+          //$input.autocomplete();
+          $input.change(function() {
+            onChangeCID($input);
+          });
+
           $p.append($input);
           $div.append($p);
           $("div#lista").append($div);
