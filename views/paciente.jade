@@ -1,8 +1,10 @@
-extends layout
+extends form-layout
 
 block content
   h1= title
   form#formAdicionaPaciente(name="adicionaPaciente", method="post", action="#{address}")
+    input#cidlist(type="hidden", value="")
+
     if locals._id
       input(type="hidden", name="_id", value="#{_id}")
     p Nome
@@ -44,31 +46,13 @@ block content
       button(onclick="return adicionaMorbidade();") Adicionar Morbidade
       script.
         var adicionaMorbidade = function() {
-          var $morbidades = $("input#morbidades");
+          var $morbidades = $("textarea#morbidades");
+          console.log("morbidades = ", $morbidades.val());
           var num = $morbidades.val();
-          var $div = $("<div></div>");
-          $div.attr("id", "itemMorbidade" + num);
-          var $input = $("<input type='text'></input>");
-          $input.attr("name", "morbidades");
-          var $p;
+          var label = num > 0 ? "Comorbidade" : "Morbidade";
+          var divId = "itemMorbidade" + num;
+          var $div = createCIDCombo(divId, label, "morbidades");
 
-          if (num > 0) {
-            $input.attr("placeholder", "Comorbidade");
-            $p = $('<p>Comorbidade</p>');
-          } else {
-            $input.attr("placeholder", "Morbidade");
-            $p = $('<p>Morbidade principal</p>');
-          }
-
-          // Set on change function.
-          $input.attr("class", "ui-widget");
-          //$input.autocomplete();
-          $input.change(function() {
-            onChangeCID($input);
-          });
-
-          $p.append($input);
-          $div.append($p);
           $("div#lista").append($div);
           $morbidades.val(parseInt($morbidades.val()) + 1);
           console.log("div#lista");

@@ -28,11 +28,13 @@ module.exports = function(app, passport) {
 
   router.get('/descricao/:desc', function(req, res) {
     var desc = new RegExp(req.params['desc'], 'i');
-    var db = req.db;
-    var itens = db.collection('cid10Itens');
-    var grupos = db.collection('cid10Grupos');
+    var db2 = req.db2;
+    var itens = db2.collection('cid10Itens');
 
-    itens.find({ descricao: desc }).sort({'nome' : 1}).toArray(function(err, result) {
+    itens.aggregate([
+      { $match: { descricao: desc } },
+      { $project: { _id : 0, label : "$descricao", cid : "$nome" } }
+    ]).sort({ 'descricao:' : 1}).toArray(function(err, result) {
       if (err) {
         console.log(err);
         res.send("Erro ao tentar ler dados de CID");

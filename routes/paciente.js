@@ -1,6 +1,7 @@
 module.exports = function(app, passport) {
-  var express = require('express');
-  var router = express.Router();
+  var express   = require('express');
+  var router    = express.Router();
+  var ObjectId  = require("mongolian").ObjectId;
 
   router.get('/', app.isLoggedIn, function(req, res) {
     res.location("/paciente/lista");
@@ -30,7 +31,8 @@ module.exports = function(app, passport) {
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
-    pacientes.findOne({ _id: id }, {}, function(err, docs) {
+    // pacientes.findOne({ _id: id }, {}, function(err, docs) {
+    pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
       if (err) {
         res.send("Erro ao tentar editar um paciente");
       } else if (docs) {
@@ -50,6 +52,8 @@ module.exports = function(app, passport) {
         };
 
         res.render('paciente', queryResult);
+      } else {
+        res.send({});
       }
     });
   });
@@ -105,8 +109,8 @@ module.exports = function(app, passport) {
   router.post('/altera', app.isLoggedIn, function(req, res) {
     var db = req.db;
 
+    var id = new ObjectId(req.body._id);
     var paciente = {
-      _id : req.body._id,
       nome : req.body.nome,
       dataNascimento : req.body.dataNascimento,
       sexo : req.body.sexo,
@@ -125,7 +129,7 @@ module.exports = function(app, passport) {
     console.log(req.body);
 
     var pacientes = db.collection('pacientes');
-    pacientes.update({ _id: req.body._id }, paciente,
+    pacientes.update({ _id: id }, paciente,
       function(err, doc) {
         if (err) {
           res.send("Erro ao tentar alterar um paciente");

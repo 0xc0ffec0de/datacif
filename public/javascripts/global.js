@@ -1,10 +1,64 @@
 // Funções comuns
 
-onChangeCID = function(input) {
+// Create a input box that searches for CID10.
+createCIDCombo = function(divId, label, name) {
+  var $div = $("<div></div>");
+  var $p = $('<p>' + label + '</p>');
+  var $cid = $("<textarea></textarea>");
+  var $desc = $("<input type='text'></input>");
+
+  $cid.attr("name", name);
+  $cid.prop("readonly", "true");
+  $cid.attr("cols", 5);
+  $cid.attr("rows", 1);
+
+  $desc.attr("name", "descricoes");
+  $desc.attr("class", "ui-widget");
+  $desc.autocomplete({
+    source: function( request, response ) {
+      $.get("http://localhost:3000/cid/descricao/" + request.term,
+      function(data) {
+        // Store data for later.
+        $("input#cidlist").val(JSON.stringify(data));
+        response(data);
+      });
+    },
+    minLength: 4,
+    select: function( event, ui ) {
+      var source = $("input#cidlist").val();
+      var $parent = $(this).parent();
+      var $cid = $parent.find("textarea");
+      $cid.val(ui.item.cid);
+    },
+    open: function() {
+      $(this).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $(this).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+
+  $p.append($cid);
+  $p.append($desc);
+
+  $div.append($p);
+  $div.attr("id", divId);
+
+  return $div;
+}
+
+
+//
+onChangeCID = function(input, event) {
+  if (event.which == 40) return;
+  //console.log(event.which);
   var address = "/cid/descricao/" + input.val();
   console.log("address = " + address);
+  console.log(event);
   $.get(address, function(response) {
     console.log("response = ", response);
+    input.autocomplete({source: response});
+    input.autocomplete("search", "");
   });
 }
 

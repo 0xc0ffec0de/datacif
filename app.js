@@ -11,10 +11,17 @@ var session       = require('express-session');
 var flash         = require('connect-flash');
 var Mongolian     = require('mongolian');
 var ObjectId      = require("mongolian").ObjectId;
+var MongoClient   = require("mongodb").MongoClient;
 
 // Load database.
 var server    = new Mongolian;
 var db        = server.db('pf');
+var db2;
+
+MongoClient.connect("mongodb://localhost:27017/pf", function(err, db) {
+  if (err) throw err;
+  db2 = db;
+});
 
 // Passport session setup
 passport.serializeUser(function(user, done) {
@@ -91,6 +98,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make our db accessible to our router
 app.use(function(req, res, next){
     req.db = db;
+    req.db2 = db2;
     next();
 });
 

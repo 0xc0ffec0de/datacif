@@ -1,0 +1,45 @@
+input.* {
+}
+
+input[type=text] {
+  display: run-in;
+  position: absolute;
+  left: 300px;
+  width: 400px;
+}
+
+input[type=password] {
+  display: run-in;
+  position: absolute;
+  left: 300px;
+}
+
+input[type=radio] {
+  display: inline-block;
+}
+
+span.radio {
+  position: absolute;
+  left: 300px;
+}
+
+label.radio {
+  margin-left: 10px;
+  margin-right: 30px;
+}
+
+button {
+  display: block;
+}
+
+button.inline {
+  display: inline;
+}
+
+textarea {
+  display: run-in;
+  position: absolute;
+  resize: none;
+  height: 1.5em;
+  left: 230px;
+}
