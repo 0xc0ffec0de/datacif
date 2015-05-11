@@ -17,6 +17,13 @@ block content
         label.radio Masculino
         input(type="radio", name="sexo", value="f", checked=!sexo)
         label.radio Feminino
+
+    p Peso
+      input(type="text", placeholder="Peso do paciente", name="peso", value="#{peso}")
+
+    p Altura
+      input(type="text", placeholder="Altura do paciente", name="altura", value="#{altura}")
+
     p CPF
       input(type="text", placeholder="CPF do paciente", name="cpf", value="#{cpf}")
 
