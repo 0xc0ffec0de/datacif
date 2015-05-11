@@ -22,25 +22,32 @@ block content
 
     // Morbidades
     div#listaRegistros
-      if registros
-        input#numRegistros(type="hidden", value="#{registros.length}")
-      else
-        input#numRegistros(type="hidden", value="0")
-
-    p
-      button(onclick="") Adiciona registro
       script.
-        var adicionaRegistro = function() {
+        var adicionaRegistro = function(label, value) {
           var $registros = $("input#numRegistros");
           console.log("registros = ", $registros.val());
           var num = $registros.val();
           var divId = "itemRegistro" + num;
-          var $div = inputRegistro(divId);
-
-          $("div#listaRegistro").append($div);
+          var $div = inputRegistro(divId, label, value);
           $registros.val(parseInt($registros.val()) + 1);
+          $("div#listaRegistros").append($div);
           return false;
         }
+
+      // Item 0 descartado
+      input(type="hidden", name="tiposRegistro", value="")
+      input(type="hidden", name="registros", value="")
+
+      if registros
+        input#numRegistros(type="hidden", value="#{registros.length}")
+        each registro, i in registros
+          script.
+            $(function() { adicionaRegistro("#{registro.nome}", "#{registro.valor}"); });
+      else
+        input#numRegistros(type="hidden", value="0")
+
+    p
+      button(onclick="return adicionaRegistro();") Adiciona registro
 
     p Endereço
       input(type="text", placeholder="Logradouro", name="logradouro", value="#{logradouro}")
@@ -53,36 +60,32 @@ block content
 
     // Morbidades
     div#listaMorbidades
-      if morbidades
-        input#numMorbidades(type="hidden", value="#{morbidades.length}")
-      else
-        input#numMorbidades(type="hidden", value="0")
-      each morbidade, i in morbidades
-        div(id="#{'itemMorbidade' + i}")
-          if i == 0
-            p Morbidade principal
-              input(type="text", placeholder="Morbidade", name="morbidades", value="#{morbidade}")
-          else
-            p Comorbidade
-              input(type="text", placeholder="Comorbidade", name="morbidades", value="#{morbidade}")
-
-    p
-      button(onclick="return adicionaMorbidade();") Adicionar Morbidade
       script.
-        var adicionaMorbidade = function() {
+        var adicionaMorbidade = function(cid) {
           var $morbidades = $("input#numMorbidades");
           console.log("morbidades = ", $morbidades.val());
           var num = $morbidades.val();
           var label = num > 0 ? "Comorbidade" : "Morbidade";
           var divId = "itemMorbidade" + num;
-          var $div = comboCID(divId, label, "morbidades");
-
-          $("div#listaMorbidades").append($div);
+          var $div = comboCID(divId, label, "morbidades", cid);
           $morbidades.val(parseInt($morbidades.val()) + 1);
-          console.log("div#listaMorbidades");
-
+          $("div#listaMorbidades").append($div);
           return false;
         }
+
+      // Item 0 descartado
+      input(type="hidden", name="morbidades", value="")
+
+      if morbidades
+        input#numMorbidades(type="hidden", value="#{morbidades.length}")
+        each morbidade, i in morbidades
+          script.
+            $(function() { adicionaMorbidade("#{morbidade}"); });
+      else
+        input#numMorbidades(type="hidden", value="0")
+
+    p
+      button(onclick="return adicionaMorbidade('');") Adicionar Morbidade
 
     span
       button#btnSubmit.inline(type="submit") Salvar

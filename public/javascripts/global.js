@@ -1,18 +1,22 @@
 // Funções comuns
 
-inputRegistro = function(divId) {
+inputRegistro = function(divId, label, value) {
   var $div = $("<div></div>");
-  var $p = $('<p>Registro</p>');
-  var $type = $("<input type='text'></input>");
+  var $p1 = $('<p>Nome do tipo de registro</p>');
+  var $p2 = $('<p>Valor do registro</p>');
+  var $label = $("<input type='text'></input>");
   var $value = $("<input type='text'></input>");
 
-  $type.attr("name", "tiposRegistros")
+  $label.attr("name", "tiposRegistro")
+  $label.val(label);
   $value.attr("name", "registros");
+  $value.val(value);
 
-  $p.append($type);
-  $p.append($value);
+  $p1.append($label);
+  $p2.append($value);
 
-  $div.append($p);
+  $div.append($p1);
+  $div.append($p2);
   $div.attr("id", divId);
 
   return $div;
@@ -60,13 +64,14 @@ comboProfissao = function($parent, name) {
 }
 
 // Cria caixa de texto que faz busca por CID10.
-comboCID = function(divId, label, name) {
+comboCID = function(divId, label, name, cid) {
   var $div = $("<div></div>");
   var $p = $('<p>' + label + '</p>');
   var $cid = $("<textarea></textarea>");
   var $value = $("<input type='text'></input>");
 
   $cid.attr("name", name);
+  $cid.text(cid);
   $cid.prop("readonly", "true");
   $cid.attr("cols", 5);
   $cid.attr("rows", 1);

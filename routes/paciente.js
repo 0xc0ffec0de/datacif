@@ -12,7 +12,7 @@ module.exports = function(app, passport) {
     console.log("123");
     var db = req.db;
     var pacientes = db.collection('pacientes');
-    pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, docs) {
+    pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, item) {
       console.log("456");
 
       if (err) {
@@ -21,7 +21,7 @@ module.exports = function(app, passport) {
 
       res.render('pacientes', {
         title : 'Lista de todos os pacientes',
-        pacientes : docs
+        pacientes : item
       });
     });
   });
@@ -31,26 +31,28 @@ module.exports = function(app, passport) {
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
-    // pacientes.findOne({ _id: id }, {}, function(err, docs) {
-    pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
+    // pacientes.findOne({ _id: id }, {}, function(err, item) {
+    pacientes.findOne({ _id: new ObjectId(id) }, function(err, item) {
       if (err) {
         res.send("Erro ao tentar editar um paciente");
-      } else if (docs) {
+      } else if (item) {
         var queryResult = {
           title : "Edita paciente",
-          _id : docs._id,
-          nome : docs.nome,
-          dataNascimento : docs.dataNascimento,
-          sexo : docs.sexo == 'm' ? true : false,
-          cpf : docs.cpf,
-          logradouro : docs.endereco.logradouro,
-          complemento : docs.endereco.complemento,
-          bairro : docs.endereco.bairro,
-          cep : docs.endereco.cep,
-          morbidades : docs.morbidades,
+          _id : item._id,
+          nome : item.nome,
+          dataNascimento : item.dataNascimento,
+          sexo : item.sexo == 'm' ? true : false,
+          cpf : item.cpf,
+          logradouro : item.endereco.logradouro,
+          complemento : item.endereco.complemento,
+          bairro : item.endereco.bairro,
+          cep : item.endereco.cep,
+          registros : item.registros,
+          morbidades : item.morbidades,
           address : '/paciente/altera'
         };
 
+        console.log("[edt]paciente = ", queryResult);
         res.render('paciente', queryResult);
       } else {
         res.send({});
@@ -77,14 +79,22 @@ module.exports = function(app, passport) {
 
   router.post('/adiciona', app.isLoggedIn, function(req, res) {
     var db = req.db;
+    var values = req.body.registros.slice(1, req.body.registros.length);
+    var labels = req.body.tiposRegistro.slice(1, req.body.tiposRegistro.length);
+    var registros = [];
+
+    values.forEach(function(value, i) {
+      registros.push({ nome: labels[i], valor: value });
+    });
+
     var paciente = {
       nome : req.body.nome,
       dataNascimento : req.body.dataNascimento,
       sexo : req.body.sexo,
       cpf : req.body.cpf,
+      registros : registros,
       morbidades : req.body.morbidades.slice(1, req.body.morbidades.length)
     };
-    console.log(req.body);
 
     var endereco = {
       logradouro : req.body.logradouro,
@@ -94,6 +104,7 @@ module.exports = function(app, passport) {
     };
 
     paciente.endereco = endereco;
+    console.log("[add]paciente = ", paciente);
 
     var pacientes = db.collection('pacientes');
     pacientes.insert(paciente, function(err, doc) {
@@ -108,13 +119,22 @@ module.exports = function(app, passport) {
 
   router.post('/altera', app.isLoggedIn, function(req, res) {
     var db = req.db;
-
     var id = new ObjectId(req.body._id);
+
+    var values = req.body.registros.slice(1, req.body.registros.length);
+    var labels = req.body.tiposRegistro.slice(1, req.body.tiposRegistro.length);
+    var registros = [];
+
+    values.forEach(function(value, i) {
+      registros.push({ nome: labels[i], valor: value });
+    });
+
     var paciente = {
       nome : req.body.nome,
       dataNascimento : req.body.dataNascimento,
       sexo : req.body.sexo,
       cpf : req.body.cpf,
+      registros : registros,
       morbidades : req.body.morbidades.slice(1, req.body.morbidades.length)
     };
 
@@ -126,7 +146,7 @@ module.exports = function(app, passport) {
     };
 
     paciente.endereco = endereco;
-    console.log(req.body);
+    console.log("[alt]paciente = ", paciente);
 
     var pacientes = db.collection('pacientes');
     pacientes.update({ _id: id }, paciente,
