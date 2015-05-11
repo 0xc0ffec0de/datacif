@@ -104,15 +104,22 @@ app.use(function(req, res, next){
 
 // Simple route middleware to ensure user is authenticated.
 app.isLoggedIn = function(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login');
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  else
+  {
+    res.redirect('/login');
+  }
 }
 
 // Simple route middleware to ensure user is admin.
 app.isAdmin = function(req, res, next) {
-  console.log(req);
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/paciente/lista');
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.redirect('/paciente/lista');
+  }
 }
 
 // Define routes

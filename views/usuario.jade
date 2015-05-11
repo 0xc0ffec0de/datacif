@@ -17,6 +17,15 @@ block content
         input(type="text", placeholder="Login de acesso", name="login" value="")
     p Senha
       input(type="text", placeholder="Senha", name="senha" value="")
+    p#p Profissão
+      if (profissao)
+        input(type="hidden", value="#{profissao}")
+      else
+        input(type="hidden", value="")
+    script.
+      $(function() {
+        comboProfissao($("p#p"),"profissao");
+      });
     p Verificar senha
       input(type="text", placeholder="Verificar senha", name="senha2" value="")
 

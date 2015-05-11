@@ -1,30 +1,89 @@
 // Funções comuns
 
-// Create a input box that searches for CID10.
-createCIDCombo = function(divId, label, name) {
+inputRegistro = function(divId) {
+  var $div = $("<div></div>");
+  var $p = $('<p>Registro</p>');
+  var $type = $("<input type='text'></input>");
+  var $value = $("<input type='text'></input>");
+
+  $type.attr("name", "tiposRegistros")
+  $value.attr("name", "registros");
+
+  $p.append($type);
+  $p.append($value);
+
+  $div.append($p);
+  $div.attr("id", divId);
+
+  return $div;
+}
+
+// Cria caixa de texto que busca profissões.
+comboProfissao = function($parent, name) {
+  var $cod = $("<textarea></textarea>");
+  var $value = $("<input type='text'></input>");
+
+  $cod.attr("name", name);
+  $cod.prop("readonly", "true");
+  $cod.attr("cols", 5);
+  $cod.attr("rows", 1);
+
+  $value.attr("name", "descricao");
+  $value.attr("class", "ui-widget");
+  $value.autocomplete({
+    source: function(request, response) {
+      $.get("http://localhost:3000/usuario/profissao/" + request.term,
+      function(data) {
+        // Store data for later.
+        //$("input#cidlist").val(JSON.stringify(data));
+        console.log(data);
+        response(data);
+      });
+    },
+    minLength: 3,
+    select: function(event, ui) {
+      //var source = $("input#cidlist").val();
+      var $parent = $(this).parent();
+      var $cod = $parent.find("textarea");
+      $cod.val(ui.item.codigo);
+    },
+    open: function() {
+      $(this).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $(this).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+
+  $parent.append($cod);
+  $parent.append($value);
+}
+
+// Cria caixa de texto que faz busca por CID10.
+comboCID = function(divId, label, name) {
   var $div = $("<div></div>");
   var $p = $('<p>' + label + '</p>');
   var $cid = $("<textarea></textarea>");
-  var $desc = $("<input type='text'></input>");
+  var $value = $("<input type='text'></input>");
 
   $cid.attr("name", name);
   $cid.prop("readonly", "true");
   $cid.attr("cols", 5);
   $cid.attr("rows", 1);
 
-  $desc.attr("name", "descricoes");
-  $desc.attr("class", "ui-widget");
-  $desc.autocomplete({
-    source: function( request, response ) {
+  $value.attr("name", "descricoes");
+  $value.attr("class", "ui-widget");
+  $value.autocomplete({
+    source: function(request, response) {
       $.get("http://localhost:3000/cid/descricao/" + request.term,
       function(data) {
         // Store data for later.
-        $("input#cidlist").val(JSON.stringify(data));
+        // $("input#cidlist").val(JSON.stringify(data));
         response(data);
       });
     },
     minLength: 4,
-    select: function( event, ui ) {
+    select: function(event, ui) {
       var source = $("input#cidlist").val();
       var $parent = $(this).parent();
       var $cid = $parent.find("textarea");
@@ -39,14 +98,13 @@ createCIDCombo = function(divId, label, name) {
   });
 
   $p.append($cid);
-  $p.append($desc);
+  $p.append($value);
 
   $div.append($p);
   $div.attr("id", divId);
 
   return $div;
 }
-
 
 //
 onChangeCID = function(input, event) {

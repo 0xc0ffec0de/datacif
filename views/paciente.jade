@@ -20,6 +20,28 @@ block content
     p CPF
       input(type="text", placeholder="CPF do paciente", name="cpf", value="#{cpf}")
 
+    // Morbidades
+    div#listaRegistros
+      if registros
+        input#numRegistros(type="hidden", value="#{registros.length}")
+      else
+        input#numRegistros(type="hidden", value="0")
+
+    p
+      button(onclick="") Adiciona registro
+      script.
+        var adicionaRegistro = function() {
+          var $registros = $("input#numRegistros");
+          console.log("registros = ", $registros.val());
+          var num = $registros.val();
+          var divId = "itemRegistro" + num;
+          var $div = inputRegistro(divId);
+
+          $("div#listaRegistro").append($div);
+          $registros.val(parseInt($registros.val()) + 1);
+          return false;
+        }
+
     p Endereço
       input(type="text", placeholder="Logradouro", name="logradouro", value="#{logradouro}")
     p &nbsp;
@@ -30,9 +52,11 @@ block content
       input(type="text", placeholder="CEP", name="cep" value="#{cep}")
 
     // Morbidades
-    div#lista
-      input#morbidades(type="hidden", value="#{morbidades.length}")
-      input(type="hidden", name="morbidades", value="")
+    div#listaMorbidades
+      if morbidades
+        input#numMorbidades(type="hidden", value="#{morbidades.length}")
+      else
+        input#numMorbidades(type="hidden", value="0")
       each morbidade, i in morbidades
         div(id="#{'itemMorbidade' + i}")
           if i == 0
@@ -46,16 +70,16 @@ block content
       button(onclick="return adicionaMorbidade();") Adicionar Morbidade
       script.
         var adicionaMorbidade = function() {
-          var $morbidades = $("textarea#morbidades");
+          var $morbidades = $("input#numMorbidades");
           console.log("morbidades = ", $morbidades.val());
           var num = $morbidades.val();
           var label = num > 0 ? "Comorbidade" : "Morbidade";
           var divId = "itemMorbidade" + num;
-          var $div = createCIDCombo(divId, label, "morbidades");
+          var $div = comboCID(divId, label, "morbidades");
 
-          $("div#lista").append($div);
+          $("div#listaMorbidades").append($div);
           $morbidades.val(parseInt($morbidades.val()) + 1);
-          console.log("div#lista");
+          console.log("div#listaMorbidades");
 
           return false;
         }

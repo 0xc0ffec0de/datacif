@@ -55,5 +55,25 @@ module.exports = function(app, passport) {
     });
   });
 
+  router.get('/profissao/:desc', function(req, res) {
+    var descricao = new RegExp(req.params['desc'], 'i');
+    var db = req.db2;
+    var profissoes = db.collection('profissoes');
+
+    // profissoes.find({ descricao: descricao }).toArray(function(err, result) {
+    profissoes.aggregate([
+      { $match: { descricao: descricao } },
+      { $project: { _id : 0, "label" : "$descricao", codigo : 1 } }
+    ]).sort({ 'descricao:' : 1}).toArray(function(err, result) {
+      if (err) {
+        res.send("Erro ao tentar ler dados de profissão");
+      } else if (result) {
+        res.send(result);
+      } else {
+        res.send([]);
+      }
+    });
+  });
+
   return router;
 }
