@@ -1,6 +1,25 @@
 input.* {
 }
 
+div.firstColumn {
+  float: left;
+  left: 50px;
+  width: 700px;
+  /* border: 1px solid black; */
+}
+
+div.secondColumn {
+  display: inline;
+  float: left;
+  width: 750px;
+  /* border: 1px solid black; */
+}
+
+div.controlPanel {
+  display: block;
+  float: left;
+}
+
 input[type=text] {
   display: run-in;
   position: absolute;
@@ -36,10 +55,19 @@ button.inline {
   display: inline;
 }
 
-textarea {
+textarea.cid {
   display: run-in;
   position: absolute;
   resize: none;
   height: 1.5em;
   left: 230px;
+}
+
+textarea.anamnese {
+  position: absolute;
+  vertical-align: top;
+  left: 1000px;
+  width: 400px;
+  height: 300px;
+  resize: none;
 }

@@ -9,11 +9,9 @@ module.exports = function(app, passport) {
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
-    console.log("123");
     var db = req.db;
     var pacientes = db.collection('pacientes');
     pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, item) {
-      console.log("456");
 
       if (err) {
         res.send("Erro ao tentar listar pacientes");
@@ -37,21 +35,23 @@ module.exports = function(app, passport) {
         res.send("Erro ao tentar editar um paciente");
       } else if (item) {
         var queryResult = {
-          title : "Edita paciente",
-          _id : item._id,
-          nome : item.nome,
-          dataNascimento : item.dataNascimento,
-          sexo : item.sexo == 'm' ? true : false,
-          peso : item.peso,
-          altura : item.altura,
-          cpf : item.cpf,
-          logradouro : item.endereco.logradouro,
-          complemento : item.endereco.complemento,
-          bairro : item.endereco.bairro,
-          cep : item.endereco.cep,
-          registros : item.registros,
-          morbidades : item.morbidades,
-          address : '/paciente/altera'
+          title           : "Edita paciente",
+          _id             : item._id,
+          nome            : item.nome,
+          dataNascimento  : item.dataNascimento,
+          sexo            : item.sexo == 'm' ? true : false,
+          peso            : item.peso,
+          altura          : item.altura,
+          cpf             : item.cpf,
+          dependente      : item.dependente,
+          logradouro      : item.endereco.logradouro,
+          complemento     : item.endereco.complemento,
+          bairro          : item.endereco.bairro,
+          cep             : item.endereco.cep,
+          registros       : item.registros,
+          morbidades      : item.morbidades,
+          anamnese        : item.anamnese ? item.anamnese : '',
+          address         : '/paciente/altera'
         };
 
         console.log("[edt]paciente = ", queryResult);
@@ -64,22 +64,29 @@ module.exports = function(app, passport) {
 
   router.get('/novo', app.isLoggedIn, function(req, res) {
     res.render('paciente', {
-      title : 'Adiciona novo paciente',
-      _id : '',
-      nome : '',
-      dataNascimento : '',
-      sexo : '',
-      peso : '',
-      altura : '',
-      cpf : '',
-      registros : '',
-      logradouro : '',
-      complemento : '',
-      bairro : '',
-      cep : '',
-      morbidades : [],
-      address : '/paciente/adiciona'
+      title           : 'Adiciona novo paciente',
+      _id             : '',
+      nome            : '',
+      dataNascimento  : '',
+      sexo            : true,
+      peso            : '',
+      altura          : '',
+      cpf             : '',
+      dependente      : false,
+      registros       : '',
+      logradouro      : '',
+      complemento     : '',
+      bairro          : '',
+      cep             : '',
+      morbidades      : [],
+      anamnese        : '',
+      address         : '/paciente/adiciona'
     });
+  });
+
+  router.get('/adiciona', app.isLoggedIn, function(req, res) {
+    res.location("/paciente/lista");
+    res.redirect("/paciente/lista");
   });
 
   router.post('/adiciona', app.isLoggedIn, function(req, res) {
@@ -88,38 +95,48 @@ module.exports = function(app, passport) {
     var labels = req.body.tiposRegistro.slice(1, req.body.tiposRegistro.length);
     var registros = [];
 
-    values.forEach(function(value, i) {
-      registros.push({ nome: labels[i], valor: value });
-    });
+    if (values && values.length > 0) {
+      values.forEach(function(value, i) {
+        registros.push({ nome: labels[i], valor: value });
+      });
+    }
 
     var paciente = {
-      nome : req.body.nome,
-      dataNascimento : req.body.dataNascimento,
-      sexo : req.body.sexo,
-      cpf : req.body.cpf,
-      registros : registros,
-      morbidades : req.body.morbidades.slice(1, req.body.morbidades.length)
+      nome            : req.body.nome,
+      dataNascimento  : req.body.dataNascimento,
+      sexo            : req.body.sexo,
+      cpf             : req.body.cpf,
+      dependente      : req.body.dependente == 't' ? true : false,
+      registros       : registros,
+      morbidades      : req.body.morbidades.slice(1, req.body.morbidades.length),
+      anamnese        : req.body.anamnese
     };
 
     var endereco = {
-      logradouro : req.body.logradouro,
+      logradouro  : req.body.logradouro,
       complemento : req.body.complemento,
-      bairro : req.body.bairro,
-      cep : req.body.cep
+      bairro      : req.body.bairro,
+      cep         : req.body.cep
     };
 
     paciente.endereco = endereco;
     console.log("[add]paciente = ", paciente);
 
     var pacientes = db.collection('pacientes');
-    pacientes.insert(paciente, function(err, doc) {
+    pacientes.insert(paciente, function(err, item) {
       if (err) {
         res.send("Erro ao tentar inserir um novo paciente");
       } else {
-        res.location("/paciente/lista");
-        res.redirect("/paciente/lista");
+        var id = item._id.toString();
+        res.location("/paciente/menu/" + id);
+        res.redirect("/paciente/menu/" + id);
       }
     })
+  });
+
+  router.get('/altera', app.isLoggedIn, function(req, res) {
+    res.location("/paciente/lista");
+    res.redirect("/paciente/lista");
   });
 
   router.post('/altera', app.isLoggedIn, function(req, res) {
@@ -130,26 +147,30 @@ module.exports = function(app, passport) {
     var labels = req.body.tiposRegistro.slice(1, req.body.tiposRegistro.length);
     var registros = [];
 
-    values.forEach(function(value, i) {
-      registros.push({ nome: labels[i], valor: value });
-    });
+    if (values && values.length > 0) {
+      values.forEach(function(value, i) {
+        registros.push({ nome: labels[i], valor: value });
+      });
+    }
 
     var paciente = {
-      nome : req.body.nome,
-      dataNascimento : req.body.dataNascimento,
-      sexo : req.body.sexo,
-      peso : req.body.peso,
-      altura : req.body.altura,
-      cpf : req.body.cpf,
-      registros : registros,
-      morbidades : req.body.morbidades.slice(1, req.body.morbidades.length)
+      nome            : req.body.nome,
+      dataNascimento  : req.body.dataNascimento,
+      sexo            : req.body.sexo,
+      peso            : req.body.peso,
+      altura          : req.body.altura,
+      cpf             : req.body.cpf,
+      dependente      : req.body.dependente == 't' ? true : false,
+      registros       : registros,
+      morbidades      : req.body.morbidades.slice(1, req.body.morbidades.length),
+      anamnese        : req.body.anamnese
     };
 
     var endereco = {
-      logradouro : req.body.logradouro,
+      logradouro  : req.body.logradouro,
       complemento : req.body.complemento,
-      bairro : req.body.bairro,
-      cep : req.body.cep
+      bairro      : req.body.bairro,
+      cep         : req.body.cep
     };
 
     paciente.endereco = endereco;
@@ -161,10 +182,14 @@ module.exports = function(app, passport) {
         if (err) {
           res.send("Erro ao tentar alterar um paciente");
         } else {
-          res.location("/paciente/lista");
-          res.redirect("/paciente/lista");
+          res.location("/paciente/menu/" + id);
+          res.redirect("/paciente/menu/" + id);
         }
       });
+  });
+
+  router.get('/menu/:id', app.isLoggedIn, function(req, res) {
+    res.render("menu", { id : req.params['id'] });
   });
 
   return router;

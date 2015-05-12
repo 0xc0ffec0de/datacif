@@ -1,6 +1,7 @@
 module.exports = function(app, passport) {
   var express = require('express');
   var router = express.Router();
+  var ObjectId  = require("mongolian").ObjectId;
 
   router.get('/itens/:cif', function(req, res) {
     var cif = req.params['cif'];
@@ -21,7 +22,8 @@ module.exports = function(app, passport) {
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
-    pacientes.findOne({ _id: id }, {}, function(err, docs) {
+    // pacientes.findOne({ _id: id }, {}, function(err, docs) {
+    pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
       if (err) {
         res.send("Erro ao tentar editar um paciente");
       } else if (docs) {

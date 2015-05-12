@@ -24,13 +24,14 @@ inputRegistro = function(divId, label, value) {
 
 // Cria caixa de texto que busca profissões.
 comboProfissao = function($parent, name) {
-  var $cod = $("<textarea></textarea>");
+  var $code = $("<textarea></textarea>");
   var $value = $("<input type='text'></input>");
 
-  $cod.attr("name", name);
-  $cod.prop("readonly", "true");
-  $cod.attr("cols", 5);
-  $cod.attr("rows", 1);
+  $code.attr("name", name);
+  $code.addClass("cid");
+  $code.prop("readonly", "true");
+  $code.attr("cols", 5);
+  $code.attr("rows", 1);
 
   $value.attr("name", "descricao");
   $value.attr("class", "ui-widget");
@@ -48,8 +49,8 @@ comboProfissao = function($parent, name) {
     select: function(event, ui) {
       //var source = $("input#cidlist").val();
       var $parent = $(this).parent();
-      var $cod = $parent.find("textarea");
-      $cod.val(ui.item.codigo);
+      var $code = $parent.find("textarea");
+      $code.val(ui.item.codigo);
     },
     open: function() {
       $(this).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
@@ -59,7 +60,7 @@ comboProfissao = function($parent, name) {
     }
   });
 
-  $parent.append($cod);
+  $parent.append($code);
   $parent.append($value);
 }
 
@@ -75,6 +76,7 @@ comboCID = function(divId, label, name, cid) {
   $cid.prop("readonly", "true");
   $cid.attr("cols", 5);
   $cid.attr("rows", 1);
+  $cid.addClass("cid");
 
   $value.attr("name", "descricoes");
   $value.attr("class", "ui-widget");
