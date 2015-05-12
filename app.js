@@ -128,6 +128,7 @@ var paciente = require('./routes/paciente')(app, passport);
 var cif      = require('./routes/cif')(app, passport);
 var login    = require('./routes/login')(app, passport);
 var usuario  = require('./routes/usuario')(app, passport);
+//var usuario  = require('./routes/estrutura')(app, passport);
 
 //app.use('/', base);
 app.use('/cid', cid);

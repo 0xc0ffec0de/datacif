@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  form#formMap(name="mapa", method="get", action="#{address}")
+    p
+      h1 Estrutura e função
+      img(src="/images/humans_small.png", width="400")
+
+    p
+      input#face(type="submit", name="face", value="", title="Funções mentais")
+
+    script.
+      $(function() {
+        $( document ).tooltip();
+      });

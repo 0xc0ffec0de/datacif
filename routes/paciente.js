@@ -105,6 +105,8 @@ module.exports = function(app, passport) {
       nome            : req.body.nome,
       dataNascimento  : req.body.dataNascimento,
       sexo            : req.body.sexo,
+      peso            : req.body.peso,
+      altura          : req.body.altura,
       cpf             : req.body.cpf,
       dependente      : req.body.dependente == 't' ? true : false,
       registros       : registros,
@@ -190,6 +192,12 @@ module.exports = function(app, passport) {
 
   router.get('/menu/:id', app.isLoggedIn, function(req, res) {
     res.render("menu", { id : req.params['id'] });
+  });
+
+  router.get('/estrutura/:id', app.isLoggedIn, function(req, res) {
+    res.render("estrutura", {
+      address : '/cif/' + req.params['id']
+    });
   });
 
   return router;

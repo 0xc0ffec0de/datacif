@@ -8,7 +8,8 @@ module.exports = function(app, passport) {
     var db = req.db;
     var itens = db.collection('itens');
 
-    itens.findOne({ cif: cif }, {}, function(err, item) {
+    //itens.findOne({ cif: cif }, {}, function(err, item) {
+    itens.findOne({ cif: cif }, function(err, item) {
       if (err) {
         res.send("Erro ao tentar ler dados de CIF");
       } else if (item) {
