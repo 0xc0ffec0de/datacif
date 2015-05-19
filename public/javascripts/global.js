@@ -350,22 +350,32 @@ parseCIF = function(line) {
     }
 }
 
-selectCIF = function(queries, anchor) {
-  console.log(queries);
+// Popula tela com grupos de CIF.
+populateCIF = function(anchor, results) {
+  results.forEach(function(group) {
+    addTopic(anchor, group.description, group.cif);
+    group.items.forEach(function(item) {
+      addBodyItem(anchor, item.cif, item.description);
+    });
+  });
+}
+
+// Carrega grupos de CIF do servidor.
+loadCIF = function(queries, anchor) {
+  var results = [];
 
   queries.forEach(function(query) {
     var address = "/cif/itens/" + query;
-    console.log(address);
+    // console.log(address);
 
     $.get(address, function(group) {
-      console.log(group);
-      addTopic(anchor, group.description, group.cif);
+      results.push(group);
 
-      group.items.forEach(function(item) {
-        addBodyItem(anchor, item.cif, item.description);
-      });
-
+      // Done.
+      if (results.length == queries.length) {
+        results.sort(function(item1, item2) { return item1.cif.localeCompare(item2.cif); });
+        populateCIF(anchor, results);
+      }
     });
-
   });
 }
