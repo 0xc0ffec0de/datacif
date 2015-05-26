@@ -184,20 +184,26 @@ module.exports = function(app, passport) {
         if (err) {
           res.send("Erro ao tentar alterar um paciente");
         } else {
-          res.location("/paciente/menu/" + id);
-          res.redirect("/paciente/menu/" + id);
+          //res.location("/paciente/dominio/" + id);
+          res.redirect("/paciente/dominio/" + id);
         }
       });
   });
 
-  router.get('/menu/:id', app.isLoggedIn, function(req, res) {
-    res.render("menu", { id : req.params['id'] });
+  router.get('/dominio/:id', app.isLoggedIn, function(req, res) {
+    res.render("dominio", { id : req.params['id'] });
   });
 
   router.get('/estrutura/:id', app.isLoggedIn, function(req, res) {
     res.render("estrutura", {
-      address : '/cif/' + req.params['id']
+      address : '/paciente/capitulo/' + req.params['id']
     });
+  });
+
+  router.post('/capitulo/:id', app.isLoggedIn, function(req, res) {
+    var chapters = req.body.chapters;
+    console.log("chapters =", chapters);
+    res.render("capitulo", { chapters : chapters });
   });
 
   return router;

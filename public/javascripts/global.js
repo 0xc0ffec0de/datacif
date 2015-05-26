@@ -1,5 +1,12 @@
 // Funções comuns
 
+send = function(button, content) {
+  var $button = $(button);
+  $button.hide();
+  $button.val(JSON.stringify(content));
+  return true;
+}
+
 inputRegistro = function(divId, label, value) {
   var $div = $("<div></div>");
   var $p1 = $('<p>Tipo de registro</p>');

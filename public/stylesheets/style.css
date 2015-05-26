@@ -14,11 +14,3 @@ td,th {
  text-align: center;
  background-color: lightgrey;
 }
-
-#face {
-  position: absolute;
-  top: 200px;
-  left: 160px;
-  width: 10px;
-  background-color: blue;
-}

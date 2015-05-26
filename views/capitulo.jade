@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  div#chapter
+
+  script.
+    $(function() {
+      var chapters = !{chapters};
+      loadCIF(chapters, $("div#chapter"));
+    });

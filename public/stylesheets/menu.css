@@ -1,0 +1,29 @@
+/* menu.jade */
+
+.panel {
+  width: 100%;
+  margin: auto;
+}
+
+.contained {
+  width: 350px;
+  float: left;
+  position: relative;
+}
+
+.topic {
+  width: 100%;
+  text-align: center;
+}
+
+#face {
+  position: absolute;
+  top: 80px;
+  left: 103px;
+  width: 10px;
+  background-color: Transparent;
+  cursor: crosshair;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: solid 1px gray;
+}

@@ -3,13 +3,17 @@ extends layout
 block content
   h1 Passse o cursor e clique na região de interesse para selecionar o capítulo
 
-  form#formMap(name="mapa", method="get", action="#{address}")
-    p
-      h2 Estrutura e função
+  form#formMap(name="mapa", method="post", action="#{address}")
+    div.contained
+      h2.topic Estrutura e função
       img(src="/images/humans_small.png", width="400")
+      input#face(type="submit", name="chapters",
+        onclick="return send(this, ['b110','b114','b126','b130','b134']);",
+        value="",
+        title="Funções mentais")
 
-    p
-      input#face(type="submit", name="face", value="", title="Funções mentais")
+      input#bla(type="submit", name="chapters",
+        value="['a110','a114','a126','a130','a134']", title="Funções mentais")
 
     script.
       $(function() {
