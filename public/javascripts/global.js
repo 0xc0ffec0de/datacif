@@ -2,8 +2,8 @@
 
 inputRegistro = function(divId, label, value) {
   var $div = $("<div></div>");
-  var $p1 = $('<p>Nome do tipo de registro</p>');
-  var $p2 = $('<p>Valor do registro</p>');
+  var $p1 = $('<p>Tipo de registro</p>');
+  var $p2 = $('<p>Número do registro</p>');
   var $label = $("<input type='text'></input>");
   var $value = $("<input type='text'></input>");
 

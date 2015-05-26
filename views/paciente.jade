@@ -61,7 +61,7 @@ block content
 
         $(function() { formCalculaIMC(); });
 
-      p CPF
+      p CPF (obrigatório)
         input(type="text", placeholder="CPF do paciente", name="cpf", value="#{cpf}")
 
       p Dependente?
@@ -116,7 +116,7 @@ block content
             var $morbidades = $("input#numMorbidades");
             console.log("morbidades = ", $morbidades.val());
             var num = $morbidades.val();
-            var label = num > 0 ? "Comorbidade" : "Morbidade";
+            var label = num > 0 ? "Comorbidade (CID)" : "Morbidade (CID)";
             var divId = "itemMorbidade" + num;
             var $div = comboCID(divId, label, "morbidades", cid);
             $morbidades.val(parseInt($morbidades.val()) + 1);
