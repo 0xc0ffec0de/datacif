@@ -5,17 +5,26 @@ module.exports = function(app, passport) {
 
   router.get('/itens/:cif', function(req, res) {
     var cif = req.params['cif'];
-    var db = req.db;
-    var itens = db.collection('itens');
+    var db = req.db2;
+    var itens = db.collection('items');
 
-    //itens.findOne({ cif: cif }, {}, function(err, item) {
-    itens.findOne({ cif: cif }, function(err, item) {
+    itens.aggregate([
+      { $match: { cif : cif } },
+      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } }
+    ]).sort({ 'cif:' : 1}).toArray(function(err, result) {
       if (err) {
-        res.send("Erro ao tentar ler dados de CIF");
-      } else if (item) {
-        res.send(item);
+        console.log(err);
+        res.send("Erro ao tentar ler dados do CIF");
+      } else if (result.length == 1) {
+        console.log(result[0]);
+        res.send(result[0]);
+      } else {
+        console.log("erro!");
+        // Nada encontrado.
+        res.send([]);
       }
     });
+
   });
 
   router.get('/:id', function(req, res) {
