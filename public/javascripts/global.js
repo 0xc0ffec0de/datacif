@@ -1,9 +1,16 @@
 // Funções comuns
 
-send = function(button, content) {
-  var $button = $(button);
-  $button.hide();
-  $button.val(JSON.stringify(content));
+send = function(button, suffix) {
+  var $form = $("form");
+  var action = $form.attr("action");
+
+  $form.attr("action", action + suffix);
+  console.log("form.action =", $form.attr("action"));
+
+  // var $button = $(button);
+  // $button.hide();
+  // $button.val(JSON.stringify(content));
+
   return true;
 }
 
@@ -136,16 +143,17 @@ onChangeCID = function(input, event) {
 
 //
 onSelectMenu = function(e, ui) {
+  console.log("onSelectMenu called.");
   var select = $(this);
   var option = select.find("option:selected").val().match(/\d/);
   var div = $(this).parent().parent();
   var span = div.find("span[name='cif']");
   var cif = span.text();
-  var pacient = window.location.href.match(/[0-9a-z]+$/);
+  var id = $("input#id").val();
 
-  if (pacient != undefined && option != undefined) {
-    var address = "/cif/save";
-    var data = { p: pacient, c: cif, v: option };
+  if (id != undefined && option != undefined) {
+    var address = "/cif/save/" + cif + "/" + option;
+    var data = { id: id };
 
     $.post(address, data, function(response) {
       if (response['r'] != 'OK') {
@@ -368,21 +376,32 @@ populateCIF = function(anchor, results) {
 }
 
 // Carrega grupos de CIF do servidor.
-loadCIF = function(queries, anchor) {
+loadCIF = function(items, anchor) {
   var results = [];
 
-  queries.forEach(function(query) {
+  items.forEach(function(query) {
     var address = "/cif/itens/" + query;
-    // console.log(address);
+    console.log(address);
 
     $.get(address, function(group) {
       results.push(group);
 
-      // Done.
-      if (results.length == queries.length) {
+      // Items terminados.
+      if (results.length == items.length) {
         results.sort(function(item1, item2) { return item1.cif.localeCompare(item2.cif); });
         populateCIF(anchor, results);
       }
     });
+  });
+}
+
+// Carrega grupos de CIF do servidor.
+loadChapter = function(chapter, anchor) {
+  var results = [];
+  var address = "/cif/chapter/" + chapter;
+  console.log(address);
+
+  $.get(address, function(results) {
+    populateCIF(anchor, results);
   });
 }

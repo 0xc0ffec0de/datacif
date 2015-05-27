@@ -3,17 +3,51 @@ extends layout
 block content
   h1 Passse o cursor e clique na região de interesse para selecionar o capítulo
 
-  form#formMap(name="mapa", method="post", action="#{address}")
+  form#formMap(name='mapa', method='POST', action='#{address}')
     div.contained
-      h2.topic Estrutura e função
-      img(src="/images/humans_small.png", width="400")
-      input#face(type="submit", name="chapters",
-        onclick="return send(this, ['b110','b114','b126','b130','b134']);",
-        value="",
-        title="Funções mentais")
+      input#id(type='hidden', name='id', value='#{id}')
 
-      input#bla(type="submit", name="chapters",
-        value="['a110','a114','a126','a130','a134']", title="Funções mentais")
+      h2.topic Estrutura e função
+      img(src='/images/humans_small.png', width='400')
+      input#cap1(type='submit', name='chapters',
+        onclick='return send(this, "b1");',
+        value='',
+        title='Funções mentais')
+
+      input#cap2(type='submit', name='chapters',
+        onclick='return send(this, "b2");',
+        value='',
+        title='Funções sensoriais')
+
+      input#cap3(type='submit', name='chapters',
+        onclick='return send(this, "b3");',
+        value='',
+        title='Funções da voz e da fala')
+
+      input#cap4(type='submit', name='chapters',
+        onclick='return send(this, "b4");',
+        value='',
+        title='Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório')
+
+      input#cap5(type='submit', name='chapters',
+        onclick='return send(this, "b5");',
+        value='',
+        title='Funções dos sistemas digestivo, metabólico e endócrino')
+
+      input#cap6(type='submit', name='chapters',
+        onclick='return send(this, "b6");',
+        value='',
+        title='Funções geniturinárias e reprodutivas')
+
+      input#cap7(type='submit', name='chapters',
+        onclick='return send(this, "b7");',
+        value='',
+        title='Funções neuromusculo-esqueléticas e relacionadas ao movimento')
+
+      input#cap8(type='submit', name='chapters',
+        onclick='return send(this, "b8");',
+        value='',
+        title='Funções da pele e estruturas relacionadas')
 
     script.
       $(function() {

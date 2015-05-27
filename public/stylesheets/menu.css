@@ -16,14 +16,60 @@
   text-align: center;
 }
 
-#face {
+#cap1, #cap2, #cap3, #cap4, #cap5, #cap6, #cap7, #cap8 {
   position: absolute;
-  top: 80px;
-  left: 103px;
-  width: 10px;
   background-color: Transparent;
   cursor: crosshair;
   -moz-border-radius: 5px;
+  border-radius: 5px;
   -webkit-border-radius: 5px;
   border: solid 1px gray;
+}
+
+#cap1 {
+  top: 80px;
+  left: 103px;
+  width: 10px;
+}
+
+#cap2 {
+  top: 165px;
+  left: 170px;
+  width: 10px;
+}
+
+#cap3 {
+  top: 115px;
+  left: 103px;
+  width: 10px;
+}
+
+#cap4 {
+  top: 185px;
+  left: 107px;
+  width: 10px;
+}
+
+#cap5 {
+  top: 250px;
+  left: 100px;
+  width: 10px;
+}
+
+#cap6 {
+  top: 280px;
+  left: 102px;
+  width: 10px;
+}
+
+#cap7 {
+  top: 350px;
+  left: 133px;
+  width: 10px;
+}
+
+#cap8 {
+  top: 470px;
+  left: 140px;
+  width: 10px;
 }

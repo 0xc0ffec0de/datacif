@@ -8,6 +8,18 @@ module.exports = function(app, passport) {
     res.redirect("/paciente/lista");
   });
 
+  router.get('/:id/estrutura', app.isLoggedIn, function(req, res) {
+    res.render("estrutura",
+      {
+        id : req.params['id'],
+        address : '/cif/capitulo/'
+      });
+  });
+
+  router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
+    res.render("dominio", { id : req.params['id'] });
+  });
+
   router.get('/lista', app.isLoggedIn, function(req, res) {
     var db = req.db;
     var pacientes = db.collection('pacientes');
@@ -130,8 +142,8 @@ module.exports = function(app, passport) {
         res.send("Erro ao tentar inserir um novo paciente");
       } else {
         var id = item._id.toString();
-        res.location("/paciente/menu/" + id);
-        res.redirect("/paciente/menu/" + id);
+        res.location("/paciente/dominio/" + id);
+        res.redirect("/paciente/dominio/" + id);
       }
     })
   });
@@ -185,25 +197,9 @@ module.exports = function(app, passport) {
           res.send("Erro ao tentar alterar um paciente");
         } else {
           //res.location("/paciente/dominio/" + id);
-          res.redirect("/paciente/dominio/" + id);
+          res.redirect("/paciente/" + id + "/dominio");
         }
       });
-  });
-
-  router.get('/dominio/:id', app.isLoggedIn, function(req, res) {
-    res.render("dominio", { id : req.params['id'] });
-  });
-
-  router.get('/estrutura/:id', app.isLoggedIn, function(req, res) {
-    res.render("estrutura", {
-      address : '/paciente/capitulo/' + req.params['id']
-    });
-  });
-
-  router.post('/capitulo/:id', app.isLoggedIn, function(req, res) {
-    var chapters = req.body.chapters;
-    console.log("chapters =", chapters);
-    res.render("capitulo", { chapters : chapters });
   });
 
   return router;

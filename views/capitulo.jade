@@ -1,10 +1,12 @@
 extends layout
 
 block content
-  div#chapter
+  form#form(name="capitulo", method="post", address="")
+    input#id(name="id", type="hidden", value="#{id}")
+    div#chapter
 
-  script.
-    $(function() {
-      var chapters = !{chapters};
-      loadCIF(chapters, $("div#chapter"));
-    });
+    script.
+      $(function() {
+        var chapter = !{chapter}[0];
+        populateCIF($("div#chapter"), chapter);
+      });
