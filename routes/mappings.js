@@ -64,6 +64,13 @@ module.exports = {
           case 0:
             return []; // FIXME
         }
+      case 'e1':
+        switch (page) {
+          case 0:
+            return [];
+          case 1:
+            return [];
+        }
     }
     return [];
   },
