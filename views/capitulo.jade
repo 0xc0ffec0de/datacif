@@ -11,7 +11,7 @@ block content
 
     script.
       $(function() {
-        var chapter = !{chapter};
+        var chapter = "#{chapter}";
         var titles = !{titles};
         var page = !{page};
         var data = JSON.parse($("input#data").val());

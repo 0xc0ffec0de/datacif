@@ -8,11 +8,11 @@ module.exports = function(app, passport) {
     res.redirect("/paciente/lista");
   });
 
-  router.get('/:id/estrutura', app.isLoggedIn, function(req, res) {
-    res.render("estrutura",
+  router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
+    res.render("funcao_e_estrutura",
       {
-        id : req.params['id'],
-        address : '/cif/capitulo/'
+        id      : req.params['id'],
+        address : '/cif/capitulo/',
       });
   });
 

@@ -1,0 +1,80 @@
+extends layout
+
+block content
+  h1 Passse o cursor e clique na região de interesse para selecionar o capítulo
+
+  form(name='funcao', method='POST', action='#{address}')
+    input#id(type='hidden', name='id', value='#{id}')
+
+    div.left-container
+      h2.topic Funções do corpo
+      img(src='/images/humans_small.png', width='400')
+
+      input#b1(type='submit', name='chapters',
+        onclick='return send(this, "b1");', value='',
+        title='Funções mentais')
+
+      input#b2(type='submit', name='chapters',
+        onclick='return send(this, "b2");', value='',
+        title='Funções sensoriais')
+
+      input#b3(type='submit', name='chapters',
+        onclick='return send(this, "b3");', value='',
+        title='Funções da voz e da fala')
+
+      input#b4(type='submit', name='chapters',
+        onclick='return send(this, "b4");', value='',
+        title='Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório')
+
+      input#b5(type='submit', name='chapters',
+        onclick='return send(this, "b5");', value='',
+        title='Funções dos sistemas digestivo, metabólico e endócrino')
+
+      input#b6(type='submit', name='chapters',
+        onclick='return send(this, "b6");', value='',
+        title='Funções geniturinárias e reprodutivas')
+
+      input#b7(type='submit', name='chapters',
+        onclick='return send(this, "b7");', value='',
+        title='Funções neuromusculo-esqueléticas e relacionadas ao movimento')
+
+      input#b8(type='submit', name='chapters',
+        onclick='return send(this, "b8");', value='',
+        title='Funções da pele e estruturas relacionadas')
+
+    div.middle-container
+      h2.topic Estruturas do corpo
+      img(src='/images/humans_small.png', width='400')
+      input#e1(type='submit', name='chapters',
+        onclick='return send(this, "e1");', value='',
+        title='Estruturas do sistema nervoso')
+
+      input#e2(type='submit', name='chapters',
+        onclick='return send(this, "e2");', value='',
+        title='Olhos, ouvidos e estruturas relacionadas')
+
+      input#e3(type='submit', name='chapters',
+        onclick='return send(this, "e3");', value='',
+        title='Estruturas relacionadas à voz e fala')
+
+      input#e4(type='submit', name='chapters',
+        onclick='return send(this, "e4");', value='',
+        title='Estruturas dos sistemas cardiovascular, imunológico e respiratório')
+
+      input#e5(type='submit', name='chapters',
+        onclick='return send(this, "e5");', value='',
+        title='Estruturas relacionadas ao sistema digestório, metabólico e endócrino')
+
+      input#e6(type='submit', name='chapters',
+        onclick='return send(this, "e6");', value='',
+        title='Estruturas relacionadas aos sistema gerinuritário e reprodutivo')
+
+      input#e7(type='submit', name='chapters',
+        onclick='return send(this, "e7");', value='',
+        title='Estruturas relacionadas ao movimento')
+
+
+    script.
+      $(function() {
+        $( document ).tooltip();
+      });

@@ -374,7 +374,7 @@ parseCIF = function(line) {
 
 createChapterPage = function($accordion, chapter, titles, page, data) {
   var id = $("input#id").val();
-  console.log("chapter = ", chapter, ", id=", id);
+
   titles.forEach(function(title, n) {
     var $a = $("<a/>", {
       href : "/cif/capitulo/" + chapter + "/pagina/" + n,
