@@ -1,18 +1,17 @@
 // Funções comuns
+_preloadedPage = {};
 
 send = function(button, suffix) {
   var $form = $("form");
   var action = $form.attr("action");
+  var pos = action.lastIndexOf('/') + 1;
 
-  $form.attr("action", action + suffix);
-  console.log("form.action =", $form.attr("action"));
-
-  // var $button = $(button);
-  // $button.hide();
-  // $button.val(JSON.stringify(content));
+  $form.attr("action", action.substring(0, pos) + suffix);
+  console.log("form.action = " + $form.attr("action"));
+  $(document).tooltip("disable");
 
   return true;
-}
+};
 
 inputRegistro = function(divId, label, value) {
   var $div = $("<div></div>");
@@ -34,7 +33,7 @@ inputRegistro = function(divId, label, value) {
   $div.attr("id", divId);
 
   return $div;
-}
+};
 
 // Cria caixa de texto que busca profissões.
 comboProfissao = function($parent, name) {
@@ -76,7 +75,7 @@ comboProfissao = function($parent, name) {
 
   $parent.append($code);
   $parent.append($value);
-}
+};
 
 // Cria caixa de texto que faz busca por CID10.
 comboCID = function(divId, label, name, cid) {
@@ -125,7 +124,7 @@ comboCID = function(divId, label, name, cid) {
   $div.attr("id", divId);
 
   return $div;
-}
+};
 
 //
 onChangeCID = function(input, event) {
@@ -139,7 +138,7 @@ onChangeCID = function(input, event) {
     input.autocomplete({source: response});
     input.autocomplete("search", "");
   });
-}
+};
 
 //
 onSelectMenu = function(e, ui) {
@@ -204,7 +203,7 @@ createFunctionalityOptions = function(cif, name) {
     }
 
     return select;
-}
+};
 
 // (*)createFunctionItem
 addBodyItem = function(node, cif, text) {
@@ -352,7 +351,8 @@ createDevelopmentItem = function(node, cif, text) {
     // Invoca mágica do jQuery-UI
     selectMenu1.selectmenu({ select: onSelectMenu });
     selectMenu2.selectmenu({ select: onSelectMenu });
-}
+};
+
 addSeparator = function(node) {
     var sep = $("<p>&nbsp;</p>");
     node.append(sep);
@@ -363,17 +363,67 @@ parseCIF = function(line) {
         var match = line.match(/(.*)\((\w[0-9]+)\)/);
         return [match[1], match[2]]; // line.match(/b[0-9]+/)[0];
     }
-}
+};
+
+createChapterPage = function($accordion, chapter, titles, firstPage) {
+  var id = $("input#id").val();
+  console.log("chapter = ", chapter, ", id=", id);
+  titles.forEach(function(title, n) {
+    var $a = $("<a/>", {
+      href : "/cif/capitulo/" + chapter + "/pagina/" + n,
+      text : title
+    });
+    console.log("a=", $a, "title=", title);
+    var $title = $("<h3/>");
+    var $div = $("<div/>");
+    var $p = $("<p/>");
+
+    if (n == 0) {
+      populateCIF($div, firstPage);
+      _preloadedPage[$a.attr("href")] = true;
+    } else {
+      $p.text("Carregando página. Aguarde...");
+    }
+
+    $title.append($a);
+    $div.append($p);
+    $accordion.append($title);
+    $accordion.append($div);
+  });
+
+  // $accordion.accordion();
+  $accordion.accordion({
+    collapsible: true,
+    active : false,
+    heightStyle: "content",
+    activate: function (e, ui) {
+      var $p = $(ui.newHeader[0]).parent().find('p');
+      var url = $(ui.newHeader[0]).children('a').attr('href');
+      if (url != undefined && !(url in _preloadedPage)) {
+        // console.log("url = ", url);
+        $.post(url, { id: id }, function (data) {
+          populateCIF($p, JSON.parse(data), true);
+        });
+        _preloadedPage[url] = true;
+      }
+    }
+  });
+};
 
 // Popula tela com grupos de CIF.
-populateCIF = function(anchor, results) {
-  results.forEach(function(group) {
+populateCIF = function(anchor, page, overwrite) {
+  if (overwrite) {
+    anchor.text("");
+  }
+
+  page.forEach(function(group) {
+    // console.log("cif = ", group.cif, "desc = ", group.description);
     addTopic(anchor, group.description, group.cif);
     group.items.forEach(function(item) {
       addBodyItem(anchor, item.cif, item.description);
     });
   });
-}
+};
 
 // Carrega grupos de CIF do servidor.
 loadCIF = function(items, anchor) {
@@ -393,7 +443,7 @@ loadCIF = function(items, anchor) {
       }
     });
   });
-}
+};
 
 // Carrega grupos de CIF do servidor.
 loadChapter = function(chapter, anchor) {
@@ -404,4 +454,4 @@ loadChapter = function(chapter, anchor) {
   $.get(address, function(results) {
     populateCIF(anchor, results);
   });
-}
+};

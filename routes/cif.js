@@ -27,33 +27,75 @@ module.exports = function(app, passport) {
     });
   });
 
-  router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
-    var chapterName = req.params['chapter'];
+  loadCIF = function(collection, cif, func) {
+    console.log("loadCIF(%s)", cif);
+
+    collection.aggregate([
+      { $match: { cif : cif } },
+      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } }
+    ], function(err, result) {
+      if (err) {
+        console.log("erro no BD:", err);
+        func(undefined);
+      } else if (result.length == 1) {
+        // console.log("Resultado encontrado para", cif);
+        func(result[0]);
+      } else {
+        console.log("erro: nenhum dado encontrado para", cif);
+        func(undefined);
+      }
+    })
+  };
+
+  renderCIF = function(res, id, chapter, titles, subset, result, len) {
+    console.log("result =", result);
+    subset.push(result);
+
+    if (subset.length == len) {
+      res.render("capitulo", {
+        id: id,
+        chapter : JSON.stringify(chapter),
+        titles: JSON.stringify(titles),
+        page : JSON.stringify(subset),
+      });
+    }
+  };
+
+  sendCIF = function(res, subset, result, len) {
+    console.log("result =", result);
+    subset.push(result);
+
+    if (subset.length == len) {
+      res.send(JSON.stringify(subset));
+    }
+  };
+
+  router.post('/capitulo/:chapter/pagina/:page', app.isLoggedIn, function(req, res) {
+    var chapter = req.params['chapter'];
+    var page = req.params['page'];
     var id = req.body.id;
     var db = req.db2;
     var itens = db.collection('itens');
-    var chapter = chapter2cif(chapterName);
+    var subdomain = page2cif(chapter, page);
+    var subset = [];
 
-    append = function(set, subset, result, len1, len2) {
-      // console.log("result =", result);
-      subset.push(result);
-      if (subset.length == len1) {
-        // console.log("subset =", subset);
-        set.push(subset);
+    subdomain.forEach(function(cif) {
+      loadCIF(itens, cif, function(result) { sendCIF(res, subset, result, subdomain.length); } );
+    });
+  });
 
-        if (set.length == len2) {
-          console.log("set =", JSON.stringify(set));
-          res.render("capitulo", { id: id, chapter : JSON.stringify(set) });
-        }
-      }
-    };
+  router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
+    var chapter = req.params['chapter'];
+    var id = req.body.id;
+    var db = req.db2;
+    var itens = db.collection('itens');
+    var data = chapter2cif(chapter);
+    var titles = data.titles;
+    var subdomain = data.first;
+    var subset = [];
 
-    var set = [];
-    chapter.forEach(function(subdomain) {
-      var subset = [];
-      subdomain.forEach(function(cif) {
-        loadCIF(itens, cif, function(result) { append(set, subset, result, subdomain.length, chapter.length); } );
-      });
+    subdomain.forEach(function(cif) {
+      loadCIF(itens, cif, function(result) { renderCIF(res, id, chapter, titles, subset, result, subdomain.length); } );
     });
   });
 
@@ -104,55 +146,139 @@ module.exports = function(app, passport) {
     );
   });
 
-  chapter2cif = function(chapter) {
+  page2cif = function(chapter, page) {
+    page = parseInt(page);
+
     switch (chapter) {
       case 'b1':
-        return [
-          [ "b110", "b114", "b126", "b130", "b134" ],
-          [ "b140", "b144", "b152", "b156", "b160", "b164", "b167", "b172" ]
-        ];
-
+        switch (page) {
+          case 0:
+            return [ "b110", "b114", "b126", "b130", "b134" ];
+          case 1:
+            return [ "b140", "b144", "b152", "b156", "b160", "b164", "b167", "b172", "b180" ];
+        };
       case 'b2':
-        return [];
-
+        switch (page) {
+          case 0:
+            return [ "b210", "b215" ];
+          case 1:
+            return [ "b230", "b235", "b240" ];
+          case 2:
+            return [ "b250", "b255", "b260", "b265", "b270" ];
+          case 3:
+            return [ "b280" ];
+        };
       case 'b3':
-        return [];
-
+        switch (page) {
+          case 0:
+            return [ "b310", "b330", "b340" ];
+        };
       case 'b4':
-        return []
-
+        switch (page) {
+          case 0:
+            return [ "b410", "b415", "b420" ];
+          case 1:
+            return [ "b430", "b435" ];
+          case 2:
+            return [ "b440", "b445" ];
+          case 3:
+            return [ "b450", "b455" ];
+        };
       case 'b5':
-        return [];
-
+        switch (page) {
+          case 0:
+            return [ "b510", "b515", "b525", "b530", "b535" ];
+          case 1:
+            return [ "b540", "b545", "b550" ];
+        };
       case 'b6':
-        return [];
-
+        switch (page) {
+          case 0:
+            return [ "b610", "b620" ];
+          case 1:
+            return [ "b640", "b650", "b660", "b670" ];
+        };
       case 'b7':
-        return [];
-
+        switch (page) {
+          case 0:
+            return [ "b710", "b715", "b720" ];
+          case 1:
+            return [ "b730", "b735", "b740", "b750", "b760", "b765", "b770" ];
+        };
       case 'b8':
-        return [];
+        switch (page) {
+          case 0:
+            return []; // FIXME
+        }
     }
+    return [];
   };
 
-  loadCIF = function(collection, cif, func) {
-    console.log("loadCIF(%s)", cif);
+  chapter2cif = function(chapter) {
+    var result = {};
 
-    collection.aggregate([
-      { $match: { cif : cif } },
-      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } }
-    ], function(err, result) {
-      if (err) {
-        console.log("erro no BD:", err);
-        func(undefined);
-      } else if (result.length == 1) {
-        // console.log("Resultado encontrado para", cif);
-        func(result[0]);
-      } else {
-        console.log("erro: nenhum dado encontrado.");
-        func(undefined);
-      }
-    })
+    switch (chapter) {
+      case 'b1':
+        result.titles = [
+          "Funções mentais globais",
+          "Funções mentais específicas"
+        ];
+        break;
+
+      case 'b2':
+        result.titles = [
+          "Visão e funções relacionadas",
+          "Funções auditivas e vestibulares",
+          "Funções sensoriais adicionais",
+          "Dor"
+        ];
+        break;
+
+      case 'b3':
+        result.titles = [
+          "Funções da voz e da fala"
+        ];
+        break;
+
+      case 'b4':
+        result.titles = [
+          "Funções do Aparelho Cardiovascular, dos Sistemas Hematológico e Imunológico e do Aparelho Respiratório",
+          "Funções do Sistema Hematológico e Imunológico",
+          "Funções do Aparelho Respiratório",
+          "Funções e Sensações Adicionais dos Aparelhos Cardiovascular e Respiratório"
+        ];
+        break;
+
+      case 'b5':
+        result.tiles = [
+          "Funções Relacionadas com o Aparelho Digestivo",
+          "Funções Relacionadas com os Sistemas Metabólicos e Endócrinos"
+        ];
+        break;
+
+      case 'b6':
+        result.titles = [
+          "Funções Urinárias",
+          "Funções Sexuais e Reprodutivas"
+        ];
+        break;
+
+      case 'b7':
+        result.titles = [
+          "Funções das Articulações e dos Ossos",
+          "Funções Musculares"
+        ];
+        break;
+
+      case 'b8':
+        result.titles = [
+          "Funções da Pele e Estruturas Relacionadas"
+        ];
+        break;
+    }
+
+    result.first = page2cif(chapter, 0);
+    return result;
   };
 
   return router;

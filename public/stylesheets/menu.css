@@ -16,7 +16,11 @@
   text-align: center;
 }
 
-#cap1, #cap2, #cap3, #cap4, #cap5, #cap6, #cap7, #cap8 {
+#chapter {
+  width: 1000px;
+}
+
+#ch1, #ch2, #ch3, #ch4, #ch5, #ch6, #ch7, #ch8 {
   position: absolute;
   background-color: Transparent;
   cursor: crosshair;
@@ -26,49 +30,49 @@
   border: solid 1px gray;
 }
 
-#cap1 {
+#ch1 {
   top: 80px;
   left: 103px;
   width: 10px;
 }
 
-#cap2 {
+#ch2 {
   top: 165px;
   left: 170px;
   width: 10px;
 }
 
-#cap3 {
+#ch3 {
   top: 115px;
   left: 103px;
   width: 10px;
 }
 
-#cap4 {
+#ch4 {
   top: 185px;
   left: 107px;
   width: 10px;
 }
 
-#cap5 {
+#ch5 {
   top: 250px;
   left: 100px;
   width: 10px;
 }
 
-#cap6 {
+#ch6 {
   top: 280px;
   left: 102px;
   width: 10px;
 }
 
-#cap7 {
+#ch7 {
   top: 350px;
   left: 133px;
   width: 10px;
 }
 
-#cap8 {
+#ch8 {
   top: 470px;
   left: 140px;
   width: 10px;

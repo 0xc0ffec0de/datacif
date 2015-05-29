@@ -3,10 +3,15 @@ extends layout
 block content
   form#form(name="capitulo", method="post", address="")
     input#id(name="id", type="hidden", value="#{id}")
+
+    div#accordion
+
     div#chapter
 
     script.
       $(function() {
-        var chapter = !{chapter}[0];
-        populateCIF($("div#chapter"), chapter);
+        var chapter = !{chapter};
+        var titles = !{titles};
+        var page = !{page};
+        createChapterPage($("div#accordion"), chapter, titles, page);
       });
