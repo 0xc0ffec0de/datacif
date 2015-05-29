@@ -183,30 +183,37 @@ addTopic = function(node, text, cif) {
   node.append(div);
 };
 
-createFunctionalityOptions = function(cif, name) {
-    var select = $("<select id='" + cif + "-" + name + "'>");
-    var options = [
-    	"0 : funcional",
-    	"1 : disfunção level",
-    	"2 : disfunção moderada",
-    	"3 : disfunção severa",
-    	"4 : disfunção total",
-    	"8 : outra disfunção especificada",
-    	"9 : disfunção não especificada"
-    ];
+createFunctionalityOptions = function(cif, name, value) {
+  var select = $("<select id='" + cif + "-" + name + "'>");
+  var options = [
+  	"0 : funcional",
+  	"1 : disfunção level",
+  	"2 : disfunção moderada",
+  	"3 : disfunção severa",
+  	"4 : disfunção total",
+  	"8 : outra disfunção especificada",
+  	"9 : disfunção não especificada"
+  ];
 
-    select.attr("name", cif + "-" + name).css({ height: '59px', width: '50px' });
+  select.attr("name", cif + "-" + name).css({ height: '59px', width: '50px' });
 
-    for (var i = 0; i < options.length; ++i) {
-        var option = $("<option>" + options[i] + "</option>");
-        select.append(option);
+  for (var i = 0; i < options.length; ++i) {
+    var option;
+
+    if (value === i) {
+      option = $("<option selected>" + options[i] + "</option>");
+    } else {
+      option = $("<option>" + options[i] + "</option>");
     }
 
-    return select;
+    select.append(option);
+  }
+
+  return select;
 };
 
 // (*)createFunctionItem
-addBodyItem = function(node, cif, text) {
+addBodyItem = function(node, cif, text, value) {
     var div = $("<div id='" + cif + "'>");
     var desc = $("<span id='" + cif + "-radio'>");
 
@@ -219,7 +226,7 @@ addBodyItem = function(node, cif, text) {
     var tailText = $("<span>");
 
     var span = $("<span id='" + cif + "-span'>");
-    var selectMenu = createFunctionalityOptions(cif, "selectmenu");
+    var selectMenu = createFunctionalityOptions(cif, "selectmenu", value);
 
     span.append(selectMenu);
     span.addClass("fix-down");
@@ -365,7 +372,7 @@ parseCIF = function(line) {
     }
 };
 
-createChapterPage = function($accordion, chapter, titles, firstPage) {
+createChapterPage = function($accordion, chapter, titles, page, data) {
   var id = $("input#id").val();
   console.log("chapter = ", chapter, ", id=", id);
   titles.forEach(function(title, n) {
@@ -379,7 +386,7 @@ createChapterPage = function($accordion, chapter, titles, firstPage) {
     var $p = $("<p/>");
 
     if (n == 0) {
-      populateCIF($div, firstPage);
+      populateCIF($div, page, data);
       _preloadedPage[$a.attr("href")] = true;
     } else {
       $p.text("Carregando página. Aguarde...");
@@ -401,8 +408,11 @@ createChapterPage = function($accordion, chapter, titles, firstPage) {
       var url = $(ui.newHeader[0]).children('a').attr('href');
       if (url != undefined && !(url in _preloadedPage)) {
         // console.log("url = ", url);
-        $.post(url, { id: id }, function (data) {
-          populateCIF($p, JSON.parse(data), true);
+        $.post(url, { id: id }, function (result) {
+          var page = result.page;
+          var data = result.data;
+          console.log("data=",data);
+          populateCIF($p, JSON.parse(page), JSON.parse(data), true);
         });
         _preloadedPage[url] = true;
       }
@@ -411,16 +421,27 @@ createChapterPage = function($accordion, chapter, titles, firstPage) {
 };
 
 // Popula tela com grupos de CIF.
-populateCIF = function(anchor, page, overwrite) {
+populateCIF = function(anchor, page, data, overwrite) {
+  var map = {};
+
   if (overwrite) {
     anchor.text("");
+  }
+
+  // Converte lista em mapeamento.
+  if (data instanceof Array) {
+    data.forEach(function(datum) {
+      // console.log(datum.c + " = " + datum.v);
+      map[datum.c] = parseInt(datum.v);
+    });
   }
 
   page.forEach(function(group) {
     // console.log("cif = ", group.cif, "desc = ", group.description);
     addTopic(anchor, group.description, group.cif);
     group.items.forEach(function(item) {
-      addBodyItem(anchor, item.cif, item.description);
+      // console.log("item = " + map[item.cif]);
+      addBodyItem(anchor, item.cif, item.description, map[item.cif]);
     });
   });
 };

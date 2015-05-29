@@ -47,26 +47,35 @@ module.exports = function(app, passport) {
     })
   };
 
-  renderCIF = function(res, id, chapter, titles, subset, result, len) {
+  renderCIF = function(req, res, id, chapter, titles, subset, result, len) {
     console.log("result =", result);
     subset.push(result);
 
     if (subset.length == len) {
-      res.render("capitulo", {
-        id: id,
-        chapter : JSON.stringify(chapter),
-        titles: JSON.stringify(titles),
-        page : JSON.stringify(subset),
+      sendPatientData(req, res, id, function(data) {
+        res.render("capitulo", {
+          id      : id,
+          chapter : JSON.stringify(chapter),
+          titles  : JSON.stringify(titles),
+          page    : JSON.stringify(subset),
+          data    : JSON.stringify(data),
+        });
       });
     }
   };
 
-  sendCIF = function(res, subset, result, len) {
-    console.log("result =", result);
+  sendCIF = function(req, res, id, subset, result, len) {
+    // console.log("result =", result);
     subset.push(result);
 
     if (subset.length == len) {
-      res.send(JSON.stringify(subset));
+      sendPatientData(req, res, id, function(data) {
+        res.send({
+          page    : JSON.stringify(subset),
+          data    : JSON.stringify(data),
+        });
+      });
+      // res.send(JSON.stringify(subset));
     }
   };
 
@@ -80,7 +89,7 @@ module.exports = function(app, passport) {
     var subset = [];
 
     subdomain.forEach(function(cif) {
-      loadCIF(itens, cif, function(result) { sendCIF(res, subset, result, subdomain.length); } );
+      loadCIF(itens, cif, function(result) { sendCIF(req, res, id, subset, result, subdomain.length); } );
     });
   });
 
@@ -95,7 +104,7 @@ module.exports = function(app, passport) {
     var subset = [];
 
     subdomain.forEach(function(cif) {
-      loadCIF(itens, cif, function(result) { renderCIF(res, id, chapter, titles, subset, result, subdomain.length); } );
+      loadCIF(itens, cif, function(result) { renderCIF(req, res, id, chapter, titles, subset, result, subdomain.length); } );
     });
   });
 
@@ -133,7 +142,7 @@ module.exports = function(app, passport) {
 
     data.findAndModify(
       { p: id, c: cif }, // query
-      [[ 'c', 1]], // sort
+      [[ 'c', 1 ]], // sort
       { $set: { v: value } }, // replacement
       { upsert: true }, // options
       function(err, docs) {
@@ -145,6 +154,26 @@ module.exports = function(app, passport) {
       }
     );
   });
+
+  // Carrega e envia dados do paciente.
+  sendPatientData = function(req, res, patient, func) {
+    console.log("load called.");
+    var db = req.db2;
+    var data = db.collection('dados');
+
+    data.aggregate([
+      { $match: { p : patient } },
+      { $project: { _id : 0, p : "$p", c: "$c", v : "$v" } }
+    ]).sort({ 'c:' : 1 }).toArray(function(err, result) {
+      if (err) {
+        console.log(err);
+        func([]);
+      } else {
+        console.log(result.length, "resultados encontrados:", result);
+        func(result);
+      }
+    });
+  };
 
   page2cif = function(chapter, page) {
     page = parseInt(page);

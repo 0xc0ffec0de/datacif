@@ -3,6 +3,7 @@ extends layout
 block content
   form#form(name="capitulo", method="post", address="")
     input#id(name="id", type="hidden", value="#{id}")
+    input#data(name="data", type="hidden", value='#{data}')
 
     div#accordion
 
@@ -13,5 +14,7 @@ block content
         var chapter = !{chapter};
         var titles = !{titles};
         var page = !{page};
-        createChapterPage($("div#accordion"), chapter, titles, page);
+        var data = JSON.parse($("input#data").val());
+
+        createChapterPage($("div#accordion"), chapter, titles, page, data);
       });
