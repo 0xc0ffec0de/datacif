@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Passse o cursor e clique na região de interesse para selecionar o capítulo
 
-  form(name='funcao', method='POST', action='#{address}')
+  form.panel(name='funcao', method='POST', action='#{address}')
     input#id(type='hidden', name='id', value='#{id}')
 
     div.left-container
@@ -45,32 +45,32 @@ block content
     div.middle-container
       h2.topic Estruturas do corpo
       img(src='/images/humans_small.png', width='400')
-      input#e1(type='submit', name='chapters',
-        onclick='return send(this, "e1");', value='',
+      input#s1(type='submit', name='chapters',
+        onclick='return send(this, "s1");', value='',
         title='Estruturas do sistema nervoso')
 
-      input#e2(type='submit', name='chapters',
-        onclick='return send(this, "e2");', value='',
+      input#s2(type='submit', name='chapters',
+        onclick='return send(this, "s2");', value='',
         title='Olhos, ouvidos e estruturas relacionadas')
 
-      input#e3(type='submit', name='chapters',
-        onclick='return send(this, "e3");', value='',
+      input#s3(type='submit', name='chapters',
+        onclick='return send(this, "s3");', value='',
         title='Estruturas relacionadas à voz e fala')
 
-      input#e4(type='submit', name='chapters',
-        onclick='return send(this, "e4");', value='',
+      input#s4(type='submit', name='chapters',
+        onclick='return send(this, "s4");', value='',
         title='Estruturas dos sistemas cardiovascular, imunológico e respiratório')
 
-      input#e5(type='submit', name='chapters',
-        onclick='return send(this, "e5");', value='',
+      input#s5(type='submit', name='chapters',
+        onclick='return send(this, "s5");', value='',
         title='Estruturas relacionadas ao sistema digestório, metabólico e endócrino')
 
-      input#e6(type='submit', name='chapters',
-        onclick='return send(this, "e6");', value='',
+      input#s6(type='submit', name='chapters',
+        onclick='return send(this, "s6");', value='',
         title='Estruturas relacionadas aos sistema gerinuritário e reprodutivo')
 
-      input#e7(type='submit', name='chapters',
-        onclick='return send(this, "e7");', value='',
+      input#s7(type='submit', name='chapters',
+        onclick='return send(this, "s7");', value='',
         title='Estruturas relacionadas ao movimento')
 
 

@@ -436,13 +436,21 @@ populateCIF = function(anchor, page, data, overwrite) {
     });
   }
 
+  // console.log("page =", page);
   page.forEach(function(group) {
+    if (group == null)
+      return;
+
     // console.log("cif = ", group.cif, "desc = ", group.description);
-    addTopic(anchor, group.description, group.cif);
-    group.items.forEach(function(item) {
-      // console.log("item = " + map[item.cif]);
-      addBodyItem(anchor, item.cif, item.description, map[item.cif]);
-    });
+    if (group.items.length > 0) {
+      addTopic(anchor, group.description, group.cif);
+      group.items.forEach(function(item) {
+        // console.log("item = " + map[item.cif]);
+        addBodyItem(anchor, item.cif, item.description, map[item.cif]);
+      });
+    } else {
+      addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+    }
   });
 };
 
