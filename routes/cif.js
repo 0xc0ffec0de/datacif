@@ -54,6 +54,7 @@ module.exports = function(app, passport) {
 
     if (subset.length == len) {
       sendPatientData(req, res, id, function(data) {
+        console.log("data:", data);
         res.render("capitulo", {
           id      : id,
           chapter : chapter,
@@ -132,28 +133,56 @@ module.exports = function(app, passport) {
     });
   });
 
-  router.post('/save/:cif/:value', function(req, res) {
+  router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
     var cif = req.params['cif'];
+    var pos = req.params['position'] - 1;
     var value = req.params['value'];
     var id = req.body.id;
     var db = req.db2;
     var data = db.collection('dados');
     console.log("id =", id, "cif =", cif, "value =", value);
 
-    data.findAndModify(
-      { p: id, c: cif }, // query
-      [[ 'c', 1 ]], // sort
-      { $set: { v: value } }, // replacement
-      { upsert: true }, // options
-      function(err, docs) {
-        if (err) {
-          console.log(err.message);
+    data.aggregate([
+      { $match: { p : id, c : cif } },
+      { $project: { _id : "$_id", p : "$p", c: "$c", v : "$v" } }
+    ]).sort({ 'c:' : 1 }).toArray(function(err, result) {
+      console.log("Result = ", result);
+      if (err) {
+        console.log(err);
+        res.send({ r: 'ERR1' });
+      } else {
+        console.log(result.length, "resultados encontrados:", result);
+        if (result) {
+          result = result[0];
+          if (result == null) {
+            result = { v: [] };
+          } else if (result.v == null) {
+            result.v = [];
+          }
         } else {
-          res.send({ r: 'OK' });
+          result = { v: [] };
         }
+        result.v[pos] = value;
+
+        data.findAndModify(
+          { p: id, c: cif }, // query
+          [[ 'c', 1 ]], // sort
+          { $set: { v: result.v } }, // replacement
+          { upsert: true }, // options
+          function(err, docs) {
+            if (err) {
+              console.log(err.message);
+              res.send({ r: 'ERR2' });
+            } else {
+              res.send({ r: 'OK' });
+            }
+          }
+        );
+
       }
-    );
+    });
+
   });
 
   // Carrega e envia dados do paciente.

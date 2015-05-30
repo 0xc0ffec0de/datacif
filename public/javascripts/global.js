@@ -7,7 +7,7 @@ send = function(button, suffix) {
   var pos = action.lastIndexOf('/') + 1;
 
   $form.attr("action", action.substring(0, pos) + suffix);
-  console.log("form.action = " + $form.attr("action"));
+  // console.log("form.action = " + $form.attr("action"));
   $(document).tooltip("disable");
 
   return true;
@@ -143,15 +143,22 @@ onChangeCID = function(input, event) {
 //
 onSelectMenu = function(e, ui) {
   console.log("onSelectMenu called.");
-  var select = $(this);
-  var option = select.find("option:selected").val().match(/\d/);
+  var $select = $(this);
+  var name = $select.attr("name")
+  var num = name[name.length - 1];
+  console.log("$select = ", num);
+  var option = $select.find("option:selected").val().match(/\d/);
   var div = $(this).parent().parent();
-  var span = div.find("span[name='cif']");
-  var cif = span.text();
+  var span = div.find("label > span")[0];
+  var $span = $(span);
+  console.log("span =", $span.text());
+  // var span = div.find("span[name='cif']");
+  // console.log("span", span);
+  var cif = $span.text();
   var id = $("input#id").val();
 
   if (id != undefined && option != undefined) {
-    var address = "/cif/save/" + cif + "/" + option;
+    var address = "/cif/save/" + cif + "/" + num + "/" + option;
     var data = { id: id };
 
     $.post(address, data, function(response) {
@@ -184,6 +191,8 @@ addTopic = function(node, text, cif) {
 };
 
 createFunctionalityOptions = function(cif, name, value) {
+  value = parseInt(value);
+  // if (value > 0) console.log("value = ", value);
   var select = $("<select id='" + cif + "-" + name + "'>");
   var options = [
   	"0 : funcional",
@@ -226,7 +235,7 @@ addBodyItem = function(node, cif, text, value) {
     var tailText = $("<span>");
 
     var span = $("<span id='" + cif + "-span'>");
-    var selectMenu = createFunctionalityOptions(cif, "selectmenu", value);
+    var selectMenu = createFunctionalityOptions(cif, "selectmenu1", value ? value[0] : null);
 
     span.append(selectMenu);
     span.addClass("fix-down");
@@ -260,7 +269,7 @@ addBodyItem = function(node, cif, text, value) {
 };
 
 //
-createStructureItem = function(node, cif, text) {
+addStructureItem = function(node, cif, text, values) {
     var div = $("<div id='" + cif + "'>");
     var desc = $("<span id='" + cif + "-radio'>");
 
@@ -273,9 +282,9 @@ createStructureItem = function(node, cif, text) {
     var tailText = $("<span>");
 
     var span = $("<span id='" + cif + "-span'>");
-    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1");
-    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2");
-    var selectMenu3 = createFunctionalityOptions(cif, "selectmenu3");
+    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1", values ? values[0] : null);
+    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2", values ? values[1] : null);
+    var selectMenu3 = createFunctionalityOptions(cif, "selectmenu3", values ? values[2] : null);
 
     span.append(selectMenu1);
     span.append(selectMenu2);
@@ -312,7 +321,7 @@ createStructureItem = function(node, cif, text) {
 }
 
 //
-createDevelopmentItem = function(node, cif, text) {
+addDevelopmentItem = function(node, cif, text, values) {
     var div = $("<div id='" + cif + "'>");
     var desc = $("<span id='" + cif + "-radio'>");
 
@@ -325,8 +334,8 @@ createDevelopmentItem = function(node, cif, text) {
     var tailText = $("<span>");
 
     var span = $("<span id='" + cif + "-span'>");
-    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1");
-    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2");
+    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1", values ? values[0] : null);
+    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2", values ? values[1] : null);
 
     span.append(selectMenu1);
     span.append(selectMenu2);
@@ -380,7 +389,7 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
       href : "/cif/capitulo/" + chapter + "/pagina/" + n,
       text : title
     });
-    console.log("a=", $a, "title=", title);
+    // console.log("a=", $a, "title=", title);
     var $title = $("<h3/>");
     var $div = $("<div/>");
     var $p = $("<p/>");
@@ -411,7 +420,7 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
         $.post(url, { id: id }, function (result) {
           var page = result.page;
           var data = result.data;
-          console.log("data=",data);
+          // console.log("data=",data);
           populateCIF($p, JSON.parse(page), JSON.parse(data), true);
         });
         _preloadedPage[url] = true;
@@ -431,8 +440,8 @@ populateCIF = function(anchor, page, data, overwrite) {
   // Converte lista em mapeamento.
   if (data instanceof Array) {
     data.forEach(function(datum) {
-      // console.log(datum.c + " = " + datum.v);
-      map[datum.c] = parseInt(datum.v);
+      // console.log(datum.c + " = ", datum.v);
+      map[datum.c] = datum.v;
     });
   }
 
@@ -446,10 +455,26 @@ populateCIF = function(anchor, page, data, overwrite) {
       addTopic(anchor, group.description, group.cif);
       group.items.forEach(function(item) {
         // console.log("item = " + map[item.cif]);
-        addBodyItem(anchor, item.cif, item.description, map[item.cif]);
+        switch (item.cif[0]) {
+          case 'b':
+            addBodyItem(anchor, item.cif, item.description, map[item.cif]);
+            break;
+          case 's':
+            addStructureItem(anchor, item.cif, item.description, map[item.cif]);
+            break;
+          case 'd':
+        }
       });
     } else {
-      addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+      switch (group.cif[0]) {
+        case 'b':
+          addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+          break;
+        case 's':
+          addStructureItem(anchor, group.cif, group.description, map[group.cif]);
+          break;
+        case 'd':
+      }
     }
   });
 };
