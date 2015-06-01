@@ -12,8 +12,9 @@ module.exports = function(app, passport) {
 
     itens.aggregate([
       { $match: { cif : cif } },
-      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } }
-    ]).sort({ 'cif:' : 1 }).toArray(function(err, result) {
+      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
+      { $sort: { cif : 1 } }
+    ]).toArray(function(err, result) {
       if (err) {
         console.log(err);
         res.send("Erro ao tentar ler dados do CIF");
@@ -32,8 +33,9 @@ module.exports = function(app, passport) {
     console.log("loadCIF(%s)", cif);
 
     collection.aggregate([
-      { $match: { cif : cif } },
-      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } }
+      { $match : { cif : cif } },
+      { $project : { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
+      { $sort : { cif : 1 }}
     ], function(err, result) {
       if (err) {
         console.log("erro no BD:", err);
@@ -48,11 +50,10 @@ module.exports = function(app, passport) {
     })
   };
 
-  renderCIF = function(req, res, id, chapter, titles, subset, result, len) {
-    console.log("result =", result);
-    subset.push(result);
+  renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
+    subset[i] = result;
 
-    if (subset.length == len) {
+    if (len == 1) {
       sendPatientData(req, res, id, function(data) {
         console.log("data:", data);
         res.render("capitulo", {
@@ -64,21 +65,23 @@ module.exports = function(app, passport) {
         });
       });
     }
+
+    return len - 1;
   };
 
-  sendCIF = function(req, res, id, subset, result, len) {
-    // console.log("result =", result);
-    subset.push(result);
+  sendCIF = function(req, res, id, subset, result, i, len) {
+    subset[i] = result;
 
-    if (subset.length == len) {
+    if (len == 1) {
       sendPatientData(req, res, id, function(data) {
         res.send({
           page    : JSON.stringify(subset),
           data    : JSON.stringify(data),
         });
       });
-      // res.send(JSON.stringify(subset));
     }
+
+    return len - 1;
   };
 
   router.post('/capitulo/:chapter/pagina/:page', app.isLoggedIn, function(req, res) {
@@ -88,11 +91,16 @@ module.exports = function(app, passport) {
     var db = req.db2;
     var itens = db.collection('itens');
     var subdomain = mappings.page2cif(chapter, page);
-    var subset = [];
+    var subset = Array(subdomain.length);
+    var count = subdomain.length;
 
-    subdomain.forEach(function(cif) {
-      loadCIF(itens, cif, function(result) { sendCIF(req, res, id, subset, result, subdomain.length); } );
+    subdomain.forEach(function(cif, i) {
+      loadCIF(itens, cif, function(result) { count = sendCIF(req, res, id, subset, result, i, count); } );
     });
+  });
+
+  router.get('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
+    res.redirect("/paciente/lista/");
   });
 
   router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
@@ -103,10 +111,11 @@ module.exports = function(app, passport) {
     var data = mappings.chapter2cif(chapter);
     var titles = data.titles;
     var subdomain = data.first;
-    var subset = [];
+    var subset = Array(subdomain.length);
+    var count = subdomain.length;
 
-    subdomain.forEach(function(cif) {
-      loadCIF(itens, cif, function(result) { renderCIF(req, res, id, chapter, titles, subset, result, subdomain.length); } );
+    subdomain.forEach(function(cif, i) {
+      loadCIF(itens, cif, function(result) { count = renderCIF(req, res, id, chapter, titles, subset, result, i, count); } );
     });
   });
 

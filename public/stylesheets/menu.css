@@ -18,7 +18,7 @@
   margin-left: 100px;
 }
 
-.topic {
+.domain {
   width: 100%;
   text-align: center;
 }
@@ -37,50 +37,192 @@
   border: solid 1px gray;
 }
 
-#b1 {
+#s1, #s2, #s3, #s4, #s5, #s6, #s7 {
+  position: absolute;
+  background-color: Transparent;
+  cursor: crosshair;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: solid 1px gray;
+}
+
+div#man > #b1 {
   top: 80px;
-  left: 103px;
-  width: 10px;
-}
-
-#b2 {
-  top: 165px;
-  left: 170px;
-  width: 10px;
-}
-
-#b3 {
-  top: 115px;
-  left: 103px;
-  width: 10px;
-}
-
-#b4 {
-  top: 185px;
-  left: 107px;
-  width: 10px;
-}
-
-#b5 {
-  top: 250px;
-  left: 100px;
-  width: 10px;
-}
-
-#b6 {
-  top: 280px;
-  left: 102px;
-  width: 10px;
-}
-
-#b7 {
-  top: 350px;
   left: 133px;
   width: 10px;
 }
 
-#b8 {
+div#man > #b2 {
+  top: 185px;
+  left: 210px;
+  width: 10px;
+}
+
+div#man > #b3 {
+  top: 115px;
+  left: 133px;
+  width: 10px;
+}
+
+div#man > #b4 {
+  top: 195px;
+  left: 137px;
+  width: 10px;
+}
+
+div#man > #b5 {
+  top: 300px;
+  left: 127px;
+  width: 10px;
+}
+
+div#man > #b6 {
+  top: 335px;
+  left: 130px;
+  width: 10px;
+}
+
+div#man > #b7 {
+  top: 440px;
+  left: 173px;
+  width: 10px;
+}
+
+div#man > #b8 {
+  top: 580px;
+  left: 175px;
+  width: 10px;
+}
+
+div#woman > #b1 {
+  top: 125px;
+  left: 76px;
+  width: 10px;
+}
+
+div#woman > #b2 {
+  top: 225px;
+  left: 155px;
+  width: 10px;
+}
+
+div#woman > #b3 {
+  top: 165px;
+  left: 78px;
+  width: 10px;
+}
+
+div#woman > #b4 {
+  top: 235px;
+  left: 90px;
+  width: 10px;
+}
+
+div#woman > #b5 {
+  top: 325px;
+  left: 78px;
+  width: 10px;
+}
+
+div#woman > #b6 {
+  top: 355px;
+  left: 82px;
+  width: 10px;
+}
+
+div#woman > #b7 {
   top: 470px;
-  left: 140px;
+  left: 143px;
+  width: 10px;
+}
+
+div#woman > #b8 {
+  top: 580px;
+  left: 173px;
+  width: 10px;
+}
+
+div#man > #s1 {
+  top: 80px;
+  left: 133px;
+  width: 10px;
+}
+
+div#man > #s2 {
+  top: 110px;
+  left: 163px;
+  width: 10px;
+}
+
+div#man > #s3 {
+  top: 130px;
+  left: 130px;
+  width: 10px;
+}
+
+div#man > #s4 {
+  top: 195px;
+  left: 137px;
+  width: 10px;
+}
+
+div#man > #s5 {
+  top: 300px;
+  left: 127px;
+  width: 10px;
+}
+
+div#man > #s6 {
+  top: 335px;
+  left: 130px;
+  width: 10px;
+}
+
+div#man > #s7 {
+  top: 470px;
+  left: 170px;
+  width: 10px;
+}
+
+div#woman > #s1 {
+  top: 124px;
+  left: 77px;
+  width: 10px;
+}
+
+div#woman > #s2 {
+  top: 150px;
+  left: 106px;
+  width: 10px;
+}
+
+div#woman > #s3 {
+  top: 165px;
+  left: 78px;
+  width: 10px;
+}
+
+div#woman > #s4 {
+  top: 235px;
+  left: 90px;
+  width: 10px;
+}
+
+div#woman > #s5 {
+  top: 325px;
+  left: 78px;
+  width: 10px;
+}
+
+div#woman > #s6 {
+  top: 355px;
+  left: 82px;
+  width: 10px;
+}
+
+div#woman > #s7 {
+  top: 495px;
+  left: 153px;
   width: 10px;
 }

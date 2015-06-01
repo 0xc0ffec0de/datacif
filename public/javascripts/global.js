@@ -175,24 +175,29 @@ e = function(s) {
   return s.replace( /(:|\.|\[|\])/g, "\\$1" );
 };
 
-addTopic = function(node, text, cif) {
-  var div = $("<div>");
-  var label = $("<label>");
+addTopic = function($node, text, cif) {
+  var $div = $("<div>");
+  var $text = $("<span>");
+  var $label = $("<label>");
 
   if (cif != undefined) {
     text = text + " (" + cif + ")";
   }
 
-  label.text(text);
-  div.append(label);
-  div.addClass("topic");
+  $text.text(text).addClass("ui-button-text");
 
-  node.append(div);
+  $label.append($text);
+  $label.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
+  $label.css({ width: '1000px', height: '34px', 'vertical-align': 'middle' });
+
+  $div.append($label);
+  $div.addClass("topic");
+
+  $node.append($div);
 };
 
 createFunctionalityOptions = function(cif, name, value) {
-  value = parseInt(value);
-  // if (value > 0) console.log("value = ", value);
+  var value = parseInt(value);
   var select = $("<select id='" + cif + "-" + name + "'>");
   var options = [
   	"0 : funcional",
@@ -245,13 +250,13 @@ addBodyItem = function(node, cif, text, value) {
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '59px', 'vertical-align': 'middle' });
+    headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
 
     // Descrição
     tailText.text(text).addClass("ui-button-text");
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '615px', height: '59px', 'word-break': 'normal' });
+    tailLabel.css({ width: '615px', height: '34px', 'word-break': 'normal' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -265,7 +270,7 @@ addBodyItem = function(node, cif, text, value) {
     node.append(div);
 
     // Invoca mágica do jQuery-UI
-    selectMenu.selectmenu({ select: onSelectMenu });
+    selectMenu.selectmenu({ select: onSelectMenu, width: "270px", height: "28px" });
 };
 
 //
@@ -345,13 +350,13 @@ addDevelopmentItem = function(node, cif, text, values) {
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '59px', 'vertical-align': 'middle' });
+    headLabel.css({ 'vertical-align': 'middle' });
 
     // Descrição
     tailText.text(text).addClass("ui-button-text");
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '565px', height: '59px', 'word-break': 'normal' });
+    tailLabel.css({ 'word-break': 'normal' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -410,17 +415,15 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
   // $accordion.accordion();
   $accordion.accordion({
     collapsible: true,
-    active : false,
+    active : true,
     heightStyle: "content",
     activate: function (e, ui) {
       var $p = $(ui.newHeader[0]).parent().find('p');
       var url = $(ui.newHeader[0]).children('a').attr('href');
       if (url != undefined && !(url in _preloadedPage)) {
-        // console.log("url = ", url);
         $.post(url, { id: id }, function (result) {
           var page = result.page;
           var data = result.data;
-          // console.log("data=",data);
           populateCIF($p, JSON.parse(page), JSON.parse(data), true);
         });
         _preloadedPage[url] = true;

@@ -1,23 +1,12 @@
 module.exports = function(app, passport) {
   var express   = require('express');
   var router    = express.Router();
-  var ObjectId  = require("mongolian").ObjectId;
+  var ObjectId  = require('mongolian').ObjectId;
+  var mongodb   = require('mongodb');
 
   router.get('/', app.isLoggedIn, function(req, res) {
-    res.location("/paciente/lista");
+    // res.location("/paciente/lista");
     res.redirect("/paciente/lista");
-  });
-
-  router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
-    res.render("funcao_e_estrutura",
-      {
-        id      : req.params['id'],
-        address : '/cif/capitulo/',
-      });
-  });
-
-  router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
-    res.render("dominio", { id : req.params['id'] });
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
@@ -97,7 +86,6 @@ module.exports = function(app, passport) {
   });
 
   router.get('/adiciona', app.isLoggedIn, function(req, res) {
-    res.location("/paciente/lista");
     res.redirect("/paciente/lista");
   });
 
@@ -142,7 +130,7 @@ module.exports = function(app, passport) {
         res.send("Erro ao tentar inserir um novo paciente");
       } else {
         var id = item._id.toString();
-        res.location("/paciente/dominio/" + id);
+        // res.location("/paciente/dominio/" + id);
         res.redirect("/paciente/dominio/" + id);
       }
     })
@@ -200,6 +188,41 @@ module.exports = function(app, passport) {
           res.redirect("/paciente/" + id + "/dominio");
         }
       });
+  });
+
+  router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
+    res.render("dominio", { id : req.params['id'] });
+  });
+
+  router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
+    var db = req.db2;
+    var pacientes = db.collection('pacientes');
+    var id = req.params['id'];
+
+    pacientes.aggregate([
+      { $match : { _id : mongodb.ObjectId(id) } },
+      { $project : { _id : 0, sexo : 1 } },
+    ], function(err, result) {
+      console.log("result = ", result);
+      if (err) {
+        res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+      } else if (result) {
+        res.render("funcao_e_estrutura",
+          {
+            id      : req.params['id'],
+            address : '/cif/capitulo/',
+            sex     : result.pop().sexo
+          });
+      } else {
+        res.render("funcao_e_estrutura",
+          {
+            id      : req.params['id'],
+            address : '/cif/capitulo/',
+            sex     : 'm'
+          });
+        }
+      }
+    );
   });
 
   return router;

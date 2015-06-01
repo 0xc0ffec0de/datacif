@@ -14,3 +14,12 @@ td,th {
  text-align: center;
  background-color: lightgrey;
 }
+
+.fix-down {
+  position: relative;
+  top: 14px;
+}
+
+.topic {
+  padding-top: 15px;
+}

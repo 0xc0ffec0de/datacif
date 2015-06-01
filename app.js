@@ -88,6 +88,7 @@ app.use(cookieParser());
 app.use(session({ secret: 'whatdoesthefoxsay?',
                   resave: false,
                   saveUninitialized: false }));
+                  // cookie: { maxAge: 600000 }}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -142,6 +143,13 @@ app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
+});
+
+// Exibe mensagens de erro.
+app.get('/flash', function(req, res){
+  // Set a flash message by passing the key, followed by the value, to req.flash().
+  req.flash('info', 'Flash is back!')
+  res.redirect('/');
 });
 
 // error handlers
