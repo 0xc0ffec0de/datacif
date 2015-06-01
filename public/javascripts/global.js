@@ -187,7 +187,7 @@ addTopic = function($node, text, cif) {
   $text.text(text).addClass("ui-button-text");
 
   $label.append($text);
-  $label.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
+  $label.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
   $label.css({ width: '1000px', height: '34px', 'vertical-align': 'middle' });
 
   $div.append($label);
