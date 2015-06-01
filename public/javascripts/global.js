@@ -196,12 +196,113 @@ addTopic = function($node, text, cif) {
   $node.append($div);
 };
 
-createFunctionalityOptions = function(cif, name, value) {
+addRadio = function($parent, cif, name, text, checked) {
   var value = parseInt(value);
-  var select = $("<select id='" + cif + "-" + name + "'>");
+  var $span = $("<span>");
+  var $radio = $("<input type='radio' name='" + name + "' " + (checked ? "checked" : "") + ">");
+  var $label = $("<label for='" + cif + "-" + name + "'>");
+
+  $label.text(text);
+  //$radio.prop("checked", checked);
+
+  $span.append($radio);
+  $span.append($label);
+  $span.addClass("fix-radio-down");
+
+  $parent.append($span);
+
+  return $radio;
+}
+
+addFunctionOptions = function($parent, cif, name, value) {
+  var value = parseInt(value);
+  var $span = $("<span id='" + cif + "-span'>");
+  var $radio1span = $("<span>");
+  var $radio2span = $("<span>");
+  var $radio3span = $("<span>");
+  var $radio4span = $("<span>");
+  var $selectSpan = $("<span>");
+  var $select = $("<select id='" + cif + "-" + name + "'>");
+  var options = [
+  	"1 : disfunção leve",
+  	"2 : disfunção moderada",
+  	"3 : disfunção severa",
+  	"4 : disfunção total"
+  	// "8 : outra disfunção especificada",
+  	// "9 : disfunção não especificada"
+  ];
+
+  $select.attr("name", cif + "-" + name);
+
+  for (var i = 0; i < options.length; ++i) {
+    var option;
+
+    if ((value - 1) === i) {
+      option = $("<option selected>" + options[i] + "</option>");
+    } else {
+      option = $("<option>" + options[i] + "</option>");
+    }
+
+    $select.append(option);
+  }
+
+  if (value === 0 || value === 8 || value === 9) {
+    $select.prop("disabled", "true");
+  }
+
+  addRadio($radio1span, cif, cif + "-" + name + "-radio", "F", value === 0).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", true);
+  });
+
+  addRadio($radio2span, cif, cif + "-" + name + "-radio", "I", value > 0 && value < 8).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", false);
+  });
+
+  addRadio($radio3span, cif, cif + "-" + name + "-radio", "NE", value === 8).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", true);
+  });
+
+  addRadio($radio4span, cif, cif + "-" + name + "-radio", "NA", value === 9).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", true);
+  });
+
+  $radio1span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio1span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio2span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio2span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio3span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio3span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio4span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio4span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+
+  $selectSpan.append($select);
+  $selectSpan.addClass("fix-down");
+
+  $span.append($radio1span);
+  $span.append($selectSpan);
+  $span.append($radio2span);
+  $span.append($radio3span);
+  $span.append($radio4span);
+  $parent.append($span);
+
+  $select.selectmenu({ select: onSelectMenu, width: "230px", height: "28px" });
+};
+
+addQualifier = function($parent, cif, name, value) {
+  var value = parseInt(value);
+  var $span = $("<span id='" + cif + "-span'>");
+  var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = [
   	"0 : funcional",
-  	"1 : disfunção level",
+  	"1 : disfunção leve",
   	"2 : disfunção moderada",
   	"3 : disfunção severa",
   	"4 : disfunção total",
@@ -209,7 +310,7 @@ createFunctionalityOptions = function(cif, name, value) {
   	"9 : disfunção não especificada"
   ];
 
-  select.attr("name", cif + "-" + name).css({ height: '59px', width: '50px' });
+  $select.attr("name", cif + "-" + name);
 
   for (var i = 0; i < options.length; ++i) {
     var option;
@@ -220,10 +321,14 @@ createFunctionalityOptions = function(cif, name, value) {
       option = $("<option>" + options[i] + "</option>");
     }
 
-    select.append(option);
+    $select.append(option);
   }
 
-  return select;
+  $span.append($select);
+  $span.addClass("fix-down");
+  $parent.append($span);
+
+  $select.selectmenu({ select: onSelectMenu, width: "270px", height: "28px" });
 };
 
 // (*)createFunctionItem
@@ -238,12 +343,6 @@ addBodyItem = function(node, cif, text, value) {
     var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
     var tailLabel = $("<label>");
     var tailText = $("<span>");
-
-    var span = $("<span id='" + cif + "-span'>");
-    var selectMenu = createFunctionalityOptions(cif, "selectmenu1", value ? value[0] : null);
-
-    span.append(selectMenu);
-    span.addClass("fix-down");
 
     // CIF
     headText.attr("name", "cif"); // new
@@ -263,14 +362,10 @@ addBodyItem = function(node, cif, text, value) {
     desc.addClass("buttonset");
 
     div.append(desc);
-
-    div.append(span);
+    addFunctionOptions(div, cif, "selectmenu1", Array.isArray(value) ? value[0] : 0);
     div.addClass("enclosed");
 
     node.append(div);
-
-    // Invoca mágica do jQuery-UI
-    selectMenu.selectmenu({ select: onSelectMenu, width: "270px", height: "28px" });
 };
 
 //
@@ -320,9 +415,9 @@ addStructureItem = function(node, cif, text, values) {
     node.append(div);
 
     // Invoca mágica do jQuery-UI
-    selectMenu1.selectmenu({ select: onSelectMenu });
-    selectMenu2.selectmenu({ select: onSelectMenu });
-    selectMenu3.selectmenu({ select: onSelectMenu });
+    // selectMenu1.selectmenu({ select: onSelectMenu });
+    // selectMenu2.selectmenu({ select: onSelectMenu });
+    // selectMenu3.selectmenu({ select: onSelectMenu });
 }
 
 //
@@ -370,8 +465,8 @@ addDevelopmentItem = function(node, cif, text, values) {
     node.append(div);
 
     // Invoca mágica do jQuery-UI
-    selectMenu1.selectmenu({ select: onSelectMenu });
-    selectMenu2.selectmenu({ select: onSelectMenu });
+    // selectMenu1.selectmenu({ select: onSelectMenu });
+    // selectMenu2.selectmenu({ select: onSelectMenu });
 };
 
 addSeparator = function(node) {

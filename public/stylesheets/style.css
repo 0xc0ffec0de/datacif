@@ -23,3 +23,8 @@ td,th {
 .topic {
   padding-top: 15px;
 }
+
+.fix-radio-down {
+  position: relative;
+  top: 6px;
+}
