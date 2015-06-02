@@ -140,42 +140,27 @@ onChangeCID = function(input, event) {
   });
 };
 
-//
-onSelectMenu = function(e, ui) {
-  console.log("onSelectMenu called.");
-  var $select = $(this);
-  var name = $select.attr("name")
-  var num = name[name.length - 1];
-  console.log("$select = ", num);
-  var option = $select.find("option:selected").val().match(/\d/);
-  var div = $(this).parent().parent();
-  var span = div.find("label > span")[0];
-  var $span = $(span);
-  console.log("span =", $span.text());
-  // var span = div.find("span[name='cif']");
-  // console.log("span", span);
-  var cif = $span.text();
+// Salva os dados da CIF do paciente.
+saveCIF = function(cif, pos, value) {
   var id = $("input#id").val();
+  var address = "/cif/save/" + cif + "/" + pos + "/" + value;
+  console.log("address=", address);
+  var data = { id: id };
 
-  if (id != undefined && option != undefined) {
-    var address = "/cif/save/" + cif + "/" + num + "/" + option;
-    var data = { id: id };
-
-    $.post(address, data, function(response) {
-      if (response['r'] != 'OK') {
-        // Do stuff on error.
-        console.log(response);
-      }
-    });
-  }
-}
+  $.post(address, data, function(response) {
+    if (response['r'] != 'OK') {
+      // TODO: tratamento de erros.
+      console.log(response);
+    }
+  });
+};
 
 // Escape de seletor jquery.
 e = function(s) {
   return s.replace( /(:|\.|\[|\])/g, "\\$1" );
 };
 
-addTopic = function($node, text, cif) {
+addTopic = function($node, text, cif, width) {
   var $div = $("<div>");
   var $text = $("<span>");
   var $label = $("<label>");
@@ -188,7 +173,7 @@ addTopic = function($node, text, cif) {
 
   $label.append($text);
   $label.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $label.css({ width: '1000px', height: '34px', 'vertical-align': 'middle' });
+  $label.css({ width: width || '1200px', height: '34px', 'vertical-align': 'middle' });
 
   $div.append($label);
   $div.addClass("topic");
@@ -214,7 +199,25 @@ addRadio = function($parent, cif, name, text, checked) {
   return $radio;
 }
 
-addFunctionOptions = function($parent, cif, name, value) {
+// Se usuário selecionar opção em funcionalidade.
+onSelectFunctionOption = function(e, ui) {
+  console.log("onSelectMenu called =", this);
+  var $select = $(this);
+  var name = $select.attr("name")
+  // último caracter de selectmenu1, selectmenu2 ou selectmenu3.
+  var pos = parseInt(name[name.length - 1]);
+  var value = $select.find("option:selected").val().match(/\d/);
+  var $div = $(this).parent().parent().parent();
+  var $span = $($div.find("label > span")[0]);
+  var cif = $span.text();
+  console.log("id=", id);
+
+  if (pos != undefined && value != undefined) {
+    saveCIF(cif, pos, value);
+  }
+}
+
+addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   var value = parseInt(value);
   var $span = $("<span id='" + cif + "-span'>");
   var $radio1span = $("<span>");
@@ -223,7 +226,7 @@ addFunctionOptions = function($parent, cif, name, value) {
   var $radio4span = $("<span>");
   var $selectSpan = $("<span>");
   var $select = $("<select id='" + cif + "-" + name + "'>");
-  var options = [
+  var options = parOptions || [
   	"1 : disfunção leve",
   	"2 : disfunção moderada",
   	"3 : disfunção severa",
@@ -253,25 +256,34 @@ addFunctionOptions = function($parent, cif, name, value) {
   addRadio($radio1span, cif, cif + "-" + name + "-radio", "F", value === 0).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
+    // var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 0);
   });
 
   addRadio($radio2span, cif, cif + "-" + name + "-radio", "I", value > 0 && value < 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", false);
+    var $select = $select.parent().find('select');
+    onSelectMenu.call($select[0], null);
   });
 
   addRadio($radio3span, cif, cif + "-" + name + "-radio", "NE", value === 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", true);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 8);
   });
 
   addRadio($radio4span, cif, cif + "-" + name + "-radio", "NA", value === 9).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", true);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 9);
   });
 
   $radio1span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
@@ -293,21 +305,33 @@ addFunctionOptions = function($parent, cif, name, value) {
   $span.append($radio4span);
   $parent.append($span);
 
-  $select.selectmenu({ select: onSelectMenu, width: "230px", height: "28px" });
+  $select.selectmenu({ select: onSelectFunctionOption, width: width || "230px", height: "28px" });
 };
+
+// Se usuário selecionar opção em funcionalidade.
+onSelectQualifierOption = function(e, ui) {
+  console.log("onSelectMenu called =", this);
+  var $select = $(this);
+  var name = $select.attr("name")
+  // último caracter de selectmenu1, selectmenu2 ou selectmenu3.
+  var pos = parseInt(name[name.length - 1]);
+  var value = $select.find("option:selected").val().match(/\d/);
+  var $div = $(this).parent().parent();
+  var $span = $($div.find("label > span")[0]);
+  var cif = $span.text();
+  console.log("id=", id, "cif=", cif);
+
+  if (pos != undefined && value != undefined) {
+    saveCIF(cif, pos, value);
+  }
+}
 
 addQualifier = function($parent, cif, name, value) {
   var value = parseInt(value);
   var $span = $("<span id='" + cif + "-span'>");
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = [
-  	"0 : funcional",
-  	"1 : disfunção leve",
-  	"2 : disfunção moderada",
-  	"3 : disfunção severa",
-  	"4 : disfunção total",
-  	"8 : outra disfunção especificada",
-  	"9 : disfunção não especificada"
+  	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
   ];
 
   $select.attr("name", cif + "-" + name);
@@ -328,7 +352,7 @@ addQualifier = function($parent, cif, name, value) {
   $span.addClass("fix-down");
   $parent.append($span);
 
-  $select.selectmenu({ select: onSelectMenu, width: "270px", height: "28px" });
+  $select.selectmenu({ select: onSelectQualifierOption, width: "50px", height: "28px" });
 };
 
 // (*)createFunctionItem
@@ -380,44 +404,33 @@ addStructureItem = function(node, cif, text, values) {
     var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
     var tailLabel = $("<label>");
     var tailText = $("<span>");
-
-    var span = $("<span id='" + cif + "-span'>");
-    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1", values ? values[0] : null);
-    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2", values ? values[1] : null);
-    var selectMenu3 = createFunctionalityOptions(cif, "selectmenu3", values ? values[2] : null);
-
-    span.append(selectMenu1);
-    span.append(selectMenu2);
-    span.append(selectMenu3);
-    span.addClass("fix-down");
+    var options1 = [ 1, 2, 3, 4 ];
+    var options2 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 
     // CIF
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '59px', 'vertical-align': 'middle' });
+    headLabel.css({ width: '110px', height: '30px', 'vertical-align': 'middle' });
 
     // Descrição
     tailText.text(text).addClass("ui-button-text");
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '515px', height: '59px', 'word-break': 'normal' });
+    tailLabel.css({ width: '515px', height: '30px', 'word-break': 'normal' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
     desc.addClass("buttonset");
-
     div.append(desc);
 
-    div.append(span);
+    addFunctionOptions(div, cif, "selectmenu1", Array.isArray(values) ? values[0] : 0, options1, "50px");
+    addQualifier(div, cif, "selectmenu2", Array.isArray(values) ? values[1] : 0, options2, "50px");
+    addQualifier(div, cif, "selectmenu3", Array.isArray(values) ? values[2] : 0, options2, "50px");
+    // div.append(span);
     div.addClass("enclosed");
 
     node.append(div);
-
-    // Invoca mágica do jQuery-UI
-    // selectMenu1.selectmenu({ select: onSelectMenu });
-    // selectMenu2.selectmenu({ select: onSelectMenu });
-    // selectMenu3.selectmenu({ select: onSelectMenu });
 }
 
 //

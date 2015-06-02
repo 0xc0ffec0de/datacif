@@ -5,14 +5,20 @@
   margin: auto;
 }
 
+a.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .left-container {
-  width: 350px;
+  width: 300px;
   float: left;
   position: relative;
 }
 
 .middle-container {
-  width: 350px;
+  width: 300px;
   float: left;
   position: relative;
   margin-left: 100px;

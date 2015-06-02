@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1 Passse o cursor e clique na região de interesse para selecionar o capítulo
+
+  form.panel(name='funcao', method='POST', action='#{address}')
+    input#id(type='hidden', name='id', value='#{id}')
+
+    div#man.left-container
+      h2.topic Atividade e participação
+      img(src='/images/activity_participation.png')
+
+      input#d1(type='submit', name='chapters',
+        onclick='return send(this, "d1");', value='',
+        title='Aprendizagem e aplicação do conhecimento')
+
+      input#d2(type='submit', name='chapters',
+        onclick='return send(this, "d2");', value='',
+        title='Tarefas e demandas gerais')
+
+      input#d3(type='submit', name='chapters',
+        onclick='return send(this, "d3");', value='',
+        title='Comunicação')
+
+      input#d4(type='submit', name='chapters',
+        onclick='return send(this, "d4");', value='',
+        title='Mobilidade')
+
+      input#d5(type='submit', name='chapters',
+        onclick='return send(this, "d5");', value='',
+        title='Cuidado pessoal')
+
+      input#d6(type='submit', name='chapters',
+        onclick='return send(this, "d6");', value='',
+        title='Vida doméstica')
+
+      input#d7(type='submit', name='chapters',
+        onclick='return send(this, "d7");', value='',
+        title='Relações e interações interpessoais')
+
+      input#d8(type='submit', name='chapters',
+        onclick='return send(this, "d8");', value='',
+        title='Áreas principais da vida')
+
+      input#d9(type='submit', name='chapters',
+        onclick='return send(this, "d9");', value='',
+        title='Vida comunitária, social e cívica')
+
+    script.
+      $(function() {
+        $( document ).tooltip();
+      });

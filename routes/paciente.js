@@ -131,7 +131,7 @@ module.exports = function(app, passport) {
       } else {
         var id = item._id.toString();
         // res.location("/paciente/dominio/" + id);
-        res.redirect("/paciente/dominio/" + id);
+        res.redirect("/paciente/" + id + "/dominio");
       }
     })
   });
@@ -184,16 +184,17 @@ module.exports = function(app, passport) {
         if (err) {
           res.send("Erro ao tentar alterar um paciente");
         } else {
-          //res.location("/paciente/dominio/" + id);
           res.redirect("/paciente/" + id + "/dominio");
         }
       });
   });
 
+  // Menu inicial.
   router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
     res.render("dominio", { id : req.params['id'] });
   });
 
+  // Menu de função e estrutura.
   router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
@@ -223,6 +224,11 @@ module.exports = function(app, passport) {
         }
       }
     );
+  });
+
+  // Menu de atividade e partipação.
+  router.get('/:id/atividade_e_participacao', app.isLoggedIn, function(req, res) {
+    res.render("atividade_e_participacao", { id : req.params['id'] });
   });
 
   return router;
