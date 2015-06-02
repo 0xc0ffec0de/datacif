@@ -19,7 +19,7 @@ block content
           td= paciente.sexo
           td= paciente.cpf
           td
-            button.inline(onclick="window.location='/cif/#{paciente._id}'; return false;") CIF
+            button.inline(onclick="window.location='/paciente/#{paciente._id}/dominio'; return false;") CIF
 
 
   form#formNovoPaciente(name="novoPaciente", method="get", action="/paciente/novo")

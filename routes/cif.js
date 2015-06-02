@@ -40,7 +40,7 @@ module.exports = function(app, passport) {
         console.log("erro no BD:", err);
         func(undefined);
       } else if (result.length == 1) {
-        // console.log("Resultado encontrado para", cif);
+        console.log("Resultado encontrado para", cif, ':', result[0]);
         func(result[0]);
       } else {
         console.log("erro: nenhum dado encontrado para", cif);

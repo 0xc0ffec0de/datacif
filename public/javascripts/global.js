@@ -173,7 +173,7 @@ addTopic = function($node, text, cif, width) {
 
   $label.append($text);
   $label.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $label.css({ width: width || '1200px', height: '34px', 'vertical-align': 'middle' });
+  $label.css({ width: width || '1030px', height: '34px', 'vertical-align': 'middle' });
 
   $div.append($label);
   $div.addClass("topic");
@@ -379,7 +379,7 @@ addBodyItem = function(node, cif, text, value) {
     tailText.text(text).addClass("ui-button-text");
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '615px', height: '34px', 'word-break': 'normal' });
+    tailLabel.css({ width: '450px', height: '34px', 'word-break': 'normal' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -445,41 +445,34 @@ addDevelopmentItem = function(node, cif, text, values) {
     var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
     var tailLabel = $("<label>");
     var tailText = $("<span>");
-
-    var span = $("<span id='" + cif + "-span'>");
-    var selectMenu1 = createFunctionalityOptions(cif, "selectmenu1", values ? values[0] : null);
-    var selectMenu2 = createFunctionalityOptions(cif, "selectmenu2", values ? values[1] : null);
-
-    span.append(selectMenu1);
-    span.append(selectMenu2);
-    span.addClass("fix-down");
+    var options1 = [ 1, 2, 3, 4 ];
+    var options2 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 
     // CIF
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ 'vertical-align': 'middle' });
+    headLabel.css({ width: '110px', height: '30px', 'vertical-align': 'middle' });
 
     // Descrição
     tailText.text(text).addClass("ui-button-text");
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ 'word-break': 'normal' });
+    tailLabel.css({ width: '515px', height: '30px', 'white-space': 'nowrap',
+      'overflow': 'hidden', 'text-overflow': 'ellipsis', 'word-break': 'normal' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
     desc.addClass("buttonset");
-
     div.append(desc);
 
-    div.append(span);
+    addQualifier(div, cif, "selectmenu1", Array.isArray(values) ? values[0] : 0, options1, "50px");
+    addQualifier(div, cif, "selectmenu2", Array.isArray(values) ? values[1] : 0, options2, "50px");
+    addQualifier(div, cif, "selectmenu3", Array.isArray(values) ? values[2] : 0, options2, "50px");
+    // div.append(span);
     div.addClass("enclosed");
 
     node.append(div);
-
-    // Invoca mágica do jQuery-UI
-    // selectMenu1.selectmenu({ select: onSelectMenu });
-    // selectMenu2.selectmenu({ select: onSelectMenu });
 };
 
 addSeparator = function(node) {
@@ -497,6 +490,7 @@ parseCIF = function(line) {
 createChapterPage = function($accordion, chapter, titles, page, data) {
   var id = $("input#id").val();
 
+  console.log("page, ", JSON.stringify(page));
   titles.forEach(function(title, n) {
     var $a = $("<a/>", {
       href : "/cif/capitulo/" + chapter + "/pagina/" + n,
@@ -574,9 +568,11 @@ populateCIF = function(anchor, page, data, overwrite) {
             addStructureItem(anchor, item.cif, item.description, map[item.cif]);
             break;
           case 'd':
+            addDevelopmentItem(anchor, item.cif, item.description, map[item.cif]);
         }
       });
     } else {
+      console.log("caso2", JSON.stringify(group));
       switch (group.cif[0]) {
         case 'b':
           addBodyItem(anchor, group.cif, group.description, map[group.cif]);
@@ -585,6 +581,7 @@ populateCIF = function(anchor, page, data, overwrite) {
           addStructureItem(anchor, group.cif, group.description, map[group.cif]);
           break;
         case 'd':
+          addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
       }
     }
   });

@@ -77,7 +77,7 @@ module.exports = {
       case 'd1':
         switch (page) {
           case 0:
-            return [ "d110", "d115", "d120", "129" ];
+            return [ "d110", "d115", "d120", "d129" ];
           case 1:
             return [ "d130", "d135", "d140", "d150", "d155", "d159" ];
           case 2:
