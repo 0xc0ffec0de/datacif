@@ -445,8 +445,7 @@ addDevelopmentItem = function(node, cif, text, values) {
     var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
     var tailLabel = $("<label>");
     var tailText = $("<span>");
-    var options1 = [ 1, 2, 3, 4 ];
-    var options2 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+    var options = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
 
     // CIF
     headText.text(cif).addClass("ui-button-text");
@@ -466,9 +465,10 @@ addDevelopmentItem = function(node, cif, text, values) {
     desc.addClass("buttonset");
     div.append(desc);
 
-    addQualifier(div, cif, "selectmenu1", Array.isArray(values) ? values[0] : 0, options1, "50px");
-    addQualifier(div, cif, "selectmenu2", Array.isArray(values) ? values[1] : 0, options2, "50px");
-    addQualifier(div, cif, "selectmenu3", Array.isArray(values) ? values[2] : 0, options2, "50px");
+    addQualifier(div, cif, "selectmenu1", Array.isArray(values) ? values[0] : 0, options, "50px");
+    addQualifier(div, cif, "selectmenu2", Array.isArray(values) ? values[1] : 0, options, "50px");
+    addQualifier(div, cif, "selectmenu3", Array.isArray(values) ? values[2] : 0, options, "50px");
+    addQualifier(div, cif, "selectmenu4", Array.isArray(values) ? values[3] : 0, options, "50px");
     // div.append(span);
     div.addClass("enclosed");
 

@@ -19,7 +19,7 @@ module.exports = function(app, passport) {
       }
 
       res.render('pacientes', {
-        title : 'Lista de todos os pacientes',
+        title : 'Lista de sujeitos',
         pacientes : item
       });
     });
