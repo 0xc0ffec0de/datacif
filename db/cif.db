@@ -74,7 +74,7 @@
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54a" }, "items" : [], "cif" : "d129", "description" : "Experiências sensoriais intencionais, outras especificadas e não especificadas" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54b" } }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54c" }, "items" : [], "cif" : "d130", "description" : "Imitar" }
-{ "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54d" }, "items" : [], "cif" : "d135", "description" : "" }
+{ "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54d" }, "items" : [], "cif" : "d135", "description" : "Ensaiar (Repetir)" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54e" }, "items" : [], "cif" : "d140", "description" : "Aprender a ler" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd54f" }, "items" : [], "cif" : "d145", "description" : "Aprender a escrever" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd550" }, "items" : [], "cif" : "d150", "description" : "Aprender a calcular" }
@@ -133,7 +133,7 @@
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd585" }, "items" : [], "cif" : "d830", "description" : "Educação de nível superior" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd586" }, "items" : [], "cif" : "d839", "description" : "Educação, outra especificada e não especificada" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd587" } }
-{ "_id" : { "$oid" : "55695db3cc1b0e50f2ebd588" }, "items" : [], "cif" : "d840", "description" : "" }
+{ "_id" : { "$oid" : "55695db3cc1b0e50f2ebd588" }, "items" : [], "cif" : "d840", "description" : "Estágio (preparação para o emprego)" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd589" }, "items" : [ { "cif" : "d8450", "description" : "Procurar emprego" }, { "cif" : "d8451", "description" : "Manter um emprego " }, { "cif" : "d8452", "description" : "Sair de um emprego " }, { "cif" : "d8458", "description" : "Obter, manter e sair de um emprego, outro especificado " }, { "cif" : "d8459", "description" : "Obter, manter e sair de um emprego, não especificado " } ], "cif" : "d845", "description" : "Obter, manter e sair de um emprego" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd58a" }, "items" : [ { "cif" : "d8500", "description" : "Trabalho independente " }, { "cif" : "d8501", "description" : "Trabalho a tempo parcial " }, { "cif" : "d8502", "description" : "Trabalho a tempo inteiro " }, { "cif" : "d8508", "description" : "Trabalho remunerado, outro especificado " }, { "cif" : "d8509", "description" : "Trabalho remunerado, não especificado " }, { "cif" : "d855", "description" : "Trabalho não remunerado" }, { "cif" : "d859", "description" : "Trabalho e emprego, outros especificados e não especificados" } ], "cif" : "d850", "description" : "Trabalho remunerado" }
 { "_id" : { "$oid" : "55695db3cc1b0e50f2ebd58b" }, "items" : [], "cif" : "d860", "description" : "Transações económicas básicas" }

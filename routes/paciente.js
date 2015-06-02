@@ -228,7 +228,18 @@ module.exports = function(app, passport) {
 
   // Menu de atividade e partipação.
   router.get('/:id/atividade_e_participacao', app.isLoggedIn, function(req, res) {
-    res.render("atividade_e_participacao", { id : req.params['id'] });
+    res.render("atividade_e_participacao", {
+      id      : req.params['id'],
+      address : '/cif/capitulo/'
+    });
+  });
+
+  // Menu de ambiente.
+  router.get('/:id/ambiente', app.isLoggedIn, function(req, res) {
+    res.render("ambiente", {
+      id      : req.params['id'],
+      address : '/cif/capitulo/'
+    });
   });
 
   return router;

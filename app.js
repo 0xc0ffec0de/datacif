@@ -131,7 +131,7 @@ var login    = require('./routes/login')(app, passport);
 var usuario  = require('./routes/usuario')(app, passport);
 //var usuario  = require('./routes/estrutura')(app, passport);
 
-//app.use('/', base);
+app.use('/', login);
 app.use('/cid', cid);
 app.use('/paciente', paciente);
 app.use('/cif', cif);

@@ -2,7 +2,6 @@ module.exports = function(app, passport) {
   var express   = require('express');
   var router    = express.Router();
   var ObjectId  = require("mongolian").ObjectId;
-  var wait      = require('wait.for');
   var mappings  = require('./mappings');
 
   router.get('/itens/:cif', function(req, res) {
