@@ -116,7 +116,36 @@ module.exports = {
           case 2:
             return [ "d650", "d660", "d698", "d699" ];
         }
-
+      case 'd7':
+      switch (page) {
+        case 0:
+          return [ "d710", "d720", "d729" ];
+        case 1:
+          return [ "d730", "d740", "d750", "d760", "d770", "d779", "d789" ];
+        }
+      case 'd8':
+        switch (page) {
+          case 0:
+            return [ "d810", "d815", "d820", "d825", "d830", "d839" ];
+          case 1:
+            return [ "d840", "d845", "d850", "d855", "d859" ];
+          case 2:
+            return [ "d860", "d865", "d870", "d879", "d898", "d899" ];
+        }
+      case 'd9':
+        return [ "d910", "d920", "d930", "d940", "d950", "d998", "d999" ];
+      case 'e1':
+        return [ "e110", "e115", "e120", "e125", "e130", "e135", "e140", "e145", "e150", "e155", "e160", "e165", "e198", "e199"];
+      case 'e2':
+        return [ "e210", "e215", "e220", "e225", "e230", "e235", "e240", "e245", "e250", "e255", "e260", "e298", "e299" ];
+      case 'e3':
+        return [ "e310", "e315", "e320", "e325", "e330", "e335", "e340", "e345", "e350", "e355", "e360", "e398", "e399" ];
+      case 'e4':
+        return [ "e410", "e415", "e420", "e425", "e430", "e435", "e440", "e445", "e450", "e455", "e460", "e465", "e498", "e499"];
+      case 'e5':
+        return [
+          "e510", "e515", "e520", "e525", "e530", "e535", "e540", "e545", "e550", "e555",
+          "e560", "e565", "e570", "e575", "e580", "e585", "e590", "e595", "e598", "e599" ];
     }
     return [];
   },
@@ -235,15 +264,38 @@ module.exports = {
           ];
         case 'd7':
           return [
-            "Relações e interações interpessoais"
+            "Interações interpessoais gerais",
+            "Relacionamentos interpessoais particulares"
           ];
         case 'd8':
           return [
-            "Áreas principais da vida"
+            "Educação",
+            "Trabalho e emprego",
+            "Vida econômica"
           ];
         case 'd9':
           return [
             "Vida comunitária, social e cívica"
+          ];
+        case 'e1':
+          return [
+            "Produtos e tecnologia"
+          ];
+        case 'e2':
+          return [
+            "Ambiente natural e mudanças ambientais feitas pelo ser humano"
+          ];
+        case 'e3':
+          return [
+            "Apoio e relacionamentos"
+          ];
+        case 'e4':
+          return [
+            "Atitudes"
+          ];
+        case 'e5':
+          return [
+            "Serviços, sistemas e serviços"
           ];
       }
     }(chapter);

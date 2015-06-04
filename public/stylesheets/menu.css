@@ -24,6 +24,11 @@ a.center {
   margin-left: 100px;
 }
 
+.map {
+  width: 100%;
+  position: relative;
+}
+
 .domain {
   width: 100%;
   text-align: center;
@@ -43,7 +48,7 @@ a.center {
   border: solid 1px gray;
 }
 
-#s1, #s2, #s3, #s4, #s5, #s6, #s7 {
+#s1, #s2, #s3, #s4, #s5, #s6, #s7, #s8 {
   position: absolute;
   background-color: Transparent;
   cursor: crosshair;
@@ -53,182 +58,194 @@ a.center {
   border: solid 1px gray;
 }
 
-div#man > #b1 {
-  top: 80px;
+div#man > div#map > #b1 {
+  top: 100px;
   left: 133px;
   width: 10px;
 }
 
-div#man > #b2 {
-  top: 185px;
+div#man > div#map > #b2 {
+  top: 205px;
   left: 210px;
   width: 10px;
 }
 
-div#man > #b3 {
-  top: 115px;
+div#man > div#map > #b3 {
+  top: 135px;
   left: 133px;
   width: 10px;
 }
 
-div#man > #b4 {
-  top: 195px;
+div#man > div#map > #b4 {
+  top: 215px;
   left: 137px;
   width: 10px;
 }
 
-div#man > #b5 {
-  top: 300px;
+div#man > div#map > #b5 {
+  top: 320px;
   left: 127px;
   width: 10px;
 }
 
-div#man > #b6 {
-  top: 335px;
+div#man > div#map > #b6 {
+  top: 355px;
   left: 130px;
   width: 10px;
 }
 
-div#man > #b7 {
-  top: 440px;
+div#man > div#map > #b7 {
+  top: 460px;
   left: 173px;
   width: 10px;
 }
 
-div#man > #b8 {
-  top: 580px;
+div#man > div#map > #b8 {
+  top: 600px;
   left: 175px;
   width: 10px;
 }
 
-div#woman > #b1 {
-  top: 125px;
+div#woman > div#map > #b1 {
+  top: 145px;
   left: 76px;
   width: 10px;
 }
 
-div#woman > #b2 {
-  top: 225px;
+div#woman > div#map > #b2 {
+  top: 245px;
   left: 155px;
   width: 10px;
 }
 
-div#woman > #b3 {
-  top: 165px;
+div#woman > div#map > #b3 {
+  top: 185px;
   left: 78px;
   width: 10px;
 }
 
-div#woman > #b4 {
-  top: 235px;
+div#woman > div#map > #b4 {
+  top: 255px;
   left: 90px;
   width: 10px;
 }
 
-div#woman > #b5 {
-  top: 325px;
+div#woman > div#map > #b5 {
+  top: 345px;
   left: 78px;
   width: 10px;
 }
 
-div#woman > #b6 {
-  top: 355px;
+div#woman > div#map > #b6 {
+  top: 375px;
   left: 82px;
   width: 10px;
 }
 
-div#woman > #b7 {
-  top: 470px;
+div#woman > div#map > #b7 {
+  top: 490px;
   left: 143px;
   width: 10px;
 }
 
-div#woman > #b8 {
-  top: 580px;
+div#woman > div#map > #b8 {
+  top: 600px;
   left: 173px;
   width: 10px;
 }
 
-div#man > #s1 {
-  top: 80px;
+div#man > div#map > #s1 {
+  top: 100px;
   left: 133px;
   width: 10px;
 }
 
-div#man > #s2 {
-  top: 110px;
+div#man > div#map > #s2 {
+  top: 130px;
   left: 163px;
   width: 10px;
 }
 
-div#man > #s3 {
-  top: 130px;
+div#man > div#map > #s3 {
+  top: 150px;
   left: 130px;
   width: 10px;
 }
 
-div#man > #s4 {
-  top: 195px;
+div#man > div#map > #s4 {
+  top: 215px;
   left: 137px;
   width: 10px;
 }
 
-div#man > #s5 {
-  top: 300px;
+div#man > div#map > #s5 {
+  top: 320px;
   left: 127px;
   width: 10px;
 }
 
-div#man > #s6 {
-  top: 335px;
+div#man > div#map > #s6 {
+  top: 355px;
   left: 130px;
   width: 10px;
 }
 
-div#man > #s7 {
-  top: 470px;
+div#man > div#map > #s7 {
+  top: 490px;
   left: 170px;
   width: 10px;
 }
 
-div#woman > #s1 {
-  top: 124px;
+div#man > div#map > #s8 {
+  top: 620px;
+  left: 175px;
+  width: 10px;
+}
+
+div#woman > div#map > #s1 {
+  top: 144px;
   left: 77px;
   width: 10px;
 }
 
-div#woman > #s2 {
-  top: 150px;
+div#woman > div#map > #s2 {
+  top: 170px;
   left: 106px;
   width: 10px;
 }
 
-div#woman > #s3 {
-  top: 165px;
+div#woman > div#map > #s3 {
+  top: 185px;
   left: 78px;
   width: 10px;
 }
 
-div#woman > #s4 {
-  top: 235px;
+div#woman > div#map > #s4 {
+  top: 255px;
   left: 90px;
   width: 10px;
 }
 
-div#woman > #s5 {
-  top: 325px;
+div#woman > div#map > #s5 {
+  top: 345px;
   left: 78px;
   width: 10px;
 }
 
-div#woman > #s6 {
-  top: 355px;
+div#woman > div#map > #s6 {
+  top: 375px;
   left: 82px;
   width: 10px;
 }
 
-div#woman > #s7 {
-  top: 495px;
+div#woman > div#map > #s7 {
+  top: 515px;
   left: 153px;
+  width: 10px;
+}
+
+div#woman > div#map > #s8 {
+  top: 635px;
+  left: 183px;
   width: 10px;
 }

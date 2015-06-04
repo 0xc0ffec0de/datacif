@@ -187,7 +187,12 @@ addRadio = function($parent, cif, name, text, checked) {
   var $radio = $("<input type='radio' name='" + name + "' " + (checked ? "checked" : "") + ">");
   var $label = $("<label for='" + cif + "-" + name + "'>");
 
-  $label.text(text);
+  if (Array.isArray(text)) {
+    $label.text(text[0]);
+    $label.attr("title", text[1])
+  } else {
+    $label.text(text);
+  }
   //$radio.prop("checked", checked);
 
   $span.append($radio);
@@ -253,7 +258,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     $select.prop("disabled", "true");
   }
 
-  addRadio($radio1span, cif, cif + "-" + name + "-radio", "F", value === 0).change(function() {
+  addRadio($radio1span, cif, cif + "-" + name + "-radio", ["F", "Funcionalidade"], value === 0).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     // var pos = parseInt(name[name.length - 1]);
@@ -262,7 +267,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     saveCIF(cif, pos, 0);
   });
 
-  addRadio($radio2span, cif, cif + "-" + name + "-radio", "I", value > 0 && value < 8).change(function() {
+  addRadio($radio2span, cif, cif + "-" + name + "-radio", ["I", "Incapacidade"], value > 0 && value < 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", false);
@@ -270,7 +275,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     onSelectMenu.call($select[0], null);
   });
 
-  addRadio($radio3span, cif, cif + "-" + name + "-radio", "NE", value === 8).change(function() {
+  addRadio($radio3span, cif, cif + "-" + name + "-radio", ["NE", "Não especificado"], value === 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", true);
@@ -278,7 +283,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     saveCIF(cif, pos, 8);
   });
 
-  addRadio($radio4span, cif, cif + "-" + name + "-radio", "NA", value === 9).change(function() {
+  addRadio($radio4span, cif, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value === 9).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", true);
@@ -355,6 +360,94 @@ addQualifier = function($parent, cif, name, value) {
   $select.selectmenu({ select: onSelectQualifierOption, width: "50px", height: "28px" });
 };
 
+addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
+  var value = parseInt(value);
+  var $span = $("<span id='" + cif + "-span'>");
+  var $radio1span = $("<span>");
+  var $radio2span = $("<span>");
+  var $radio3span = $("<span>");
+  var $radio4span = $("<span>");
+  var $selectSpan = $("<span>");
+  var $select = $("<select id='" + cif + "-" + name + "'>");
+  var options = parOptions || [
+  	"1 : leve",
+  	"2 : moderado",
+  	"3 : grave",
+  	"4 : completo"
+  ];
+
+  $select.attr("name", cif + "-" + name);
+
+  for (var i = 0; i < options.length; ++i) {
+    var option;
+
+    if ((value - 1) === i) {
+      option = $("<option selected>" + options[i] + "</option>");
+    } else {
+      option = $("<option>" + options[i] + "</option>");
+    }
+
+    $select.append(option);
+  }
+
+  if (value === 8 || value === 9) {
+    $select.prop("disabled", "true");
+  }
+
+  addRadio($radio1span, cif, cif + "-" + name + "-radio", ["F", "Facilitador"], value === 0).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", false);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 0);
+  });
+
+  addRadio($radio2span, cif, cif + "-" + name + "-radio", ["O", "Obstáculo"], value > 0 && value < 8).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", false);
+    var $select = $select.parent().find('select');
+    onSelectMenu.call($select[0], null);
+  });
+
+  addRadio($radio3span, cif, cif + "-" + name + "-radio", ["NE", "Não especificado"], value === 8).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", true);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 8);
+  });
+
+  addRadio($radio4span, cif, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value === 9).change(function() {
+    var $parent = $(this).parent().parent().parent();
+    var $select = $parent.find("select");
+    $select.selectmenu("option", "disabled", true);
+    var pos = parseInt(name[name.length - 1]);
+    saveCIF(cif, pos, 9);
+  });
+
+  $radio1span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio1span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio2span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio2span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio3span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio3span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+  $radio4span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
+  $radio4span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
+
+  $selectSpan.append($select);
+  $selectSpan.addClass("fix-down");
+
+  $span.append($radio1span);
+  $span.append($radio2span);
+  $span.append($selectSpan);
+  $span.append($radio3span);
+  $span.append($radio4span);
+  $parent.append($span);
+
+  $select.selectmenu({ select: onSelectFunctionOption, width: width || "230px", height: "28px" });
+};
+
 // (*)createFunctionItem
 addBodyItem = function(node, cif, text, value) {
     var div = $("<div id='" + cif + "'>");
@@ -376,10 +469,11 @@ addBodyItem = function(node, cif, text, value) {
     headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
 
     // Descrição
-    tailText.text(text).addClass("ui-button-text");
+    tailText.text(text).addClass("ui-button-text").css({ 'white-space': 'nowrap',
+      'overflow': 'hidden', 'text-overflow': 'ellipsis' });
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '450px', height: '34px', 'word-break': 'normal' });
+    tailLabel.css({ width: '450px', height: '34px', 'text-align': 'left' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -411,13 +505,14 @@ addStructureItem = function(node, cif, text, values) {
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '30px', 'vertical-align': 'middle' });
+    headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
 
     // Descrição
-    tailText.text(text).addClass("ui-button-text");
+    tailText.text(text).addClass("ui-button-text").css({ 'white-space': 'nowrap',
+      'overflow': 'hidden', 'text-overflow': 'ellipsis' });
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '515px', height: '30px', 'word-break': 'normal' });
+    tailLabel.css({ width: '515px', height: '34px', 'text-align': 'left' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -451,14 +546,14 @@ addDevelopmentItem = function(node, cif, text, values) {
     headText.text(cif).addClass("ui-button-text");
     headLabel.append(headText);
     headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '30px', 'vertical-align': 'middle' });
+    headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
 
     // Descrição
-    tailText.text(text).addClass("ui-button-text");
+    tailText.text(text).addClass("ui-button-text").css({ 'white-space': 'nowrap',
+      'overflow': 'hidden', 'text-overflow': 'ellipsis' });
     tailLabel.append(tailText);
     tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '515px', height: '30px', 'white-space': 'nowrap',
-      'overflow': 'hidden', 'text-overflow': 'ellipsis', 'word-break': 'normal' });
+    tailLabel.css({ width: '515px', height: '34px', 'text-align': 'left' });
 
     desc.append(headLabel);
     desc.append(tailLabel);
@@ -469,6 +564,45 @@ addDevelopmentItem = function(node, cif, text, values) {
     addQualifier(div, cif, "selectmenu2", Array.isArray(values) ? values[1] : 0, options, "50px");
     addQualifier(div, cif, "selectmenu3", Array.isArray(values) ? values[2] : 0, options, "50px");
     addQualifier(div, cif, "selectmenu4", Array.isArray(values) ? values[3] : 0, options, "50px");
+    // div.append(span);
+    div.addClass("enclosed");
+
+    node.append(div);
+};
+
+//
+addEnvironmentItem = function(node, cif, text, value) {
+    var div = $("<div id='" + cif + "'>");
+    var desc = $("<span id='" + cif + "-radio'>");
+
+    var head = $("<input type='radio' id='" + cif + "-radio-head'>");
+    var headLabel = $("<label>");
+    var headText = $("<span>");
+
+    var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
+    var tailLabel = $("<label>");
+    var tailText = $("<span>");
+    var options = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+
+    // CIF
+    headText.text(cif).addClass("ui-button-text");
+    headLabel.append(headText);
+    headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
+    headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
+
+    // Descrição
+    tailText.text(text).addClass("ui-button-text").css({ 'white-space': 'nowrap',
+      'overflow': 'hidden', 'text-overflow': 'ellipsis' });
+    tailLabel.append(tailText);
+    tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
+    tailLabel.css({ width: '515px', height: '34px', 'text-align': 'left' });
+
+    desc.append(headLabel);
+    desc.append(tailLabel);
+    desc.addClass("buttonset");
+    div.append(desc);
+
+    addEnvironmentOptions(div, cif, "selectmenu1", Array.isArray(value) ? value[0] : 0);
     // div.append(span);
     div.addClass("enclosed");
 
@@ -569,6 +703,9 @@ populateCIF = function(anchor, page, data, overwrite) {
             break;
           case 'd':
             addDevelopmentItem(anchor, item.cif, item.description, map[item.cif]);
+            break;
+          case 'e':
+            addEnvironmentItem(anchor, item.cif, item.description, map[item.cif]);
         }
       });
     } else {
@@ -582,6 +719,9 @@ populateCIF = function(anchor, page, data, overwrite) {
           break;
         case 'd':
           addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
+          break;
+        case 'e':
+          addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
       }
     }
   });
