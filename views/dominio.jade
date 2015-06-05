@@ -2,11 +2,14 @@ extends layout
 
 block content
   div.panel
-    h1 Selecione o domínio desejado
+    h3 Selecione o domínio desejado
 
     div.left-container
       h2.domain Estrutura e função
-      a.center(href="/paciente/#{id}/funcao_e_estrutura"): img(src="/images/humans_small.png", alt="Estrutura e função", width="300")
+      if sex == 'm'
+        a.center(href="/paciente/#{id}/funcao_e_estrutura"): img(src="/images/man_small.png", alt="Estrutura e função", height="300")
+      else
+        a.center(href="/paciente/#{id}/funcao_e_estrutura"): img(src="/images/woman_small.png", alt="Estrutura e função", height="300")
 
     div.middle-container
       h2.domain Atividade e participação

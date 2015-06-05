@@ -85,7 +85,7 @@ module.exports = function(app, passport) {
 
   router.post('/capitulo/:chapter/pagina/:page', app.isLoggedIn, function(req, res) {
     var chapter = req.params['chapter'];
-    var page = req.params['page'];
+    var page = req.params['page'] - 1;
     var id = req.body.id;
     var db = req.db2;
     var itens = db.collection('itens');

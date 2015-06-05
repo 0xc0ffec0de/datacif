@@ -191,7 +191,28 @@ module.exports = function(app, passport) {
 
   // Menu inicial.
   router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
-    res.render("dominio", { id : req.params['id'] });
+    var db = req.db2;
+    var pacientes = db.collection('pacientes');
+    var id = req.params['id'];
+
+    pacientes.aggregate([
+      { $match : { _id : mongodb.ObjectId(id) } },
+      { $project : { _id : 0, sexo : 1 } },
+    ], function(err, result) {
+      console.log("result = ", result);
+      if (err) {
+        res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+      } else if (result) {
+        var sexo = result.pop().sexo;
+        // res.render("dominio", { id : req.params['id'] });
+        res.render("dominio",
+          {
+            id      : req.params['id'],
+            sex     : sexo ? sexo : 'm'
+          });
+        }
+      }
+    );
   });
 
   // Menu de função e estrutura.
@@ -208,18 +229,12 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
+        var sexo = result.pop().sexo;
         res.render("funcao_e_estrutura",
           {
             id      : req.params['id'],
             address : '/cif/capitulo/',
-            sex     : result.pop().sexo
-          });
-      } else {
-        res.render("funcao_e_estrutura",
-          {
-            id      : req.params['id'],
-            address : '/cif/capitulo/',
-            sex     : 'm'
+            sex     : sexo ? sexo : 'm'
           });
         }
       }

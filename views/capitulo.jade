@@ -15,7 +15,6 @@ block content
         var titles = !{titles};
         var page = !{page};
         var data = JSON.parse($("input#data").val());
-        console.log("page =", page);
 
         createChapterPage($("div#accordion"), chapter, titles, page, data);
         $(document).tooltip();
