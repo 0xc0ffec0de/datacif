@@ -9,7 +9,8 @@ block content
         th(width="170px") Data de Nascimento
         th(width="150px") Sexo
         th(width="120px") CPF
-        th CIF
+        th(width="60px") CIF
+        th(width="60px") Dados
 
       each paciente, i in pacientes
         tr
@@ -20,7 +21,8 @@ block content
           td= paciente.cpf
           td
             button.inline(onclick="window.location='/paciente/#{paciente._id}/dominio'; return false;") CIF
-
+          td
+            button.inline(onclick="window.location='/paciente/#{paciente._id}/data'; return false;") ⇩
 
   form#formNovoPaciente(name="novoPaciente", method="get", action="/paciente/novo")
     button#novo(type="submit") Novo paciente

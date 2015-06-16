@@ -1,17 +1,51 @@
 // Funções comuns
 _preloadedPage = {};
 
-send = function(button) {
+isTransparentUnderMouse = function(canvas, e) {
+  var left = 0, top = 0;
+
+  if (canvas.offsetParent) {
+      var element = canvas;
+      do {
+          left += element.offsetLeft;
+          top += element.offsetTop;
+      } while (element = element.offsetParent);
+  }
+  var x = e.pageX - left;
+  var y = e.pageY - top;
+  var imgdata = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
+
+  if (imgdata[0] == 0 && imgdata[1] == 0 && imgdata[2] == 0 && imgdata[3] == 0) {
+    return true;
+  }
+
+  return false;
+};
+
+loadCanvasImage = function(canvas, url) {
+  var context = canvas[0].getContext('2d');
+  var imageObj = new Image();
+  imageObj.onload = function() {
+    context.drawImage(this, 0, 0);
+  };
+  imageObj.src = url;
+};
+
+sendAction = function(button, id) {
   var $button = $(button);
   var $form = $("form");
   var action = $form.attr("action");
   var pos = action.lastIndexOf('/') + 1;
-  var id = $button.attr("id");
+
+  if (id == null) {
+    id = $button.attr("id");
+  }
 
   $form.attr("action", action.substring(0, pos) + id);
   $(document).tooltip("disable");
+  document.funcao.submit();
 
-  return true;
+  return false;
 };
 
 inputRegistro = function(divId, label, value) {

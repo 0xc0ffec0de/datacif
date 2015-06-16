@@ -19,6 +19,8 @@ div.secondColumn {
 div.controlPanel {
   display: block;
   float: left;
+  left: 50px;
+  width: 100%;
 }
 
 input[type=text] {
