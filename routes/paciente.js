@@ -276,9 +276,11 @@ module.exports = function(app, passport) {
       data += registro.nome + separator + registro.valor + separator;
     });
 
-    pacient.morbidades.forEach(function(morbidade) {
-      data += morbidade + separator
-    });
+    if (pacient.morbidades.length != 0) {
+      pacient.morbidades.forEach(function(morbidade) {
+        data += morbidade + separator
+      });
+    }
     data += pacient.anamnese + separator;
 
     for (var key in pacient.cif) {
