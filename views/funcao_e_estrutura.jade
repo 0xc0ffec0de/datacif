@@ -53,12 +53,12 @@ block content
     if sex == 'm'
       div#man.left-container
         h1.topic Funções do corpo
-        div#map(width="300px", height="622px")
-          canvas(width="300px", height="622px", title="Funções da pele e estruturas relacionadas")
+        div#map(width="416px", height="622px")
+          canvas(width="416px", height="622px", title="Funções da pele e estruturas relacionadas")
           script.
             $(function() {
               var $canvas = $("div#man.left-container > div > canvas");
-              setCanvasObject($canvas, '/images/man_small.png', 'b8');
+              setCanvasObject($canvas, '/images/funcoes_homem.png', 'b8');
             });
 
           input#b1(type='submit', name='chapters',
@@ -92,12 +92,12 @@ block content
     else if sex == 'f'
       div#woman.left-container
         h1.topic Funções do corpo
-        div#map(width="300px", height="622px")
-          canvas(width="300px", height="622px", title="Funções da pele e estruturas relacionadas")
+        div#map(width="400px", height="618px")
+          canvas(width="400px", height="618px", title="Funções da pele e estruturas relacionadas")
           script.
             $(function() {
               var $canvas = $("div#woman.left-container > div > canvas");
-              setCanvasObject($canvas, '/images/woman_small.png', 'b8');
+              setCanvasObject($canvas, '/images/funcoes_mulher.png', 'b8');
             });
 
           input#b1(type='submit', name='chapters',
@@ -131,8 +131,8 @@ block content
     if sex == 'm'
       div#man.middle-container
         h1.topic Estruturas do corpo
-        div#map(width="300px", height="622px")
-          canvas(width="300px", height="622px", title="Pele e estruturas relacionadas")
+        div#map(width="416px", height="622px")
+          canvas(width="416px", height="622px", title="Pele e estruturas relacionadas")
           script.
             $(function() {
               var $canvas = $("div#man.middle-container > div > canvas");
@@ -167,15 +167,11 @@ block content
             onclick='return sendAction(this);', value='',
             title='Estruturas relacionadas ao movimento')
 
-          input#s8(type='submit', name='chapters',
-            onclick='return sendAction(this);', value='',
-            title='Pele e estruturas relacionadas')
-
     else if sex == 'f'
       div#woman.middle-container
         h1.topic Estruturas do corpo
-        div#map(width="300px", height="622px")
-          canvas(width="300px", height="622px", title="Pele e estruturas relacionadas")
+        div#map(width="400px", height="622px")
+          canvas(width="400px", height="622px", title="Pele e estruturas relacionadas")
           script.
             $(function() {
               var $canvas = $("div#woman.middle-container > div > canvas");

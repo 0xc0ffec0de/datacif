@@ -257,6 +257,34 @@ module.exports = function(app, passport) {
     });
   });
 
+  fillZeroData = function(db, pacient) {
+    var itens = db.collection('itens');
+    var id = req.params['id'];
+
+    pacientes.aggregate([
+      { $match : { _id : mongodb.ObjectId(id) } }
+    ], function(err, result) {
+      if (err) {
+        res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+      } else if (result) {
+        result.forEach(function(pacient) {
+          pacient.cif = {};
+
+          dados.aggregate([
+            { $match : { p : String(pacient._id) } },
+            { $sort  : { c : 1 } }
+          ], function(err, result) {
+            if (err) {
+              res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+            } else {
+              result.forEach(function(datum, index) {});
+            }
+          }
+        );
+      })
+    }})
+  };
+
   serializePacientData = function(pacient, separator) {
     console.log("pacient =", pacient);
 
@@ -289,7 +317,7 @@ module.exports = function(app, passport) {
       data += key;
 
       if (key[0] == 'b') {
-        data += '.' + values.pop();
+        data += '.' + values.pop() + separator;
       }
       else if (key[0] == 's')
       {

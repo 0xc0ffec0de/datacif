@@ -283,10 +283,10 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   var $selectSpan = $("<span>");
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = parOptions || [
-  	"1 : disfunção leve",
-  	"2 : disfunção moderada",
-  	"3 : disfunção severa",
-  	"4 : disfunção total"
+    "1 : disfunção leve",
+    "2 : disfunção moderada",
+    "3 : disfunção severa",
+    "4 : disfunção total"
   ];
 
   $select.attr("name", cif + "-" + name);
@@ -384,7 +384,7 @@ addQualifier = function($parent, cif, name, title, value) {
   var $span = $("<span id='" + cif + "-span'>");
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = [
-  	"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
   ];
 
   $select.attr("name", cif + "-" + name);
@@ -424,10 +424,10 @@ addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
   var $selectSpan = $("<span>");
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = parOptions || [
-  	"1 : leve",
-  	"2 : moderado",
-  	"3 : grave",
-  	"4 : completo"
+    "1 : leve",
+    "2 : moderado",
+    "3 : grave",
+    "4 : completo"
   ];
 
   $select.attr("name", cif + "-" + name);
@@ -757,22 +757,42 @@ populateCIF = function(anchor, page, data, overwrite) {
       return;
 
     // console.log("cif = ", group.cif, "desc = ", group.description);
+    switch (group.cif[0]) {
+      case 'b':
+        addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+        break;
+      case 's':
+        addStructureItem(anchor, group.cif, group.description, map[group.cif]);
+        break;
+      case 'd':
+        addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
+        break;
+      case 'e':
+        addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
+    }
+
     if (group.items.length > 0) {
-      addTopic(anchor, group.description, group.cif);
+      var $div = $("<div/>");
+
+      $div.addClass("subgroup");
+      anchor.append($div);
+
+//      addTopic(anchor, group.description, group.cif);
+      console.log("anchor = ", anchor);
       group.items.forEach(function(item) {
-        // console.log("item = " + map[item.cif]);
+        console.log("item = " + map[item.cif]);
         switch (item.cif[0]) {
           case 'b':
-            addBodyItem(anchor, item.cif, item.description, map[item.cif]);
+            addBodyItem($div, item.cif, item.description, map[item.cif]);
             break;
           case 's':
-            addStructureItem(anchor, item.cif, item.description, map[item.cif]);
+            addStructureItem($div, item.cif, item.description, map[item.cif]);
             break;
           case 'd':
-            addDevelopmentItem(anchor, item.cif, item.description, map[item.cif]);
+            addDevelopmentItem($div, item.cif, item.description, map[item.cif]);
             break;
           case 'e':
-            addEnvironmentItem(anchor, item.cif, item.description, map[item.cif]);
+            addEnvironmentItem(div, item.cif, item.description, map[item.cif]);
         }
       });
     } else {
