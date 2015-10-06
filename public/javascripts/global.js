@@ -780,11 +780,14 @@ populateCIF = function(anchor, page, data, overwrite) {
     if (group.items.length > 0) {
 
       group.items.forEach(function(item) {
+        if (item == null)
+          return;
+
         // Add table row.
         var $tr = $('<tr>');
         $table.append($tr);
 
-        console.log("item = " + map[item.cif]);
+        console.log("item = " + item.cif);
         switch (item.cif[0]) {
           case 'b':
             addBodyItem($tr, item.cif, item.description, map[item.cif]);
@@ -802,24 +805,28 @@ populateCIF = function(anchor, page, data, overwrite) {
         // 4rd level.
         if (item.items && item.items.length > 0) {
 
-          group.items.forEach(function(item) {
+          item.items.forEach(function(subitem) {
+            if (subitem == null)
+              return;
+
             // Add table row.
             var $tr = $('<tr>');
             $table.append($tr);
 
-            console.log("item = " + map[item.cif]);
-            switch (item.cif[0]) {
+            console.log("subitem = ", subitem);
+//            console.log("subitem = " + map[subitem.cif]);
+            switch (subitem.cif[0]) {
               case 'b':
-                addBodyItem($tr, item.cif, item.description, map[item.cif]);
+                addBodyItem($tr, subitem.cif, subitem.description, map[subitem.cif]);
                 break;
               case 's':
-                addStructureItem($tr, item.cif, item.description, map[item.cif]);
+                addStructureItem($tr, subitem.cif, subitem.description, map[subitem.cif]);
                 break;
               case 'd':
-                addDevelopmentItem($tr, item.cif, item.description, map[item.cif]);
+                addDevelopmentItem($tr, subitem.cif, subitem.description, map[subitem.cif]);
                 break;
               case 'e':
-                addEnvironmentItem($tr, item.cif, item.description, map[item.cif]);
+                addEnvironmentItem($tr, subitem.cif, subitem.description, map[subitem.cif]);
             }
           });
 
