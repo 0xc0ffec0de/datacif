@@ -515,7 +515,7 @@ addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
 };
 
 // (*)createFunctionItem
-addBodyItem = function($parent, cif, text, value) {
+addBodyItem = function($parent, cif, text, value, shrunk) {
   // CIF
   var $cif = $("<td id='" + cif + "-code'>");
   var $cifText = $("<span>");
@@ -542,6 +542,24 @@ addBodyItem = function($parent, cif, text, value) {
 
   // Botões
   addFunctionOptions($parent, cif, "selectmenu1", Array.isArray(value) ? value[0] : 0);
+
+  // Botão de expandir/retrair
+  if (shrunk) {
+    var $shrinkSpace = $('<td>');
+    var $shrinkButton = $('<button>expandir</button>');
+
+    $shrinkButton.button({ icons: { primary: 'ui-icon-arrowthick-1-s' }, text: false });
+    $shrinkButton.click(function(event) {
+      event.preventDefault();
+      $('tbody[name=' + cif + '-children]').toggleClass('toggleVisible');
+      $(".ui-button-icon-primary", this).toggleClass("ui-icon-arrowthick-1-s ui-icon-arrowthickstop-1-n");
+      console.log("lol." + cif);
+    });
+
+    $shrinkSpace.append($shrinkButton);
+    $shrinkSpace.css({ width: '10px', 'background-color': 'white' });
+    $parent.append($shrinkSpace);
+  }
 };
 
 //
@@ -757,14 +775,17 @@ populateCIF = function(anchor, page, data, overwrite) {
     if (group == null)
       return;
 
-    // Add table row.
+    // Add table body and table row.
+    var shrunk = (group.items && group.items.length > 0);
+    var $tbody = $('<tbody>');
     var $tr = $('<tr>');
-    $table.append($tr);
 
-    // console.log("cif = ", group.cif, "desc = ", group.description);
+    $tbody.append($tr);
+    $table.append($tbody);
+
     switch (group.cif[0]) {
       case 'b':
-        addBodyItem($tr, group.cif, group.description, map[group.cif]);
+        addBodyItem($tr, group.cif, group.description, map[group.cif], shrunk);
         break;
       case 's':
         addStructureItem($tr, group.cif, group.description, map[group.cif]);
@@ -783,14 +804,20 @@ populateCIF = function(anchor, page, data, overwrite) {
         if (item == null)
           return;
 
-        // Add table row.
+        // Add table body and table row.
+        var shrunk = (item.items && item.items.length > 0);
         var $tr = $('<tr>');
-        $table.append($tr);
+        var $tbody = $('<tbody>');
+
+        $tbody.attr('name', group.cif + '-children');
+        $tbody.addClass('toggleVisible');
+        $tbody.append($tr);
+        $table.append($tbody);
 
         console.log("item = " + item.cif);
         switch (item.cif[0]) {
           case 'b':
-            addBodyItem($tr, item.cif, item.description, map[item.cif]);
+            addBodyItem($tr, item.cif, item.description, map[item.cif], shrunk);
             break;
           case 's':
             addStructureItem($tr, item.cif, item.description, map[item.cif]);
@@ -805,16 +832,22 @@ populateCIF = function(anchor, page, data, overwrite) {
         // 4rd level.
         if (item.items && item.items.length > 0) {
 
+          // Group elements in new tbody.
+          var $tbody = $('<tbody>');
+
+          $tbody.attr('name', item.cif + '-children');
+          $tbody.addClass('toggleVisible');
+          $table.append($tbody);
+
           item.items.forEach(function(subitem) {
             if (subitem == null)
               return;
 
             // Add table row.
             var $tr = $('<tr>');
-            $table.append($tr);
+            $tbody.append($tr);
 
-            console.log("subitem = ", subitem);
-//            console.log("subitem = " + map[subitem.cif]);
+            console.log("subitem = ", subitem.cif);
             switch (subitem.cif[0]) {
               case 'b':
                 addBodyItem($tr, subitem.cif, subitem.description, map[subitem.cif]);
@@ -832,23 +865,8 @@ populateCIF = function(anchor, page, data, overwrite) {
 
         }
       });
+
     }
-//      });
-//    } else {
-//      switch (group.cif[0]) {
-//        case 'b':
-//          addBodyItem(anchor, group.cif, group.description, map[group.cif]);
-//          break;
-//        case 's':
-//          addStructureItem(anchor, group.cif, group.description, map[group.cif]);
-//          break;
-//        case 'd':
-//          addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
-//          break;
-//        case 'e':
-//          addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
-//      }
-//    }
   });
 };
 

@@ -51,3 +51,7 @@ td,th {
 .subgroup {
   padding-left: 15px;
 }
+
+.toggleVisible {
+  display: none;
+}
