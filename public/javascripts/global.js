@@ -211,11 +211,16 @@ addTopic = function($node, text, cif, width) {
   $node.append($div);
 };
 
-addRadio = function($parent, cif, name, text, checked, value) {
+addRadio = function($parent, cif, id, name, text, checked, value) {
   var value = parseInt(value);
-  var $span = $("<span>");
-  var $radio = $("<input type='radio' name='" + name + "' " + (checked ? "checked" : "") + ">");
-  var $label = $("<label for='" + cif + "-" + name + "'>");
+
+  var $radio = $("<input " + (checked ? "checked" : "") + ">");
+  $radio.attr('type', 'radio');
+  $radio.attr('name', name);
+  $radio.attr('id', name + '-' + id);
+
+  var $label = $("<label>");
+  $label.attr('for', name + '-' + id);
 
   if (Array.isArray(text)) {
     $label.text(text[0]);
@@ -228,12 +233,8 @@ addRadio = function($parent, cif, name, text, checked, value) {
     $radio.val(value);
   }
 
-  $span.append($radio);
-  $span.append($label);
-  $span.addClass("fix-radio-down");
-
-  $parent.append($span);
-
+  $parent.append($radio);
+  $parent.append($label);
   return $radio;
 }
 
@@ -275,12 +276,18 @@ onSelectEnvironmentOption = function(e, ui) {
 
 addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   var value = parseInt(value);
-  var $span = $("<span id='" + cif + "-span'>");
-  var $radio1span = $("<span>");
-  var $radio2span = $("<span>");
-  var $radio3span = $("<span>");
-  var $radio4span = $("<span>");
-  var $selectSpan = $("<span>");
+  var $td = $("<td id='" + cif + "-span'>");
+  var $div = $("<div>");
+  var $leftSpan = $("<span>");
+
+  $leftSpan.css({ overflow: 'hidden' });
+  $leftSpan.attr('id', cif + '-radio');
+
+  var $rightSpan = $("<span>");
+
+  $rightSpan.css({ overflow: 'hidden' });
+  $rightSpan.attr('id', cif + '-radio');
+
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = parOptions || [
     "1 : disfunção leve",
@@ -307,58 +314,56 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     $select.prop("disabled", "true");
   }
 
-  addRadio($radio1span, cif, cif + "-" + name + "-radio", ["F", "Funcionalidade"], value === 0).change(function() {
+  var $f = addRadio($leftSpan, cif, 1, cif + "-" + name + "-radio", ["F", "Funcionalidade"], value === 0).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
     saveCIF(cif, pos, 0);
   });
+  $f.parent().find('label').addClass('fix-radio-left');
 
-  addRadio($radio2span, cif, cif + "-" + name + "-radio", ["I", "Incapacidade"], value > 0 && value < 8).change(function() {
+  var $i = addRadio($rightSpan, cif, 2, cif + "-" + name + "-radio", ["I", "Incapacidade"], value > 0 && value < 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", false);
     // var $select = $select.parent().find('select');
     onSelectFunctionOption.call($select[0], null);
   });
+  $i.parent().find('label').addClass('fix-radio');
 
-  addRadio($radio3span, cif, cif + "-" + name + "-radio", ["NE", "Não especificado"], value === 8).change(function() {
+  var $ne = addRadio($rightSpan, cif, 3, cif + "-" + name + "-radio", ["NE", "Não especificado"], value === 8).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
     saveCIF(cif, pos, 8);
   });
+  $ne.parent().find('label').addClass('fix-radio');
 
-  addRadio($radio4span, cif, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value === 9).change(function() {
+  var $na = addRadio($rightSpan, cif, 4, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value === 9).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
     saveCIF(cif, pos, 9);
   });
+  $na.parent().find('label').addClass('fix-radio');
 
-  $radio1span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $radio1span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
-  $radio2span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $radio2span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
-  $radio3span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $radio3span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
-  $radio4span.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-all");
-  $radio4span.css({ width: '55px', height: '34px', 'vertical-align': 'middle' });
-
-  $selectSpan.append($select);
-  $selectSpan.addClass("fix-down");
-
-  $span.append($radio1span);
-  $span.append($selectSpan);
-  $span.append($radio2span);
-  $span.append($radio3span);
-  $span.append($radio4span);
-  $parent.append($span);
+  $td.append($div);
+  $div.append($leftSpan);
+  $div.append($select);
+  $div.append($rightSpan);
+  $div.css({ width: '412px', 'background-color': 'white', overflow: 'hidden', height: '38px',
+            'text-align': 'left' });
+  $div.buttonset();
+  $td.css({ width: '412px', 'background-color': 'white' });
+  $td.append($div);
 
   $select.selectmenu({ select: onSelectFunctionOption, width: width || "230px", height: "28px" });
+  $select.parent().children('span').addClass('fix-selector');
+
+  $parent.append($td);
 };
 
 // Se usuário selecionar opção em funcionalidade.
@@ -510,42 +515,33 @@ addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
 };
 
 // (*)createFunctionItem
-addBodyItem = function(node, cif, text, value) {
-    var div = $("<div id='" + cif + "'>");
-    var desc = $("<span id='" + cif + "-radio'>");
+addBodyItem = function($parent, cif, text, value) {
+  // CIF
+  var $cif = $("<td id='" + cif + "-code'>");
+  var $cifText = $("<span>");
 
-    var head = $("<input type='radio' id='" + cif + "-radio-head'>");
-    var headLabel = $("<label>");
-    var headText = $("<span>");
+  $cifText.text(cif);
+  $cifText.addClass("ui-button-text");
+  $cif.append($cifText);
+  $cif.attr("name", "cif"); // new
+  $cif.addClass("ui-widget ui-state-default ui-button-text-only ui-corner-left");
+  $cif.css({ width: '110px', height: '38px', overflow: 'hidden' });
+  $parent.append($cif);
 
-    var tail = $("<input type='radio' id='" + cif + "-radio-desc'>");
-    var tailLabel = $("<label>");
-    var tailText = $("<span>");
+  // Descrição
+  var $desc = $("<td id='" + cif + "-description'>");
+  var $descText = $("<span>");
+  $descText.text(text);
+  $descText.css({ 'text-overflow': 'ellipsis', 'white-space': 'nowrap' });
+  $descText.addClass("ui-button-text");
+  $desc.append($descText);
+  $desc.attr("title", text);
+  $desc.addClass("ui-widget ui-state-default ui-button-text-only ui-corner-right");
+  $desc.css({ overflow: 'hidden', height: '38px', 'text-align': 'left' });
+  $parent.append($desc);
 
-    // CIF
-    headText.attr("name", "cif"); // new
-    headText.text(cif).addClass("ui-button-text");
-    headLabel.append(headText);
-    headLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left");
-    headLabel.css({ width: '110px', height: '34px', 'vertical-align': 'middle' });
-
-    // Descrição
-    tailText.text(text).addClass("ui-button-text").css({ 'white-space': 'nowrap',
-      'overflow': 'hidden', 'text-overflow': 'ellipsis' });
-    tailText.attr("title", text);
-    tailLabel.append(tailText);
-    tailLabel.addClass("ui-button ui-widget ui-state-default ui-button-text-only ui-corner-right");
-    tailLabel.css({ width: '450px', height: '34px', 'text-align': 'left' });
-
-    desc.append(headLabel);
-    desc.append(tailLabel);
-    desc.addClass("buttonset");
-
-    div.append(desc);
-    addFunctionOptions(div, cif, "selectmenu1", Array.isArray(value) ? value[0] : 0);
-    div.addClass("enclosed");
-
-    node.append(div);
+  // Botões
+  addFunctionOptions($parent, cif, "selectmenu1", Array.isArray(value) ? value[0] : 0);
 };
 
 //
@@ -751,65 +747,101 @@ populateCIF = function(anchor, page, data, overwrite) {
     });
   }
 
+  // Add table elements.
+  var $table = $('<table>');
+  $table.css({ border: '0px', width: '100%' });
+  anchor.append($table);
+
   // console.log("page =", page);
   page.forEach(function(group) {
     if (group == null)
       return;
 
+    // Add table row.
+    var $tr = $('<tr>');
+    $table.append($tr);
+
     // console.log("cif = ", group.cif, "desc = ", group.description);
     switch (group.cif[0]) {
       case 'b':
-        addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+        addBodyItem($tr, group.cif, group.description, map[group.cif]);
         break;
       case 's':
-        addStructureItem(anchor, group.cif, group.description, map[group.cif]);
+        addStructureItem($tr, group.cif, group.description, map[group.cif]);
         break;
       case 'd':
-        addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
+        addDevelopmentItem($tr, group.cif, group.description, map[group.cif]);
         break;
       case 'e':
-        addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
+        addEnvironmentItem($tr, group.cif, group.description, map[group.cif]);
     }
 
+    // 3rd level.
     if (group.items.length > 0) {
-      var $div = $("<div/>");
 
-      $div.addClass("subgroup");
-      anchor.append($div);
-
-//      addTopic(anchor, group.description, group.cif);
-      console.log("anchor = ", anchor);
       group.items.forEach(function(item) {
+        // Add table row.
+        var $tr = $('<tr>');
+        $table.append($tr);
+
         console.log("item = " + map[item.cif]);
         switch (item.cif[0]) {
           case 'b':
-            addBodyItem($div, item.cif, item.description, map[item.cif]);
+            addBodyItem($tr, item.cif, item.description, map[item.cif]);
             break;
           case 's':
-            addStructureItem($div, item.cif, item.description, map[item.cif]);
+            addStructureItem($tr, item.cif, item.description, map[item.cif]);
             break;
           case 'd':
-            addDevelopmentItem($div, item.cif, item.description, map[item.cif]);
+            addDevelopmentItem($tr, item.cif, item.description, map[item.cif]);
             break;
           case 'e':
-            addEnvironmentItem(div, item.cif, item.description, map[item.cif]);
+            addEnvironmentItem($tr, item.cif, item.description, map[item.cif]);
+        }
+
+        // 4rd level.
+        if (item.items && item.items.length > 0) {
+
+          group.items.forEach(function(item) {
+            // Add table row.
+            var $tr = $('<tr>');
+            $table.append($tr);
+
+            console.log("item = " + map[item.cif]);
+            switch (item.cif[0]) {
+              case 'b':
+                addBodyItem($tr, item.cif, item.description, map[item.cif]);
+                break;
+              case 's':
+                addStructureItem($tr, item.cif, item.description, map[item.cif]);
+                break;
+              case 'd':
+                addDevelopmentItem($tr, item.cif, item.description, map[item.cif]);
+                break;
+              case 'e':
+                addEnvironmentItem($tr, item.cif, item.description, map[item.cif]);
+            }
+          });
+
         }
       });
-    } else {
-      switch (group.cif[0]) {
-        case 'b':
-          addBodyItem(anchor, group.cif, group.description, map[group.cif]);
-          break;
-        case 's':
-          addStructureItem(anchor, group.cif, group.description, map[group.cif]);
-          break;
-        case 'd':
-          addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
-          break;
-        case 'e':
-          addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
-      }
     }
+//      });
+//    } else {
+//      switch (group.cif[0]) {
+//        case 'b':
+//          addBodyItem(anchor, group.cif, group.description, map[group.cif]);
+//          break;
+//        case 's':
+//          addStructureItem(anchor, group.cif, group.description, map[group.cif]);
+//          break;
+//        case 'd':
+//          addDevelopmentItem(anchor, group.cif, group.description, map[group.cif]);
+//          break;
+//        case 'e':
+//          addEnvironmentItem(anchor, group.cif, group.description, map[group.cif]);
+//      }
+//    }
   });
 };
 
