@@ -515,10 +515,11 @@ addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
 };
 
 // (*)createFunctionItem
-addBodyItem = function($parent, cif, text, value, shrunk) {
+addBodyItem = function($parent, cif, text, info, value, shrunk) {
   // CIF
   var $cif = $("<td id='" + cif + "-code'>");
   var $cifText = $("<span>");
+  var info = info || text;
 
   $cifText.text(cif);
   $cifText.addClass("ui-button-text");
@@ -535,7 +536,7 @@ addBodyItem = function($parent, cif, text, value, shrunk) {
   $descText.css({ 'text-overflow': 'ellipsis', 'white-space': 'nowrap' });
   $descText.addClass("ui-button-text");
   $desc.append($descText);
-  $desc.attr("title", text);
+  $desc.attr("title", info);
   $desc.addClass("ui-widget ui-state-default ui-button-text-only ui-corner-right");
   $desc.css({ overflow: 'hidden', height: '38px', 'text-align': 'left' });
   $parent.append($desc);
@@ -785,7 +786,7 @@ populateCIF = function(anchor, page, data, overwrite) {
 
     switch (group.cif[0]) {
       case 'b':
-        addBodyItem($tr, group.cif, group.description, map[group.cif], shrunk);
+        addBodyItem($tr, group.cif, group.description, group.info, map[group.cif], shrunk);
         break;
       case 's':
         addStructureItem($tr, group.cif, group.description, map[group.cif]);
@@ -817,7 +818,7 @@ populateCIF = function(anchor, page, data, overwrite) {
         console.log("item = " + item.cif);
         switch (item.cif[0]) {
           case 'b':
-            addBodyItem($tr, item.cif, item.description, map[item.cif], shrunk);
+            addBodyItem($tr, item.cif, item.description, item.info, map[item.cif], shrunk);
             break;
           case 's':
             addStructureItem($tr, item.cif, item.description, map[item.cif]);
