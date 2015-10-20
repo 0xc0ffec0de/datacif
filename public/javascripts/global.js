@@ -1,5 +1,12 @@
 // Funções comuns
-_preloadedPage = {};
+var _preloadedPage = {};
+var _WIDTH;
+var _HEIGHT;
+
+$(function() {
+  _WIDTH = $("body").width();
+  _HEIGHT = $("body").height();
+});
 
 isTransparentUnderMouse = function(canvas, e) {
   var left = 0, top = 0;
@@ -290,10 +297,10 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
 
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = parOptions || [
-    "1 : disfunção leve",
-    "2 : disfunção moderada",
-    "3 : disfunção severa",
-    "4 : disfunção total"
+    "1 : disfunção leve, 5%-24%",
+    "2 : disfunção moderada, 25%-49%",
+    "3 : disfunção severa, 50%-95%",
+    "4 : disfunção total, 96%-100%"
   ];
 
   $select.attr("name", cif + "-" + name);
