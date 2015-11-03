@@ -333,7 +333,7 @@ module.exports = function(app, passport) {
       {
         data += '.';
 
-        values.foreach(function(value) {
+        values.forEach(function(value) {
           data += value;
         });
 
