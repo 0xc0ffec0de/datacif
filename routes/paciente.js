@@ -333,7 +333,8 @@ module.exports = function(app, passport) {
       {
         data += '.';
 
-        values.foreach(function(value) {
+        // HERE
+        values.forEach(function(value) {
           data += value;
         });
 
@@ -370,26 +371,46 @@ module.exports = function(app, passport) {
           pacient.cif = {};
 
           dados.aggregate([
-            { $match : { p : String(pacient._id) } },
-            { $sort  : { c : 1 } }
-          ], function(err, result) {
+            { $match : { p : null } },
+            { $sort  : { c : 1 } },
+          ], function(err, generic) {
             if (err) {
-              res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+              console.log('Erro ao ler dados de paciente');
+              res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente default') });
             } else {
-              result.forEach(function(datum, index) {
+              generic.forEach(function(datum, index) {
                 pacient.cif[datum.c] = datum.v;
-                if (index == result.length - 1) {
-                  var csvData = serializePacientData(pacient);
-                  res.set({
-                    'Content-Disposition': 'attachment; filename=sujeito.csv',
-                    'Content-type': 'text/csv'
+
+                // Terminado?
+                if (index == generic.length - 1) {
+                  dados.aggregate([
+                    { $match : { p : String(pacient._id) } },
+                    { $sort  : { c : 1 } }
+                  ], function(err, result) {
+                    if (err) {
+                      res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+                    } else {
+                      result.forEach(function(datum, index) {
+                        console.log("rewriting: ", datum.c, ':', datum.v)
+                        pacient.cif[datum.c] = datum.v;
+
+                        // Envia como arquivo.
+                        if (index == result.length - 1) {
+                          var csvData = serializePacientData(pacient);
+                          res.set({
+                            'Content-Disposition': 'attachment; filename=sujeito.csv',
+                            'Content-type': 'text/csv'
+                          });
+                          res.send(csvData);
+                        }
+                      });
+                    }
                   });
-                  res.send(csvData);
                 }
               });
             }
           });
-        })
+        });
       }
     });
   });

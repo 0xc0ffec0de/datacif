@@ -31,16 +31,12 @@ def fill_cif_type(cif, dados):
 
 
 for cif1st in itens.find(): # 1o nível
-    weight = 0
-    n_2nd = 0
 
     if 'items' in cif1st and len(cif1st[u'items']) > 0:
 
         for cif2nd in cif1st[u'items']: # 2o nível
-            n_3rd = 0
 
             if 'items' in cif2nd and len(cif2nd[u'items']) > 0:
-                sub_weight = 0
 
                 for cif3rd in cif2nd[u'items']:
                     dados = dict()
@@ -65,5 +61,5 @@ for cif1st in itens.find(): # 1o nível
         dados[ u'c' ] = cif1st[u'cif']
         dados[ u'p' ] = None
         dados[ u'v' ] = list()
-        fill_cif_type(cif2nd[u'cif'], dados)
+        fill_cif_type(cif1st[u'cif'], dados)
         db.dados.save(dados)
