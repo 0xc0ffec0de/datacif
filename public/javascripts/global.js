@@ -55,6 +55,16 @@ sendAction = function(button, id) {
   return false;
 };
 
+display = function(button) {
+  var $button = $(button);
+  $button.addClass('display-button');
+}
+
+hide = function(button) {
+  var $button = $(button);
+  $button.removeClass('display-button');
+}
+
 inputRegistro = function(divId, label, value) {
   var $div = $("<div></div>");
   var $p1 = $('<p>Tipo de registro</p>');
