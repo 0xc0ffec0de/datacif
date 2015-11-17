@@ -296,7 +296,7 @@ module.exports = function(app, passport) {
 
   writePositionalValue = function(pos, max, value) {
     var data = "";
-    var separator = ",";
+    var separator = ",0";
 
     console.log("writePositionalValue(%s,%s,%s)", pos, max, value);
     if (pos < max) {
@@ -360,7 +360,9 @@ module.exports = function(app, passport) {
     // CIF
     bodyTitle = false;
     structureTitle = false;
+    dTitle = false;
     data += "CIF\n";
+
     for (var key in pacient.cif) {
       var values = pacient.cif[key];
       //console.log("values =", typeof values, values, Array.isArray(values));
@@ -377,7 +379,7 @@ module.exports = function(app, passport) {
           bodyTitle = true;
         }
         data += key;
-        data += writePositionalValue(codes.indexOf(value), codes.length, value);
+        data += writePositionalValue(codes.indexOf(value), codes.length, 1);
         data += "\n";
       }
       else if (key[0] == 's')
@@ -403,11 +405,27 @@ module.exports = function(app, passport) {
         }
 
         data += key;
-        data += writePositionalValue(codes.indexOf(value1), codes.length, value);
-        data += writePositionalValue(position.indexOf(value2), position.length, value);
-        data += writePositionalValue(position.indexOf(value3), position.length, value);
+        data += writePositionalValue(codes.indexOf(value1), codes.length, 1);
+        data += writePositionalValue(position.indexOf(value2), position.length, 1);
+        data += writePositionalValue(position.indexOf(value3), position.length, 1);
         data += "\n";
       }
+      else if (key[0] == 'd') {
+        var codes = [0, 1, 2, 3, 4, 8, 9];
+        var value = parseInt(values.pop());
+
+        if (!dTitle) {
+          for (var index in codes) {
+            data += separator + codes[index];
+          }
+          data += "\n";
+          dTitle = true;
+        }
+        data += key;
+        data += writePositionalValue(codes.indexOf(value), codes.length, 1);
+        data += "\n";
+      }
+
 //      else if (key[0] == 'd')
 //      {
 //        data += '.';
@@ -431,6 +449,18 @@ module.exports = function(app, passport) {
     }
 
     return data;
+  };
+
+  sortObject = function(aObject) {
+    var keys = Object.keys(aObject).sort();
+    var sorted = [];
+
+    for (key in keys) {
+      var property = keys[key];
+      sorted[property] = aObject[property];
+    }
+
+    return sorted;
   };
 
   // Monta tabela CIF.
@@ -475,6 +505,8 @@ module.exports = function(app, passport) {
 
                         // Envia como arquivo.
                         if (index == result.length - 1) {
+                          // Ordena objeto contendo CIF.
+                          pacient.cif = sortObject(pacient.cif);
                           var csvData = serializePacientData(pacient);
                           res.set({
                             'Content-Disposition': 'attachment; filename=sujeito.csv',
