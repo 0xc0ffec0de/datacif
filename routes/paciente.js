@@ -294,11 +294,11 @@ module.exports = function(app, passport) {
     return a.join('');
   }
 
-  writePositionalValue = function(pos, max, value) {
+  writeDataColumn = function(pos, max, value) {
     var data = "";
     var separator = ",0";
 
-    console.log("writePositionalValue(%s,%s,%s)", pos, max, value);
+    console.log("writeDataColumn(%s,%s,%s)", pos, max, value);
     if (pos < max) {
       data += repeat(separator, pos + 1);
       data += value;
@@ -309,14 +309,15 @@ module.exports = function(app, passport) {
   }
 
   // Gera planilha em formato csv.
-  serializePacientData = function(pacient, separator) {
-    console.log("pacient =", pacient);
+  serializePacientData = function(paciente, separator) {
+    console.log("paciente =", paciente);
 
     if (separator == null) {
       separator = ',';
     }
 
     // Título dos dados.
+    var data;
     data  = "Nome" + separator;
     data += "Data de Nascimento" + separator;
     data += "Gênero" + separator;
@@ -327,125 +328,132 @@ module.exports = function(app, passport) {
     data += "\n";
 
     // Informações do paciente.
-    data += pacient.nome + separator;
-    data += pacient.dataNascimento + separator;
-    data += pacient.sexo + separator;
-    data += pacient.peso + separator;
-    data += pacient.altura + separator;
-    data += pacient.cpf + separator;
-    data += pacient.dependente ? "sim" : "não";
+    data += paciente.nome + separator;
+    data += paciente.dataNascimento + separator;
+    data += paciente.sexo + separator;
+    data += paciente.peso + separator;
+    data += paciente.altura + separator;
+    data += paciente.cpf + separator;
+    data += paciente.dependente ? "sim" : "não";
     data += "\n\n";
 
     // Registros
     data += "Registros\n";
-    pacient.registros.forEach(function(registro) {
+    for (var registro in paciente.registros) {
       data += registro.nome + separator + registro.valor + separator;
-    });
+    };
     data += "\n";
 
     // Morbidades
     data += "Morbidades\n";
-    if (pacient.morbidades.length != 0) {
-      pacient.morbidades.forEach(function(morbidade) {
+    if (paciente.morbidades.length != 0) {
+      for (var morbidade in paciente.morbidades) {
         data += morbidade + separator
-      });
-    }
+      };
+    };
     data += "\n";
 
     // Anamnese
     data += "Anamnese\n";
-    data += pacient.anamnese + separator;
+    data += paciente.anamnese + separator;
     data += "\n";
 
     // CIF
-    bodyTitle = false;
-    structureTitle = false;
-    dTitle = false;
     data += "CIF\n";
 
-    for (var key in pacient.cif) {
-      var values = pacient.cif[key];
-      //console.log("values =", typeof values, values, Array.isArray(values));
+    // Variáveis de controle para geração da planilha
+    var bodyTitle = false;
+    var structureTitle = false;
+    var dTitle = false;
+    var environmentTitle = false;
+
+    for (var key in paciente.cif) {
+      var values = paciente.cif[key];
 
       if (key[0] == 'b') {
-        var codes = [0, 1, 2, 3, 4, 8, 9];
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
         var value = parseInt(values.pop());
 
         if (!bodyTitle) {
-          for (var index in codes) {
-            data += separator + codes[index];
+          for (var index in codigos) {
+            data += separator + codigos[index];
           }
           data += "\n";
           bodyTitle = true;
         }
         data += key;
-        data += writePositionalValue(codes.indexOf(value), codes.length, 1);
+        data += writeDataColumn(codigos.indexOf(value), codigos.length, 1);
         data += "\n";
       }
       else if (key[0] == 's')
       {
-        var codes = [0, 1, 2, 3, 4, 8, 9]
-        var position = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        var value1 = parseInt(values.pop());
-        var value2 = parseInt(values.pop());
-        var value3 = parseInt(values.pop());
+        var codigos = [0, 1, 2, 3, 4, 8, 9]
+        var posicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var q1 = parseInt(values.pop());
+        var q2 = parseInt(values.pop());
+        var q3 = parseInt(values.pop());
 
+        // Exibi qualificadores de estrutura.
         if (!structureTitle) {
-          for (var index in codes) {
-            data += separator + codes[index];
+          for (var index in codigos) {
+            data += separator + codigos[index];
           }
-          for (var index in position) {
-            data += separator + position[index];
+          for (var index in posicao) {
+            data += separator + posicao[index];
           }
-          for (var index in position) {
-            data += separator + position[index];
+          for (var index in posicao) {
+            data += separator + posicao[index];
           }
           data += "\n";
           structureTitle = true;
         }
 
+        // Escreve os dados de estrutura
         data += key;
-        data += writePositionalValue(codes.indexOf(value1), codes.length, 1);
-        data += writePositionalValue(position.indexOf(value2), position.length, 1);
-        data += writePositionalValue(position.indexOf(value3), position.length, 1);
+        data += writeDataColumn(codigos.indexOf(q1), codigos.length, 1);
+        data += writeDataColumn(posicao.indexOf(q2), posicao.length, 1);
+        data += writeDataColumn(posicao.indexOf(q3), posicao.length, 1);
         data += "\n";
       }
-      else if (key[0] == 'd') {
-        var codes = [0, 1, 2, 3, 4, 8, 9];
-        var value = parseInt(values.pop());
+      else if (key[0] == 'd')
+      {
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var valor = parseInt(values.pop());
 
         if (!dTitle) {
-          for (var index in codes) {
-            data += separator + codes[index];
+          for (var index in codigos) {
+            data += separator + codigos[index];
           }
           data += "\n";
           dTitle = true;
         }
         data += key;
-        data += writePositionalValue(codes.indexOf(value), codes.length, 1);
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, 1);
         data += "\n";
       }
+      else if (key[0] == 'e')
+      {
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var valor = parseInt(values.pop());
 
-//      else if (key[0] == 'd')
-//      {
-//        data += '.';
-//
-//        // HERE
-//        values.forEach(function(value) {
-//          data += value;
-//        });
-//
-//        data += separator;
-//      }
-//      else if (key[0] == 'e')
-//      {
-//        var value = values.pop();
-//
-//        if (value < 0)
-//          data += '.' + Math.abs(value) + separator;
-//        else
-//          data += '+' + value + separator;
-//      }
+        if (!environmentTitle) {
+          for (var index in codigos) {
+            data += separator + codigos[index];
+          }
+
+          for (var index in codigos) {
+            data += separator + '="+' + codigos[index] + '"';
+          }
+
+          data += "\n";
+          environmentTitle = true;
+        }
+
+        data += key;
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, valor < 0 ? 1 : 0);
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, valor >= 0 ? 1 : 0);
+        data += "\n";
+      }
     }
 
     return data;
