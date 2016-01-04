@@ -36,7 +36,7 @@ module.exports = function(app, passport) {
         res.location("/usuario/lista");
         res.redirect("/usuario/lista");
       }
-    })
+    });
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
@@ -56,7 +56,7 @@ module.exports = function(app, passport) {
   });
 
   router.get('/profissao/:desc', function(req, res) {
-    var descricao = new RegExp(req.params['desc'], 'i');
+    var descricao = new RegExp(req.params.desc, 'i');
     var db = req.db2;
     var profissoes = db.collection('profissoes');
 
@@ -76,4 +76,4 @@ module.exports = function(app, passport) {
   });
 
   return router;
-}
+};

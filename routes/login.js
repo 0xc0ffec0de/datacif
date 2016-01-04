@@ -18,4 +18,4 @@ module.exports = function(app, passport) {
   }));
 
   return router;
-}
+};

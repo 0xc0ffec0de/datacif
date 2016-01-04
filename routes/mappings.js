@@ -10,7 +10,8 @@ module.exports = {
             return [ "b110", "b114", "b126", "b130", "b134" ];
           case 1:
             return [ "b140", "b144", "b152", "b156", "b160", "b164", "b167", "b172", "b180" ];
-        };
+        }
+        break;
       case 'b2':
         switch (page) {
           case 0:
@@ -21,7 +22,8 @@ module.exports = {
             return [ "b250", "b255", "b260", "b265", "b270" ];
           case 3:
             return [ "b280" ];
-        };
+        }
+        break;
       case 'b3':
         return [ "b310", "b330", "b340" ];
       case 'b4':
@@ -34,28 +36,32 @@ module.exports = {
             return [ "b440", "b445" ];
           case 3:
             return [ "b450", "b455" ];
-        };
+        }
+        break;
       case 'b5':
         switch (page) {
           case 0:
             return [ "b510", "b515", "b520", "b525", "b530", "b535", "b539" ];
           case 1:
             return [ "b540", "b545", "b550", "b555", "b559", "b598", "b599" ];
-        };
+        }
+        break;
       case 'b6':
         switch (page) {
           case 0:
             return [ "b610", "b620" ];
           case 1:
             return [ "b640", "b650", "b660", "b670" ];
-        };
+        }
+        break;
       case 'b7':
         switch (page) {
           case 0:
             return [ "b710", "b715", "b720" ];
           case 1:
             return [ "b730", "b735", "b740", "b750", "b760", "b765", "b770" ];
-        };
+        }
+        break;
       case 'b8':
         return [ "b810", "b820", "b830", "b840", "b850", "b860" ];
       case 's1':
@@ -83,6 +89,7 @@ module.exports = {
           case 2:
             return [ "d160", "d163", "d166", "d170", "d172", "d175", "d177", "d179", "d198", "d199" ];
         }
+        break;
       case 'd2':
         return [ "d210", "d220", "d230", "d240", "d298", "d299" ];
       case 'd3':
@@ -94,6 +101,7 @@ module.exports = {
           case 2:
             return [ "d350", "d355", "d360", "d398", "d399" ];
         }
+        break;
       case 'd4':
         switch (page) {
           case 0:
@@ -104,7 +112,8 @@ module.exports = {
             return [ "d450", "d455", "d460", "d465", "d469" ];
           case 3:
             return [ "d470", "d475", "d480", "d489" ]; // d489, d498, d499
-          }
+        }
+        break;
       case 'd5':
         return [ "d510", "d520", "d530", "d540", "d550", "d560", "d570" ];
       case 'd6':
@@ -116,6 +125,7 @@ module.exports = {
           case 2:
             return [ "d650", "d660", "d698", "d699" ];
         }
+        break;
       case 'd7':
       switch (page) {
         case 0:
@@ -123,6 +133,7 @@ module.exports = {
         case 1:
           return [ "d730", "d740", "d750", "d760", "d770", "d779", "d789" ];
         }
+        break;
       case 'd8':
         switch (page) {
           case 0:
@@ -132,6 +143,7 @@ module.exports = {
           case 2:
             return [ "d860", "d865", "d870", "d879", "d898", "d899" ];
         }
+        break;
       case 'd9':
         return [ "d910", "d920", "d930", "d940", "d950", "d998", "d999" ];
       case 'e1':
@@ -236,15 +248,13 @@ module.exports = {
             "Aplicação do conhecimento"
           ];
         case 'd2':
-          return [
-            "Tarefas e exigências gerais"
-          ]
+          return [ "Tarefas e exigências gerais" ];
         case 'd3':
           return [
             "Comunicar e receber mensagens",
             "Comunicar e produzir mensagens",
             "Conversação e utilização de dispositivos e de técnicas de comunicação"
-          ]
+          ];
         case 'd4':
           return [
             "Mudar e manter a posição do corpo",

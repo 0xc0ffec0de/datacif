@@ -26,7 +26,7 @@ module.exports = function(app, passport) {
   });
 
   router.get('/edita/:id', app.isLoggedIn, function(req, res) {
-    var id = req.params['id'];
+    var id = req.params.id;
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
@@ -96,7 +96,7 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      for (index in values) {
+      for (var index in values) {
         value = values[index];
         registros.push({ nome: labels[i], valor: value });
       }
@@ -134,7 +134,7 @@ module.exports = function(app, passport) {
         // res.location("/paciente/dominio/" + id);
         res.redirect("/paciente/" + id + "/dominio");
       }
-    })
+    });
   });
 
   router.get('/altera', app.isLoggedIn, function(req, res) {
@@ -151,7 +151,7 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      for (index in values) {
+      for (var index in values) {
         value = values[index];
         registros.push({ nome: labels[i], valor: value });
       }
@@ -195,7 +195,7 @@ module.exports = function(app, passport) {
   router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } },
@@ -209,7 +209,7 @@ module.exports = function(app, passport) {
         // res.render("dominio", { id : req.params['id'] });
         res.render("dominio",
           {
-            id      : req.params['id'],
+            id      : req.params.id,
             sex     : sexo ? sexo : 'm'
           });
         }
@@ -221,7 +221,7 @@ module.exports = function(app, passport) {
   router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } },
@@ -234,7 +234,7 @@ module.exports = function(app, passport) {
         var sexo = result.pop().sexo;
         res.render("funcao_e_estrutura",
           {
-            id      : req.params['id'],
+            id      : req.params.id,
             address : '/cif/capitulo/',
             sex     : sexo ? sexo : 'm'
           });
@@ -246,7 +246,7 @@ module.exports = function(app, passport) {
   // Menu de atividade e partipação.
   router.get('/:id/atividade_e_participacao', app.isLoggedIn, function(req, res) {
     res.render("atividade_e_participacao", {
-      id      : req.params['id'],
+      id      : req.params.id,
       address : '/cif/capitulo/'
     });
   });
@@ -254,14 +254,14 @@ module.exports = function(app, passport) {
   // Menu de ambiente.
   router.get('/:id/ambiente', app.isLoggedIn, function(req, res) {
     res.render("ambiente", {
-      id      : req.params['id'],
+      id      : req.params.id,
       address : '/cif/capitulo/'
     });
   });
 
   fillZeroData = function(db, paciente) {
     var itens = db.collection('itens');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } }
@@ -269,7 +269,7 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        for (index in result) {
+        for (var index in result) {
           paciente = result[index];
           paciente.cif = {};
 
@@ -285,7 +285,7 @@ module.exports = function(app, passport) {
           }
         );
       }
-    }})
+    }});
   };
 
   repeat = function(s, n) {
@@ -295,7 +295,7 @@ module.exports = function(app, passport) {
     }
 
     return a.join('');
-  }
+  };
 
   writeDataColumn = function(pos, max, value) {
     var data = "";
@@ -309,13 +309,13 @@ module.exports = function(app, passport) {
     }
 
     return data;
-  }
+  };
 
   // Gera planilha em formato csv.
   serializeData = function(paciente, separator) {
     console.log("paciente =", paciente);
 
-    if (separator == null) {
+    if (separator === null) {
       separator = ',';
     }
 
@@ -349,7 +349,7 @@ module.exports = function(app, passport) {
 
     // Morbidades
     data += "Morbidades\n";
-    if (paciente.morbidades.length != 0) {
+    if (paciente.morbidades.length !== 0) {
       for (var morbidade in paciente.morbidades) {
         data += morbidade + separator;
       }
@@ -390,7 +390,7 @@ module.exports = function(app, passport) {
       }
       else if (key[0] == 's')
       {
-        var codigos = [0, 1, 2, 3, 4, 8, 9]
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
         var posicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         var q1 = parseInt(values.pop());
         var q2 = parseInt(values.pop());
@@ -466,7 +466,7 @@ module.exports = function(app, passport) {
     var keys = Object.keys(aObject).sort();
     var sorted = [];
 
-    for (key in keys) {
+    for (var key in keys) {
       var property = keys[key];
       sorted[property] = aObject[property];
     }
@@ -479,7 +479,7 @@ module.exports = function(app, passport) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
     var dados = db.collection('dados');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } }
@@ -487,7 +487,7 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        for (index in result) {
+        for (var index in result) {
           paciente = result[index];
           paciente.cif = {};
 
@@ -499,7 +499,7 @@ module.exports = function(app, passport) {
               console.log('Erro ao ler dados de paciente');
               res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente default') });
             } else {
-              for (index in generic) {
+              for (var index in generic) {
                 datum = generic[index];
                 paciente.cif[datum.c] = datum.v;
 
@@ -512,9 +512,9 @@ module.exports = function(app, passport) {
                     if (err) {
                       res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
                     } else {
-                      for (index in result) {
+                      for (var index in result) {
                         datum = result[index];
-                        console.log("rewriting: ", datum.c, ':', datum.v)
+                        console.log("rewriting: ", datum.c, ':', datum.v);
                         paciente.cif[datum.c] = datum.v;
 
                         // Envia como arquivo.
@@ -534,7 +534,7 @@ module.exports = function(app, passport) {
                 }
               }
             }
-          })
+          });
         }
       }
     });
