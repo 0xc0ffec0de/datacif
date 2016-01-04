@@ -96,9 +96,10 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      values.forEach(function(value, i) {
+      for (index in values) {
+        value = values[index];
         registros.push({ nome: labels[i], valor: value });
-      });
+      }
     }
 
     var paciente = {
@@ -150,9 +151,10 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      values.forEach(function(value, i) {
+      for (index in values) {
+        value = values[index];
         registros.push({ nome: labels[i], valor: value });
-      });
+      }
     }
 
     var paciente = {
@@ -257,7 +259,7 @@ module.exports = function(app, passport) {
     });
   });
 
-  fillZeroData = function(db, pacient) {
+  fillZeroData = function(db, paciente) {
     var itens = db.collection('itens');
     var id = req.params['id'];
 
@@ -267,11 +269,12 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        result.forEach(function(pacient) {
-          pacient.cif = {};
+        for (index in result) {
+          paciente = result[index];
+          paciente.cif = {};
 
           dados.aggregate([
-            { $match : { p : String(pacient._id) } },
+            { $match : { p : String(paciente._id) } },
             { $sort  : { c : 1 } }
           ], function(err, result) {
             if (err) {
@@ -281,7 +284,7 @@ module.exports = function(app, passport) {
             }
           }
         );
-      })
+      }
     }})
   };
 
@@ -309,7 +312,7 @@ module.exports = function(app, passport) {
   }
 
   // Gera planilha em formato csv.
-  serializePacientData = function(paciente, separator) {
+  serializeData = function(paciente, separator) {
     console.log("paciente =", paciente);
 
     if (separator == null) {
@@ -341,16 +344,16 @@ module.exports = function(app, passport) {
     data += "Registros\n";
     for (var registro in paciente.registros) {
       data += registro.nome + separator + registro.valor + separator;
-    };
+    }
     data += "\n";
 
     // Morbidades
     data += "Morbidades\n";
     if (paciente.morbidades.length != 0) {
       for (var morbidade in paciente.morbidades) {
-        data += morbidade + separator
-      };
-    };
+        data += morbidade + separator;
+      }
+    }
     data += "\n";
 
     // Anamnese
@@ -484,8 +487,9 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        result.forEach(function(pacient) {
-          pacient.cif = {};
+        for (index in result) {
+          paciente = result[index];
+          paciente.cif = {};
 
           dados.aggregate([
             { $match : { p : null } },
@@ -495,41 +499,43 @@ module.exports = function(app, passport) {
               console.log('Erro ao ler dados de paciente');
               res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente default') });
             } else {
-              generic.forEach(function(datum, index) {
-                pacient.cif[datum.c] = datum.v;
+              for (index in generic) {
+                datum = generic[index];
+                paciente.cif[datum.c] = datum.v;
 
                 // Terminado?
                 if (index == generic.length - 1) {
                   dados.aggregate([
-                    { $match : { p : String(pacient._id) } },
+                    { $match : { p : String(paciente._id) } },
                     { $sort  : { c : 1 } }
                   ], function(err, result) {
                     if (err) {
                       res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
                     } else {
-                      result.forEach(function(datum, index) {
+                      for (index in result) {
+                        datum = result[index];
                         console.log("rewriting: ", datum.c, ':', datum.v)
-                        pacient.cif[datum.c] = datum.v;
+                        paciente.cif[datum.c] = datum.v;
 
                         // Envia como arquivo.
                         if (index == result.length - 1) {
                           // Ordena objeto contendo CIF.
-                          pacient.cif = sortObject(pacient.cif);
-                          var csvData = serializePacientData(pacient);
+                          paciente.cif = sortObject(paciente.cif);
+                          var csvData = serializeData(paciente);
                           res.set({
                             'Content-Disposition': 'attachment; filename=sujeito.csv',
                             'Content-type': 'text/csv'
                           });
                           res.send(csvData);
                         }
-                      });
+                      }
                     }
                   });
                 }
-              });
+              }
             }
-          });
-        });
+          })
+        }
       }
     });
   });
