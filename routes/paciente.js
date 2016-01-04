@@ -280,7 +280,7 @@ module.exports = function(app, passport) {
             if (err) {
               res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
             } else {
-              result.forEach(function(datum, index) {});
+              // result.forEach(function(datum, index) {});
             }
           }
         );

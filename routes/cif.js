@@ -93,9 +93,10 @@ module.exports = function(app, passport) {
     var subset = Array(subdomain.length);
     var count = subdomain.length;
 
-    subdomain.forEach(function(cif, i) {
+    for (i in subdomain) {
+      cif = subdomain[i];
       loadCIF(itens, cif, function(result) { count = sendCIF(req, res, id, subset, result, i, count); } );
-    });
+    }
   });
 
   router.get('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
@@ -113,7 +114,8 @@ module.exports = function(app, passport) {
     var subset = Array(subdomain.length);
     var count = subdomain.length;
 
-    subdomain.forEach(function(cif, i) {
+    for (i in subdomain) {
+      cif = subdomain[i];
       loadCIF(itens, cif, function(result) { count = renderCIF(req, res, id, chapter, titles, subset, result, i, count); } );
     });
   });
