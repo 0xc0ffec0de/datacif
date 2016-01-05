@@ -1,8 +1,0 @@
-1. Instale node.js
-2. Instale mongodb
-3. Instale git
-4. Baixe o repositório do projeto
-5. Depois de tudo instalado, execute:
-	$ npm install mongodb
-6. Execute o script rundb.sh
-7. Execute o script runserver.sh

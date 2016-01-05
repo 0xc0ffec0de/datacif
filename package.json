@@ -6,18 +6,19 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "express" : "~4.0.0",
-    "express-validator": "*",
-    "express-session": "*",
     "body-parser": "~1.10.2",
+    "connect-flash": "~0.1.1",
     "cookie-parser": "~1.3.3",
     "debug": "~2.1.1",
+    "express": "~4.0.0",
+    "express-session": "*",
+    "express-validator": "*",
     "jade": "~1.9.1",
+    "mongodb": "^2.1.3",
+    "mongolian": "*",
     "morgan": "~1.5.1",
-    "serve-favicon": "~2.2.0",
-    "mongolian" : "*",
-    "passport" : "~0.1.17",
-    "passport-local" : "*",
-    "connect-flash" : "~0.1.1"
+    "passport": "~0.1.17",
+    "passport-local": "*",
+    "serve-favicon": "~2.2.0"
   }
 }
