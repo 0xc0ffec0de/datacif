@@ -14,7 +14,7 @@
 1. Mova o terminal para o repositório com `cd datacif`
 1. Resolva as dependências do sistema usando `npm install`
 1. Execute no terminal `./rundb.sh && ./runserver.sh`
-2. Aponte o browser para o endereço http://localhost:3000
+2. Aponte o browser para o endereço `http://localhost:3000`
 
 ## Contribuidores
 
