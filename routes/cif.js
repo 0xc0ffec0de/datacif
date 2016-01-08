@@ -143,59 +143,73 @@ module.exports = function(app, passport) {
     });
   });
 
+  // Varre estrutura de dados da CIF procurando códigos da CIF.
+  var collectCIF = function(list, node) {
+    if (node && node.cif) {
+      list.push(node.cif);
+
+      if (node.items) {
+        for (index in node.items) {
+          console.log("collectCIF(%s)", node.items[index]);
+          list = collectCIF(list, node.items[index]);
+        }
+      }
+    }
+
+    return list;
+  }
+
+  // Propaga valor da CIF para níveis mais altos.
+  var cascadeUpdate = function(db, cif, value, res) {
+    var items = db.collection('itens');
+    var data = db.collection('dados');
+    console.log("cascadeUpdate called.", cif);
+
+    //items.find({ cif : cif }).toArray(function(err, result) {
+    items.aggregate([
+      { $match: { cif : cif } },
+      { $project: { cif : "$cif", items : "$items" } }
+    ]).toArray(function(err, result) {
+      console.log("aggregate returned ", result[0]);
+
+      if (err) {
+        res.send("Erro ao tentar encontrar CIF");
+        return false;
+      } else if (result[0] && result[0].items) {
+        var list = [];
+        list = collectCIF(list, result[0]);
+        console.log("list = ", list);
+
+        // Atualiza todos os itens daquele ramo.
+        for (index in list) {
+          data.findAndModify(
+            { c: list[index] }, // query
+            [[ 'c', 1 ]], // sort
+            { $set: { v: value } }, // replacement
+            { upsert: true }, // options
+            function(err, docs) {
+              if (err) {
+                console.log(err.message);
+                res.send({ r: 'ERR' });
+              } else {
+                res.send({ r: 'OK' });
+              }
+            }
+          );
+        }
+
+      }
+    });
+  };
+
   // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
     var cif = req.params.cif;
-    var pos = req.params.position - 1;
     var value = req.params.value;
-    var id = req.body.id;
     var db = req.db2;
-    var data = db.collection('dados');
-    console.log("id =", id, "cif =", cif, "value =", value);
 
-    data.aggregate([
-      { $match: { p : id, c : cif } },
-      { $project: { _id : "$_id", p : "$p", c: "$c", v : "$v" } }
-    ]).sort({ 'c:' : 1 }).toArray(function(err, result) {
-      console.log("Result = ", result);
-      if (err) {
-        console.log(err);
-        res.send({ r: 'ERR1' });
-      } else {
-        console.log(result.length, "resultados encontrados:", result);
-        if (result) {
-          result = result[0];
-          if (!result) {
-            result = { v: [] };
-          } else if (result.hasOwnProperty('v')) {
-            if (!result.v) {
-              result.v = [];
-            }
-          }
-        } else {
-          result = { v: [] };
-        }
-        result.v[pos] = value;
-
-        data.findAndModify(
-          { p: id, c: cif }, // query
-          [[ 'c', 1 ]], // sort
-          { $set: { v: result.v } }, // replacement
-          { upsert: true }, // options
-          function(err, docs) {
-            if (err) {
-              console.log(err.message);
-              res.send({ r: 'ERR2' });
-            } else {
-              res.send({ r: 'OK' });
-            }
-          }
-        );
-
-      }
-    });
-
+    cascadeUpdate(db, cif, value, res);
   });
 
   // Carrega e envia dados do paciente.
