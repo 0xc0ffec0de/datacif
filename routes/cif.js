@@ -217,13 +217,16 @@ module.exports = function(app, passport) {
       { $match: { p: patient, c: cif } },
       { $project: { v : "$v" } }
     ]).toArray(function(err, result) {
-      var values = result[0];
+      var result = result[0];
+      var values;
 
       if (err) {
         res.send("Erro ao tentar encontrar dados do paciente.");
         return false;
-      } else if (!values) {
+      } else if (!result) {
         values = [];
+      } else {
+        values = result.v;
       }
 
       // Atualiza um item em cascata.
