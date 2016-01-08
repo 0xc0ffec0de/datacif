@@ -92,13 +92,10 @@ module.exports = function(app, passport) {
     var subdomain = mappings.page2cif(chapter, page);
     var subset = Array(subdomain.length);
     var length = subdomain.length;
-    var func = function(result) {
-      length = sendCIF(req, res, id, subset, result, i, length);
-    };
 
     for (var i in subdomain) {
       cif = subdomain[i];
-      loadCIF(itens, cif, func); // function(result) { count = sendCIF(req, res, id, subset, result, i, count); } );
+      loadCIF(itens, cif, function(result) { length = sendCIF(req, res, id, subset, result, i, length); } );
     }
   });
 
@@ -116,13 +113,10 @@ module.exports = function(app, passport) {
     var subdomain = data.first;
     var subset = Array(subdomain.length);
     var length = subdomain.length;
-    var func = function(result) {
-      length = sendCIF(req, res, id, subset, result, i, length);
-    };
 
     for (var i in subdomain) {
       cif = subdomain[i];
-      loadCIF(itens, cif, func); // function(result) { count = renderCIF(req, res, id, chapter, titles, subset, result, i, count); } );
+      loadCIF(itens, cif, function(result) { length = renderCIF(req, res, id, chapter, titles, subset, result, i, length); } );
     }
   });
 
