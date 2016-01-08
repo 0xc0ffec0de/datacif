@@ -292,6 +292,7 @@ onSelectEnvironmentOption = function(e, ui) {
 }
 
 addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
+  // console.log("addFunctionOptions) value = ", value);
   var value = parseInt(value);
   var $td = $("<td id='" + cif + "-span'>");
   var $div = $("<div>");
@@ -717,7 +718,7 @@ parseCIF = function(line) {
     }
 };
 
-createChapterPage = function($accordion, chapter, titles, page, data) {
+createChapterPage = function($accordion, chapter, titles, page, jdata) {
   var id = $("input#id").val();
 
   // console.log("page, ", JSON.stringify(page));
@@ -731,7 +732,7 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
     var $p = $("<p/>");
 
     if (n == 0) {
-      populateCIF($div, page, data);
+      populateCIF($div, page, jdata);
       _preloadedPage[$a.attr("href")] = true;
       console.log("_preloadedPage[%s] = true", $a.attr("href"));
     } else {
@@ -758,9 +759,7 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
         _preloadedPage[url] = true;
         // console.log("loading: ", _preloadedPage[url]);
         $.post(url, { id: id }, function (result) {
-          var page = result.page;
-          var data = result.data;
-          populateCIF($p, JSON.parse(page), JSON.parse(data), true);
+          populateCIF($p, JSON.parse(result.page), JSON.parse(result.data), true);
         });
       }
     }
@@ -768,7 +767,7 @@ createChapterPage = function($accordion, chapter, titles, page, data) {
 };
 
 // Popula tela com grupos de CIF.
-populateCIF = function(anchor, page, data, overwrite) {
+populateCIF = function(anchor, page, jdata, overwrite) {
   var map = {};
 
   if (overwrite) {
@@ -776,8 +775,8 @@ populateCIF = function(anchor, page, data, overwrite) {
   }
 
   // Converte lista em mapeamento.
-  if (data instanceof Array) {
-    data.forEach(function(datum) {
+  if (jdata instanceof Array) {
+    jdata.forEach(function(datum) {
       // console.log(datum.c + " = ", datum.v);
       map[datum.c] = datum.v;
     });

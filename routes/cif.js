@@ -160,7 +160,7 @@ module.exports = function(app, passport) {
   }
 
   // Propaga valor da CIF para níveis mais altos.
-  var cascadeUpdate = function(db, patient, cif, value, res) {
+  var cascadeUpdate = function(db, patient, cif, values, res) {
     var items = db.collection('itens');
     var data = db.collection('dados');
     console.log("cascadeUpdate called.", cif);
@@ -185,7 +185,7 @@ module.exports = function(app, passport) {
           data.findAndModify(
             { p : patient, c: list[index] }, // query
             [[ 'c', 1 ]], // sort
-            { $set: { v: value } }, // replacement
+            { $set: { v: values } }, // replacement
             { upsert: true }, // options
             function(err, docs) {
               if (err) {
@@ -205,12 +205,33 @@ module.exports = function(app, passport) {
   // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
+    var patient = req.body.id;
     var cif = req.params.cif;
     var value = req.params.value;
-    var patient = req.body.id;
+    var pos = req.params.position - 1;
     var db = req.db2;
+    var data = db.collection('dados');
 
-    cascadeUpdate(db, patient, cif, value, res);
+    // Obtem valor antigo do dado do paciente.
+    data.aggregate([
+      { $match: { p: patient, c: cif } },
+      { $project: { v : "$v" } }
+    ]).toArray(function(err, result) {
+      var values = result[0];
+
+      if (err) {
+        res.send("Erro ao tentar encontrar dados do paciente.");
+        return false;
+      } else if (!values) {
+        values = [];
+      }
+
+      // Atualiza um item em cascata.
+      values[pos] = value;
+      console.log('values = ' + values);
+      cascadeUpdate(db, patient, cif, values, res);
+    });
+
   });
 
   // Carrega e envia dados do paciente.

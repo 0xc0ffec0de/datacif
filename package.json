@@ -16,6 +16,7 @@
     "morgan": "~1.5.1",
     "serve-favicon": "~2.2.0",
     "mongolian" : "*",
+    "mongodb" : "*",
     "passport" : "~0.1.17",
     "passport-local" : "*",
     "connect-flash" : "~0.1.1"
