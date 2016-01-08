@@ -264,7 +264,7 @@ onSelectFunctionOption = function(e, ui) {
   var pos = parseInt(name[name.length - 1]);
   var value = $select.find("option:selected").val().match(/\d/);
   var $div = $(this).parent().parent().parent();
-  var $span = $($div.find("label > span")[0]);
+  var $span = $($div.find("td > span")[0]);
   var cif = $span.text();
   console.log("id=", id);
 

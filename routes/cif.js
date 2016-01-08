@@ -143,6 +143,7 @@ module.exports = function(app, passport) {
     });
   });
 
+  // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
     var cif = req.params.cif;
@@ -165,10 +166,12 @@ module.exports = function(app, passport) {
         console.log(result.length, "resultados encontrados:", result);
         if (result) {
           result = result[0];
-          if (result === null) {
+          if (!result) {
             result = { v: [] };
-          } else if (result.v === null) {
-            result.v = [];
+          } else if (result.hasOwnProperty('v')) {
+            if (!result.v) {
+              result.v = [];
+            }
           }
         } else {
           result = { v: [] };
