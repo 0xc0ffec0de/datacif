@@ -14,9 +14,9 @@
 1. Mova o terminal para o repositório com `cd datacif`
 1. Resolva as dependências do sistema usando `npm install`
 1. Crie o banco de dados da aplicação executando o script `./scripts/importdb.sh`
-    * Com o usuário básico admin com senha `abcd` criado, use esta conta para criar um usuário normal de sua preferência.
 1. Execute no terminal `./rundb.sh && ./runserver.sh`
 1. Aponte o browser para o endereço `http://localhost:3000`
+    * Com o usuário básico admin com senha `abcd` criado, use esta conta no seu primeiro login para criar um usuário normal de sua preferência. Saia da conta admin e entre usando a conta criada.
 
 ## Contribuidores
 
