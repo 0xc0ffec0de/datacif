@@ -3,7 +3,7 @@ module.exports = function(app, passport) {
   var router = express.Router();
 
   router.get('/:cid', function(req, res) {
-    var cid = req.params['cid'];
+    var cid = req.params.cid;
     var db = req.db;
     var itens = db.collection('cid10Itens');
     var grupos = db.collection('cid10Grupos');
@@ -27,7 +27,7 @@ module.exports = function(app, passport) {
   });
 
   router.get('/descricao/:desc', function(req, res) {
-    var desc = new RegExp(req.params['desc'], 'i');
+    var desc = new RegExp(req.params.desc, 'i');
     var db2 = req.db2;
     var itens = db2.collection('cid10Itens');
 
@@ -49,4 +49,4 @@ module.exports = function(app, passport) {
   });
 
   return router;
-}
+};

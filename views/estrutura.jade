@@ -61,8 +61,9 @@ block content
               setCanvasObject($canvas, '/images/funcoes_homem.png', 'b8');
             });
 
-          input#b1(type='submit', name='chapters', onclick='return sendAction(this);',
-            value='', title='Funções mentais')
+          input#b1(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Funções mentais')
 
           input#b2(type='submit', name='chapters',
             onclick='return sendAction(this);', value='',
@@ -87,24 +88,6 @@ block content
           input#b7(type='submit', name='chapters',
             onclick='return sendAction(this);', value='',
             title='Funções neuromusculo-esqueléticas e relacionadas ao movimento')
-
-      div#man.middle-container
-        button(onclick='return sendAction(this, "b1");', style='width: 298px;',
-          onmouseover='display("input#b1");', onmouseout='hide("input#b1");') Funções mentais
-        button(onclick='return sendAction(this, "b2");', style="width: 298px;",
-          onmouseover='display("input#b2");', onmouseout='hide("input#b2");') Funções sensoriais
-        button(onclick='return sendAction(this, "b3");', style="width: 298px;",
-          onmouseover='display("input#b3");', onmouseout='hide("input#b3");') Funções da voz e da fala
-        button(onclick='return sendAction(this, "b4");', style="width: 298px;",
-          onmouseover='display("input#b4");', onmouseout='hide("input#b4");') Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório
-        button(onclick='return sendAction(this, "b5");', style="width: 298px;",
-          onmouseover='display("input#b5");', onmouseout='hide("input#b5");') Funções dos sistemas digestivo, metabólico e endócrino
-        button(onclick='return sendAction(this, "b6");', style="width: 298px;",
-          onmouseover='display("input#b6");', onmouseout='hide("input#b6");') Funções geniturinárias e reprodutivas
-        button(onclick='return sendAction(this, "b7");', style="width: 298px;",
-          onmouseover='display("input#b7");', onmouseout='hide("input#b7");') Funções neuromusculo-esqueléticas e relacionadas ao movimento
-        button(onclick='return sendAction(this, "b8");', style="width: 298px;",
-          onmouseover='display("input#b8");', onmouseout='hide("input#b8");') Funções da pele e estruturas relacionadas
 
     else if sex == 'f'
       div#woman.left-container
@@ -145,28 +128,85 @@ block content
             onclick='return sendAction(this);', value='',
             title='Funções neuromusculo-esqueléticas e relacionadas ao movimento')
 
+    if sex == 'm'
+      div#man.middle-container
+        h1.topic Estruturas do corpo
+        div#map(width="416px", height="622px")
+          canvas(width="416px", height="622px", title="Pele e estruturas relacionadas")
+          script.
+            $(function() {
+              var $canvas = $("div#man.middle-container > div > canvas");
+              setCanvasObject($canvas, '/images/man_small.png', 's8');
+            });
+
+          input#s1(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas do sistema nervoso')
+
+          input#s2(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Olhos, ouvidos e estruturas relacionadas')
+
+          input#s3(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas à voz e fala')
+
+          input#s4(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas dos sistemas cardiovascular, imunológico e respiratório')
+
+          input#s5(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas ao sistema digestório, metabólico e endócrino')
+
+          input#s6(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas aos sistema gerinuritário e reprodutivo')
+
+          input#s7(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas ao movimento')
+
+    else if sex == 'f'
       div#woman.middle-container
-        button(onclick='return sendAction(this, "b1");', style='width: 298px;',
-          onmouseover='display("input#b1");', onmouseout='hide("input#b1");') Funções mentais
-        button(onclick='return sendAction(this, "b2");', style="width: 298px;",
-          onmouseover='display("input#b2");', onmouseout='hide("input#b2");') Funções sensoriais
-        button(onclick='return sendAction(this, "b3");', style="width: 298px;",
-          onmouseover='display("input#b3");', onmouseout='hide("input#b3");') Funções da voz e da fala
-        button(onclick='return sendAction(this, "b4");', style="width: 298px;",
-          onmouseover='display("input#b4");', onmouseout='hide("input#b4");') Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório
-        button(onclick='return sendAction(this, "b5");', style="width: 298px;",
-          onmouseover='display("input#b5");', onmouseout='hide("input#b5");') Funções dos sistemas digestivo, metabólico e endócrino
-        button(onclick='return sendAction(this, "b6");', style="width: 298px;",
-          onmouseover='display("input#b6");', onmouseout='hide("input#b6");') Funções geniturinárias e reprodutivas
-        button(onclick='return sendAction(this, "b7");', style="width: 298px;",
-          onmouseover='display("input#b7");', onmouseout='hide("input#b7");') Funções neuromusculo-esqueléticas e relacionadas ao movimento
-        button(onclick='return sendAction(this, "b8");', style="width: 298px;",
-          onmouseover='display("input#b8");', onmouseout='hide("input#b8");') Funções da pele e estruturas relacionadas
+        h1.topic Estruturas do corpo
+        div#map(width="400px", height="622px")
+          canvas(width="400px", height="622px", title="Pele e estruturas relacionadas")
+          script.
+            $(function() {
+              var $canvas = $("div#woman.middle-container > div > canvas");
+              setCanvasObject($canvas, '/images/woman_small.png', 's8');
+            });
+
+          input#s1(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas do sistema nervoso')
+
+          input#s2(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Olhos, ouvidos e estruturas relacionadas')
+
+          input#s3(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas à voz e fala')
+
+          input#s4(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas dos sistemas cardiovascular, imunológico e respiratório')
+
+          input#s5(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas ao sistema digestório, metabólico e endócrino')
+
+          input#s6(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas aos sistema gerinuritário e reprodutivo')
+
+          input#s7(type='submit', name='chapters',
+            onclick='return sendAction(this);', value='',
+            title='Estruturas relacionadas ao movimento')
 
     script.
       $(function() {
         $(document).tooltip({ track : true, tooltipClass: "my-tooltip" });
-      });
-      $(function() {
-        $('button').button();
       });

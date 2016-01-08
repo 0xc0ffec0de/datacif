@@ -26,7 +26,7 @@ module.exports = function(app, passport) {
   });
 
   router.get('/edita/:id', app.isLoggedIn, function(req, res) {
-    var id = req.params['id'];
+    var id = req.params.id;
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
@@ -96,9 +96,10 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      values.forEach(function(value, i) {
+      for (var index in values) {
+        value = values[index];
         registros.push({ nome: labels[i], valor: value });
-      });
+      }
     }
 
     var paciente = {
@@ -133,7 +134,7 @@ module.exports = function(app, passport) {
         // res.location("/paciente/dominio/" + id);
         res.redirect("/paciente/" + id + "/dominio");
       }
-    })
+    });
   });
 
   router.get('/altera', app.isLoggedIn, function(req, res) {
@@ -150,9 +151,10 @@ module.exports = function(app, passport) {
     var registros = [];
 
     if (values && values.length > 0) {
-      values.forEach(function(value, i) {
+      for (var index in values) {
+        value = values[index];
         registros.push({ nome: labels[i], valor: value });
-      });
+      }
     }
 
     var paciente = {
@@ -193,7 +195,7 @@ module.exports = function(app, passport) {
   router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } },
@@ -207,7 +209,7 @@ module.exports = function(app, passport) {
         // res.render("dominio", { id : req.params['id'] });
         res.render("dominio",
           {
-            id      : req.params['id'],
+            id      : req.params.id,
             sex     : sexo ? sexo : 'm'
           });
         }
@@ -219,7 +221,7 @@ module.exports = function(app, passport) {
   router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } },
@@ -232,7 +234,7 @@ module.exports = function(app, passport) {
         var sexo = result.pop().sexo;
         res.render("funcao_e_estrutura",
           {
-            id      : req.params['id'],
+            id      : req.params.id,
             address : '/cif/capitulo/',
             sex     : sexo ? sexo : 'm'
           });
@@ -244,7 +246,7 @@ module.exports = function(app, passport) {
   // Menu de atividade e partipação.
   router.get('/:id/atividade_e_participacao', app.isLoggedIn, function(req, res) {
     res.render("atividade_e_participacao", {
-      id      : req.params['id'],
+      id      : req.params.id,
       address : '/cif/capitulo/'
     });
   });
@@ -252,14 +254,14 @@ module.exports = function(app, passport) {
   // Menu de ambiente.
   router.get('/:id/ambiente', app.isLoggedIn, function(req, res) {
     res.render("ambiente", {
-      id      : req.params['id'],
+      id      : req.params.id,
       address : '/cif/capitulo/'
     });
   });
 
-  fillZeroData = function(db, pacient) {
+  fillZeroData = function(db, paciente) {
     var itens = db.collection('itens');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } }
@@ -267,98 +269,217 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        result.forEach(function(pacient) {
-          pacient.cif = {};
+        for (var index in result) {
+          paciente = result[index];
+          paciente.cif = {};
 
           dados.aggregate([
-            { $match : { p : String(pacient._id) } },
+            { $match : { p : String(paciente._id) } },
             { $sort  : { c : 1 } }
           ], function(err, result) {
             if (err) {
               res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
             } else {
-              result.forEach(function(datum, index) {});
+              // result.forEach(function(datum, index) {});
             }
           }
         );
-      })
-    }})
+      }
+    }});
   };
 
-  serializePacientData = function(pacient, separator) {
-    console.log("pacient =", pacient);
+  repeat = function(s, n) {
+    var a = [];
+    while (a.length < n) {
+      a.push(s);
+    }
 
-    if (separator == null) {
+    return a.join('');
+  };
+
+  writeDataColumn = function(pos, max, value) {
+    var data = "";
+    var separator = ",0";
+
+    console.log("writeDataColumn(%s,%s,%s)", pos, max, value);
+    if (pos < max) {
+      data += repeat(separator, pos + 1);
+      data += value;
+      data += repeat(separator, max - pos - 1);
+    }
+
+    return data;
+  };
+
+  // Gera planilha em formato csv.
+  serializeData = function(paciente, separator) {
+    console.log("paciente =", paciente);
+
+    if (separator === null) {
       separator = ',';
     }
 
-    data  = pacient.nome + separator;
-    data += pacient.dataNascimento + separator;
-    data += pacient.sexo + separator;
-    data += pacient.peso + separator;
-    data += pacient.altura + separator;
-    data += pacient.cpf + separator;
-    data += pacient.dependente + separator;
+    // Título dos dados.
+    var data;
+    data  = "Nome" + separator;
+    data += "Data de Nascimento" + separator;
+    data += "Gênero" + separator;
+    data += "Peso" + separator;
+    data += "Altura" + separator;
+    data += "CPF" + separator;
+    data += "Dependente";
+    data += "\n";
 
-    pacient.registros.forEach(function(registro) {
+    // Informações do paciente.
+    data += paciente.nome + separator;
+    data += paciente.dataNascimento + separator;
+    data += paciente.sexo + separator;
+    data += paciente.peso + separator;
+    data += paciente.altura + separator;
+    data += paciente.cpf + separator;
+    data += paciente.dependente ? "sim" : "não";
+    data += "\n\n";
+
+    // Registros
+    data += "Registros\n";
+    for (var registro in paciente.registros) {
       data += registro.nome + separator + registro.valor + separator;
-    });
-
-    if (pacient.morbidades.length != 0) {
-      pacient.morbidades.forEach(function(morbidade) {
-        data += morbidade + separator
-      });
     }
-    data += pacient.anamnese + separator;
+    data += "\n";
 
-    for (var key in pacient.cif) {
-      var values = pacient.cif[key];
-      console.log("values =", typeof values, values, Array.isArray(values));
-      data += key;
+    // Morbidades
+    data += "Morbidades\n";
+    if (paciente.morbidades.length !== 0) {
+      for (var morbidade in paciente.morbidades) {
+        data += morbidade + separator;
+      }
+    }
+    data += "\n";
+
+    // Anamnese
+    data += "Anamnese\n";
+    data += paciente.anamnese + separator;
+    data += "\n";
+
+    // CIF
+    data += "CIF\n";
+
+    // Variáveis de controle para geração da planilha
+    var bodyTitle = false;
+    var structureTitle = false;
+    var dTitle = false;
+    var environmentTitle = false;
+
+    for (var key in paciente.cif) {
+      var values = paciente.cif[key];
 
       if (key[0] == 'b') {
-        data += '.' + values.pop() + separator;
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var value = parseInt(values.pop());
+
+        if (!bodyTitle) {
+          for (var index in codigos) {
+            data += separator + codigos[index];
+          }
+          data += "\n";
+          bodyTitle = true;
+        }
+        data += key;
+        data += writeDataColumn(codigos.indexOf(value), codigos.length, 1);
+        data += "\n";
       }
       else if (key[0] == 's')
       {
-        data += '.';
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var posicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var q1 = parseInt(values.pop());
+        var q2 = parseInt(values.pop());
+        var q3 = parseInt(values.pop());
 
-        values.forEach(function(value) {
-          data += value;
-        });
+        // Exibi qualificadores de estrutura.
+        if (!structureTitle) {
+          for (var index in codigos) {
+            data += separator + codigos[index];
+          }
+          for (var index in posicao) {
+            data += separator + posicao[index];
+          }
+          for (var index in posicao) {
+            data += separator + posicao[index];
+          }
+          data += "\n";
+          structureTitle = true;
+        }
 
-        data += separator;
+        // Escreve os dados de estrutura
+        data += key;
+        data += writeDataColumn(codigos.indexOf(q1), codigos.length, 1);
+        data += writeDataColumn(posicao.indexOf(q2), posicao.length, 1);
+        data += writeDataColumn(posicao.indexOf(q3), posicao.length, 1);
+        data += "\n";
       }
       else if (key[0] == 'd')
       {
-        data += '.';
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var valor = parseInt(values.pop());
 
-        values.foreach(function(value) {
-          data += value;
-        });
-
-        data += separator;
+        if (!dTitle) {
+          for (var index in codigos) {
+            data += separator + codigos[index];
+          }
+          data += "\n";
+          dTitle = true;
+        }
+        data += key;
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, 1);
+        data += "\n";
       }
       else if (key[0] == 'e')
       {
-        var value = values.pop();
+        var codigos = [0, 1, 2, 3, 4, 8, 9];
+        var valor = parseInt(values.pop());
 
-        if (value < 0)
-          data += '.' + Math.abs(value) + separator;
-        else
-          data += '+' + value + separator;
+        if (!environmentTitle) {
+          for (var index in codigos) {
+            data += separator + codigos[index];
+          }
+
+          for (var index in codigos) {
+            data += separator + '="+' + codigos[index] + '"';
+          }
+
+          data += "\n";
+          environmentTitle = true;
+        }
+
+        data += key;
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, valor < 0 ? 1 : 0);
+        data += writeDataColumn(codigos.indexOf(valor), codigos.length, valor >= 0 ? 1 : 0);
+        data += "\n";
       }
     }
 
     return data;
   };
 
-  // Menu inicial.
+  sortObject = function(aObject) {
+    var keys = Object.keys(aObject).sort();
+    var sorted = [];
+
+    for (var key in keys) {
+      var property = keys[key];
+      sorted[property] = aObject[property];
+    }
+
+    return sorted;
+  };
+
+  // Monta tabela CIF.
   router.get('/:id/data', app.isLoggedIn, function(req, res) {
     var db = req.db2;
     var pacientes = db.collection('pacientes');
     var dados = db.collection('dados');
-    var id = req.params['id'];
+    var id = req.params.id;
 
     pacientes.aggregate([
       { $match : { _id : mongodb.ObjectId(id) } }
@@ -366,30 +487,55 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        result.forEach(function(pacient) {
-          pacient.cif = {};
+        for (var index in result) {
+          paciente = result[index];
+          paciente.cif = {};
 
           dados.aggregate([
-            { $match : { p : String(pacient._id) } },
-            { $sort  : { c : 1 } }
-          ], function(err, result) {
+            { $match : { p : null } },
+            { $sort  : { c : 1 } },
+          ], function(err, generic) {
             if (err) {
-              res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+              console.log('Erro ao ler dados de paciente');
+              res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente default') });
             } else {
-              result.forEach(function(datum, index) {
-                pacient.cif[datum.c] = datum.v;
-                if (index == result.length - 1) {
-                  var csvData = serializePacientData(pacient);
-                  res.set({
-                    'Content-Disposition': 'attachment; filename=sujeito.csv',
-                    'Content-type': 'text/csv'
+              for (var index in generic) {
+                datum = generic[index];
+                paciente.cif[datum.c] = datum.v;
+
+                // Terminado?
+                if (index == generic.length - 1) {
+                  dados.aggregate([
+                    { $match : { p : String(paciente._id) } },
+                    { $sort  : { c : 1 } }
+                  ], function(err, result) {
+                    if (err) {
+                      res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+                    } else {
+                      for (var index in result) {
+                        datum = result[index];
+                        console.log("rewriting: ", datum.c, ':', datum.v);
+                        paciente.cif[datum.c] = datum.v;
+
+                        // Envia como arquivo.
+                        if (index == result.length - 1) {
+                          // Ordena objeto contendo CIF.
+                          paciente.cif = sortObject(paciente.cif);
+                          var csvData = serializeData(paciente);
+                          res.set({
+                            'Content-Disposition': 'attachment; filename=sujeito.csv',
+                            'Content-type': 'text/csv'
+                          });
+                          res.send(csvData);
+                        }
+                      }
+                    }
                   });
-                  res.send(csvData);
                 }
-              });
+              }
             }
           });
-        })
+        }
       }
     });
   });

@@ -1,7 +1,7 @@
 /* menu.jade */
 
 .panel {
-  width: 100%;
+  width: 1200px;
   margin: auto;
 }
 
@@ -42,12 +42,11 @@ a.center {
 
 #b1, #b2, #b3, #b4, #b5, #b6, #b7 {
   position: absolute;
-  background-color: Transparent;
+  background-color: transparent;
   cursor: crosshair;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border: solid 1px gray;
+  width: 32px;
+  height: 32px;
+  border: 0px;
 }
 
 #s1, #s2, #s3, #s4, #s5, #s6, #s7, #s8 {
@@ -60,100 +59,152 @@ a.center {
   border: solid 1px gray;
 }
 
+.display-button {
+  background: url('/images/seletor.png') no-repeat top left;
+}
+
 div#man > div#map > #b1 {
-  top: 120px;
-  left: 113px;
-  width: 10px;
+  top: 110px;
+  left: 103px;
+}
+
+div#man > div#map > #b1:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b2 {
   top: 205px;
   left: 210px;
-  width: 10px;
+}
+
+div#man > div#map > #b2:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b3 {
-  top: 175px;
-  left: 113px;
-  width: 10px;
+  top: 165px;
+  left: 103px;
+}
+
+div#man > div#map > #b3:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b4 {
   top: 245px;
   left: 147px;
-  width: 10px;
+}
+
+div#man > div#map > #b4:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b5 {
   top: 350px;
-  left: 140px;
-  width: 10px;
+  left: 130px;
+}
+
+div#man > div#map > #b5:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b6 {
   top: 395px;
-  left: 130px;
-  width: 10px;
+  left: 120px;
+}
+
+div#man > div#map > #b6:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b7 {
   top: 520px;
   left: 133px;
-  width: 10px;
+}
+
+div#man > div#map > #b7:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #b8 {
   top: 600px;
   left: 175px;
-  width: 10px;
+}
+
+div#man > div#map > #b8:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b1 {
   top: 135px;
   left: 121px;
-  width: 10px;
+}
+
+div#woman > div#map > #b1:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b2 {
   top: 225px;
   left: 255px;
-  width: 10px;
+}
+
+div#woman > div#map > #b2:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b3 {
   top: 175px;
   left: 119px;
-  width: 10px;
+}
+
+div#woman > div#map > #b3:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b4 {
   top: 255px;
   left: 120px;
-  width: 10px;
+}
+
+div#woman > div#map > #b4:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b5 {
   top: 345px;
   left: 120px;
-  width: 10px;
+}
+
+div#woman > div#map > #b5:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b6 {
   top: 395px;
   left: 125px;
-  width: 10px;
+}
+
+div#woman > div#map > #b6:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b7 {
   top: 520px;
   left: 193px;
-  width: 10px;
+}
+
+div#woman > div#map > #b7:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#woman > div#map > #b8 {
   top: 600px;
   left: 173px;
-  width: 10px;
+}
+
+div#woman > div#map > #b8:hover {
+  background: url('/images/seletor.png') no-repeat top left;
 }
 
 div#man > div#map > #s1 {

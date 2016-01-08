@@ -5,7 +5,7 @@ module.exports = function(app, passport) {
   var mappings  = require('./mappings');
 
   router.get('/itens/:cif', function(req, res) {
-    var cif = req.params['cif'];
+    var cif = req.params.cif;
     var db = req.db2;
     var itens = db.collection('itens');
 
@@ -46,10 +46,11 @@ module.exports = function(app, passport) {
         console.log("erro: nenhum dado encontrado para", cif);
         func(undefined);
       }
-    })
+    });
   };
 
   renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
+    //console.log("renderCIF(%s, %i)", );
     subset[i] = result;
 
     if (len == 1) {
@@ -69,6 +70,7 @@ module.exports = function(app, passport) {
   };
 
   sendCIF = function(req, res, id, subset, result, i, len) {
+    //console.log("sendCIF(%s, %i)", );
     subset[i] = result;
 
     if (len == 1) {
@@ -84,17 +86,17 @@ module.exports = function(app, passport) {
   };
 
   router.post('/capitulo/:chapter/pagina/:page', app.isLoggedIn, function(req, res) {
-    var chapter = req.params['chapter'];
-    var page = req.params['page'] - 1;
+    var chapter = req.params.chapter;
+    var page = req.params.page - 1;
     var id = req.body.id;
     var db = req.db2;
     var itens = db.collection('itens');
     var subdomain = mappings.page2cif(chapter, page);
     var subset = Array(subdomain.length);
-    var count = subdomain.length;
+    var length = subdomain.length;
 
     subdomain.forEach(function(cif, i) {
-      loadCIF(itens, cif, function(result) { count = sendCIF(req, res, id, subset, result, i, count); } );
+      loadCIF(itens, cif, function(result) { length = sendCIF(req, res, id, subset, result, i, length); } );
     });
   });
 
@@ -103,7 +105,7 @@ module.exports = function(app, passport) {
   });
 
   router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
-    var chapter = req.params['chapter'];
+    var chapter = req.params.chapter;
     var id = req.body.id;
     var db = req.db2;
     var itens = db.collection('itens');
@@ -111,15 +113,15 @@ module.exports = function(app, passport) {
     var titles = data.titles;
     var subdomain = data.first;
     var subset = Array(subdomain.length);
-    var count = subdomain.length;
+    var length = subdomain.length;
 
     subdomain.forEach(function(cif, i) {
-      loadCIF(itens, cif, function(result) { count = renderCIF(req, res, id, chapter, titles, subset, result, i, count); } );
+      loadCIF(itens, cif, function(result) { length = renderCIF(req, res, id, chapter, titles, subset, result, i, length); } );
     });
   });
 
   router.get('/:id', function(req, res) {
-    var id = req.params['id'];
+    var id = req.params.id;
     var db = req.db;
     var pacientes = db.collection('pacientes');
 
@@ -143,9 +145,9 @@ module.exports = function(app, passport) {
 
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
-    var cif = req.params['cif'];
-    var pos = req.params['position'] - 1;
-    var value = req.params['value'];
+    var cif = req.params.cif;
+    var pos = req.params.position - 1;
+    var value = req.params.value;
     var id = req.body.id;
     var db = req.db2;
     var data = db.collection('dados');
@@ -163,9 +165,9 @@ module.exports = function(app, passport) {
         console.log(result.length, "resultados encontrados:", result);
         if (result) {
           result = result[0];
-          if (result == null) {
+          if (result === null) {
             result = { v: [] };
-          } else if (result.v == null) {
+          } else if (result.v === null) {
             result.v = [];
           }
         } else {
@@ -214,4 +216,4 @@ module.exports = function(app, passport) {
   };
 
   return router;
-}
+};

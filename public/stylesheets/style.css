@@ -15,9 +15,24 @@ td,th {
  background-color: lightgrey;
 }
 
-.fix-down {
+.fix-radio-left {
   position: relative;
-  top: 14px;
+  top: -15px;
+  left: -7px;
+  height: 36px;
+}
+
+.fix-radio {
+  position: relative;
+  top: -15px;
+  left: 2px;
+  height: 36px;
+}
+
+.fix-selector {
+  position: relative;
+  left: 7px;
+  height: 36px;
 }
 
 .topic {
@@ -35,4 +50,8 @@ td,th {
 
 .subgroup {
   padding-left: 15px;
+}
+
+.toggleVisible {
+  display: none;
 }
