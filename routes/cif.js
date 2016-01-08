@@ -160,7 +160,7 @@ module.exports = function(app, passport) {
   }
 
   // Propaga valor da CIF para níveis mais altos.
-  var cascadeUpdate = function(db, cif, value, res) {
+  var cascadeUpdate = function(db, patient, cif, value, res) {
     var items = db.collection('itens');
     var data = db.collection('dados');
     console.log("cascadeUpdate called.", cif);
@@ -183,7 +183,7 @@ module.exports = function(app, passport) {
         // Atualiza todos os itens daquele ramo.
         for (index in list) {
           data.findAndModify(
-            { c: list[index] }, // query
+            { p : patient, c: list[index] }, // query
             [[ 'c', 1 ]], // sort
             { $set: { v: value } }, // replacement
             { upsert: true }, // options
@@ -207,9 +207,10 @@ module.exports = function(app, passport) {
     console.log("save called with", req.body);
     var cif = req.params.cif;
     var value = req.params.value;
+    var patient = req.body.id;
     var db = req.db2;
 
-    cascadeUpdate(db, cif, value, res);
+    cascadeUpdate(db, patient, cif, value, res);
   });
 
   // Carrega e envia dados do paciente.
