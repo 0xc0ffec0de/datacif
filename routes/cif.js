@@ -50,6 +50,7 @@ module.exports = function(app, passport) {
   };
 
   renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
+    //console.log("renderCIF(%s, %i)", );
     subset[i] = result;
 
     if (len == 1) {
@@ -69,6 +70,7 @@ module.exports = function(app, passport) {
   };
 
   sendCIF = function(req, res, id, subset, result, i, len) {
+    //console.log("sendCIF(%s, %i)", );
     subset[i] = result;
 
     if (len == 1) {
@@ -93,10 +95,9 @@ module.exports = function(app, passport) {
     var subset = Array(subdomain.length);
     var length = subdomain.length;
 
-    for (var i in subdomain) {
-      cif = subdomain[i];
+    subdomain.forEach(function(cif, i) {
       loadCIF(itens, cif, function(result) { length = sendCIF(req, res, id, subset, result, i, length); } );
-    }
+    });
   });
 
   router.get('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
@@ -114,10 +115,9 @@ module.exports = function(app, passport) {
     var subset = Array(subdomain.length);
     var length = subdomain.length;
 
-    for (var i in subdomain) {
-      cif = subdomain[i];
+    subdomain.forEach(function(cif, i) {
       loadCIF(itens, cif, function(result) { length = renderCIF(req, res, id, chapter, titles, subset, result, i, length); } );
-    }
+    });
   });
 
   router.get('/:id', function(req, res) {
