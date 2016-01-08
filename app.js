@@ -14,7 +14,7 @@ var ObjectId      = require("mongolian").ObjectId;
 var MongoClient   = require("mongodb").MongoClient;
 
 // Load database.
-var server    = new Mongolian;
+var server    = new Mongolian();
 var db        = server.db('pf');
 var db2;
 
@@ -63,7 +63,7 @@ passport.use('local-login', new LocalStrategy(
           return done(null, false, req.flash('loginMessage', 'Senha incorreta.'));
         }
 
-        console.log("OK")
+        console.log("OK");
         return done(null, user);
       });
     });
@@ -112,7 +112,7 @@ app.isLoggedIn = function(req, res, next) {
   {
     res.redirect('/login');
   }
-}
+};
 
 // Simple route middleware to ensure user is admin.
 app.isAdmin = function(req, res, next) {
@@ -121,7 +121,7 @@ app.isAdmin = function(req, res, next) {
   } else {
     res.redirect('/paciente/lista');
   }
-}
+};
 
 // Define routes
 var cid      = require('./routes/cid')(app, passport);
@@ -148,7 +148,7 @@ app.use(function(req, res, next) {
 // Exibe mensagens de erro.
 app.get('/flash', function(req, res){
   // Set a flash message by passing the key, followed by the value, to req.flash().
-  req.flash('info', 'Flash is back!')
+  req.flash('info', 'Flash is back!');
   res.redirect('/');
 });
 
