@@ -16,10 +16,10 @@
 1. Crie o banco de dados da aplicação executando o script `./scripts/importdb.sh`
 1. Execute no terminal `./rundb.sh && ./runserver.sh`
 1. Aponte o browser para o endereço `http://localhost:3000`
-    * Com o usuário básico admin com senha `abcd` criado, use esta conta no seu primeiro login para criar um usuário normal de sua preferência. Saia da conta admin e entre usando a conta criada.
+    * Com o usuário básico `admin` com senha `abcd` criado, use esta conta no seu primeiro login para criar um usuário normal de sua preferência. Saia da conta admin e entre usando a conta criada.
 
 ## Contribuidores
 
-- [Paulo Barbosa, phfabarbosa] (https://github.com/phfabarbosa)
+- [Paulo Barbosa, @phfabarbosa] (https://github.com/phfabarbosa)
 - [Pedro Medeiros, @0xc0ffec0de](https://github.com/0xc0ffec0de)
 - [Tiago Mergulhão, @tmergulhao](https://github.com/tmergulhao)
