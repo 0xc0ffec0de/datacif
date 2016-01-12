@@ -1,0 +1,24 @@
+{
+  "name": "DataCIF",
+  "description": "",
+  "main": "./app.js",
+  "authors": [
+    "Pedro Medeiros",
+    "Paulo Barbosa",
+    "Tiago Mergulhão @tmergulhao <me@tmergulhao.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/0xc0ffec0de/datacif",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "jquery-ui": "~1.11.4"
+  }
+}
