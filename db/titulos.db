@@ -1,0 +1,30 @@
+{ "capitulo" : "b1", "conteudo" : [ "Funções mentais globais", "Funções mentais específicas" ] }
+{ "capitulo" : "b2", "conteudo" : [ "Visão e funções relacionadas", "Funções auditivas e vestibulares", "Funções sensoriais adicionais", "Dor" ] }
+{ "capitulo" : "b3", "conteudo" : [ "Funções da voz e da fala" ] }
+{ "capitulo" : "b4", "conteudo" : [ "Funções do Aparelho Cardiovascular, dos Sistemas Hematológico e Imunológico e do Aparelho Respiratório", "Funções do Sistema Hematológico e Imunológico", "Funções do Aparelho Respiratório", "Funções e Sensações Adicionais dos Aparelhos Cardiovascular e Respiratório" ] }
+{ "capitulo" : "b5", "conteudo" : [ "Funções Relacionadas com o Aparelho Digestivo", "Funções Relacionadas com os Sistemas Metabólicos e Endócrinos" ] }
+{ "capitulo" : "b6", "conteudo" : [ "Funções Urinárias", "Funções Sexuais e Reprodutivas" ] }
+{ "capitulo" : "b7", "conteudo" : [ "Funções das Articulações e dos Ossos", "Funções Musculares" ] }
+{ "capitulo" : "b8", "conteudo" : [ "Funções da Pele e Estruturas Relacionadas" ] }
+{ "capitulo" : "s1", "conteudo" : [ "Estrutura do sistema nervoso" ] }
+{ "capitulo" : "s2", "conteudo" : [ "Olho, ouvido e estruturas relacionadas" ] }
+{ "capitulo" : "s3", "conteudo" : [ "Estruturas relacionadas com a voz e a fala" ] }
+{ "capitulo" : "s4", "conteudo" : [ "Estrutura do Aparelho Cardiovascular, do Sistema Imunol. e do Aparelho Respirat." ] }
+{ "capitulo" : "s5", "conteudo" : [ "Estruturas Relacionadas com o Apar. Digestivo e com os Sist. Metaból. e Endócrino" ] }
+{ "capitulo" : "s6", "conteudo" : [ "Estruturas Relacionadas com o Aparelho Geniturinário e Reprodutivo" ] }
+{ "capitulo" : "s7", "conteudo" : [ "Estruturas Relacionadas com o Movimento" ] }
+{ "capitulo" : "s8", "conteudo" : [ "Pele e Estruturas Relacionadas" ] }
+{ "capitulo" : "d1", "conteudo" : [ "Experiências sensoriais e intencionais", "Aprendizagem básica", "Aplicação do conhecimento" ] }
+{ "capitulo" : "d2", "conteudo" : [ "Tarefas e exigências gerais" ] }
+{ "capitulo" : "d3", "conteudo" : [ "Comunicar e receber mensagens", "Comunicar e produzir mensagens", "Conversação e utilização de dispositivos e de técnicas de comunicação" ] }
+{ "capitulo" : "d4", "conteudo" : [ "Mudar e manter a posição do corpo", "Transportar, mover e manusear objetos", "Andar e deslocar-se", "Deslocar-se utilizando transporte" ] }
+{ "capitulo" : "d5", "conteudo" : [ "Autos cuidados" ] }
+{ "capitulo" : "d6", "conteudo" : [ "Aquisição do necessário para sobreviver", "Tarefas domésticas", "Cuidar dos objetos da casa e ajudar os outros" ] }
+{ "capitulo" : "d7", "conteudo" : [ "Interações interpessoais gerais", "Relacionamentos interpessoais particulares" ] }
+{ "capitulo" : "d8", "conteudo" : [ "Educação", "Trabalho e emprego", "Vida econômica" ] }
+{ "capitulo" : "d9", "conteudo" : [ "Vida comunitária, social e cívica" ] }
+{ "capitulo" : "e1", "conteudo" : [ "Produtos e tecnologia" ] }
+{ "capitulo" : "e2", "conteudo" : [ "Ambiente natural e mudanças ambientais feitas pelo ser humano" ] }
+{ "capitulo" : "e3", "conteudo" : [ "Apoio e relacionamentos" ] }
+{ "capitulo" : "e4", "conteudo" : [ "Atitudes" ] }
+{ "capitulo" : "e5", "conteudo" : [ "Serviços, sistemas e serviços" ] }
