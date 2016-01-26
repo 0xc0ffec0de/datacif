@@ -10,11 +10,10 @@ module.exports = function(app, db) {
   });
 
   passport.deserializeUser(function(id, done) {
-    console.log("deserializeUser() called with db = ", db);
     var users = db.collection('usuarios');
 
     users.findOne({ _id: new ObjectId(id) }, function(err, user) {
-    done(err, user);
+      done(err, user);
     });
   });
 
