@@ -297,7 +297,6 @@ onSelectEnvironmentOption = function(e, ui) {
 
 addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   // console.log("addFunctionOptions) value = ", value);
-  var value = parseInt(value);
   var $td = $("<td id='" + cif + "-span'>");
   var $div = $("<div>");
   var $leftSpan = $("<span>");
@@ -310,6 +309,13 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   $rightSpan.css({ overflow: 'hidden' });
   $rightSpan.attr('id', cif + '-radio');
 
+  var criteria = [
+    function (x) { return x >= 5  && x <= 24;  },
+    function (x) { return x >= 25 && x <= 49;  },
+    function (x) { return x >= 50 && x <= 74;  },
+    function (x) { return x >= 75 && x <= 100; }
+  ];
+  var enabled = false;
   var $select = $("<select id='" + cif + "-" + name + "'>");
   var options = parOptions || [
     "1 : disfunção leve, 5%-24%",
@@ -323,8 +329,9 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   for (var i = 0; i < options.length; ++i) {
     var option;
 
-    if ((value - 1) === i) {
+    if (criteria[i](value)) {
       option = $("<option value='" + i + "' selected>" + options[i] + "</option>");
+      enabled = true;
     } else {
       option = $("<option value='" + i + "'>" + options[i] + "</option>");
     }
@@ -332,7 +339,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     $select.append(option);
   }
 
-  if (value === 0 || value === 8 || value === 9) {
+  if (!enabled) {
     $select.prop("disabled", "true");
   }
 
@@ -345,7 +352,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   });
   $f.parent().find('label').addClass('fix-radio-left');
 
-  var $i = addRadio($rightSpan, cif, 2, cif + "-" + name + "-radio", ["I", "Incapacidade"], value > 0 && value < 8).change(function() {
+  var $i = addRadio($rightSpan, cif, 2, cif + "-" + name + "-radio", ["I", "Incapacidade"], !isNaN(value)).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", false);
@@ -354,7 +361,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   });
   $i.parent().find('label').addClass('fix-radio');
 
-  var $ne = addRadio($rightSpan, cif, 3, cif + "-" + name + "-radio", ["NE", "Não especificado"], value === 8).change(function() {
+  var $ne = addRadio($rightSpan, cif, 3, cif + "-" + name + "-radio", ["NE", "Não especificado"], value == 'NE').change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
@@ -363,7 +370,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   });
   $ne.parent().find('label').addClass('fix-radio');
 
-  var $na = addRadio($rightSpan, cif, 4, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value === 9).change(function() {
+  var $na = addRadio($rightSpan, cif, 4, cif + "-" + name + "-radio", ["NA", "Não aplicável"], value == 'NA').change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
@@ -536,7 +543,7 @@ addEnvironmentOptions = function($parent, cif, name, value, parOptions, width) {
   $select.selectmenu({ select: onSelectEnvironmentOption, width: width || "230px", height: "28px" });
 };
 
-// (*)createFunctionItem
+// was: createFunctionItem
 addBodyItem = function($parent, cif, text, info, value, shrunk) {
   // CIF
   var $cif = $("<td id='" + cif + "-code'>");
