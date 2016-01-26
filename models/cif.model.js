@@ -1,5 +1,5 @@
 // Carrega classe pai.
-require('./class');
+require('../library/class');
 
 var CIF_Model = Class.extend({
 
@@ -65,25 +65,92 @@ var CIF_Model = Class.extend({
     },
 
     /**
-     *
+     * Zera array com códigos da CIF preenchidos.
+     * @param array
+     * @returns {Array|*}
+     */
+    zerify: function(array) {
+        result = new Array(array.length);
+        for (var index in result) {
+            result[index] = 0;
+        }
+        return result;
+    },
+
+    /**
+     * Cria array para armazenar dados de acordo com o domínio do CIF.
+     * @param cif
+     * @returns {number[]}
+     */
+    zero: function(cif) {
+        switch (cif.substr(0, 1)) {
+            case 'b':
+                return [ 0 ];
+            case 's':
+                return [ 0, 0 ]; // adicional sugerido
+            case 'd':
+                return [ 0 ];
+            case 'e':
+                return [ 0 ];
+        }
+    },
+
+    /**
+     * Escreve o valor no nó pai de acordo com o conteúdo dos filhos.
      * @param patient
      * @param jsParent
      * @param node
      * @param value
      */
-    writeParentNodeData: function (patient, jsParent) {
+    writeParentNodeData: function (patient, jsParent, pos) {
         console.log("writeParentNodeData() called.");
         var Patient_Model = require('./paciente.model')(req, res);
         var sum = 0;
 
         for (var index in jsParent.items) {
-            Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, function (pacient, cif, values) {
-                sum += values[0];
-                console.log("[0]Sum = " + sum);
+            Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, undefined, function (pacient, cif, values, error) {
+                if (!error) {
+                    counter++;
+                    console.log(counter + "] sum = " + sum + " + " + values);
+                    sum += parseInt(values[pos]);
+
+                    // Último item somado.
+                    if (counter == jsParent.items.length) {
+                        var value = sum / counter;
+                        console.log("[0]value = " + value);
+                        Patient_Model.updateDataAndCall(patient, jsParent.cif, pos, value);
+                    }
+                }
             });
         }
+    },
 
-        console.log("[1]Sum = ", sum);
+    /**
+     * Encontra elemento com o cif especificado na estrutura.
+     * @param jsStructure a estrutura
+     * @param cif o código do elemento a procurar
+     * @returns {*}
+     */
+    findStructure: function (jsStructure, cif) {
+        // Condição de parada encontrada.
+        if (jsStructure.cif == cif) {
+            return jsStructure;
+        }
+        else
+        {
+            var name = cif.substr(0, jsStructure.cif.length + 1);
+            var found = false;
+
+            for (var index in jsStructure.items) {
+                if (jsStructure.items[index].cif == name) {
+                    found = true;
+                    jsStructure = jsStructure.items[index];
+                    break;
+                }
+            }
+            return found ? self.findStructure(jsStructure, cif) : "lulz";
+        }
+
     },
 
     /**
