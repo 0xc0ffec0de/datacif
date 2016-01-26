@@ -11,7 +11,7 @@ module.exports = function(passport) {
   var session       = require('express-session');
   var Constants     = require("./constants");
 
-  // Configuração de visão (MVC)
+  // Configuração de visão do MVC.
   app.set('views', path.join(Constants.ROOT_PATH, 'views'));
   app.set('view engine', 'jade');
 
@@ -22,16 +22,16 @@ module.exports = function(passport) {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
 
-  // Session stuff
+  // "Estufas" de sessão
   app.use(session({ secret: 'whatdoesthefoxsay?',
             resave: false,
             saveUninitialized: false }));
             // cookie: { maxAge: 600000 }}));
 
-  // Static files at public.
+  // Arquivos em "public" são estáticos.
   app.use(express.static(path.join(Constants.ROOT_PATH, 'public')));
 
-  // Simple route middleware to ensure user is authenticated.
+  // Rota de middleware que testa se usuário está autenticado.
   app.isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
@@ -40,7 +40,7 @@ module.exports = function(passport) {
     }
   };
 
-  // Simple route middleware to ensure user is admin.
+  // Rota de middleware que testa se usuário é administrador.
   app.isAdmin = function(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
