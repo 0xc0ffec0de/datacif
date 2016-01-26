@@ -4,18 +4,21 @@ require('../library/error.class');
 
 var Paciente_Model = Class.extend({
 
+    self: null,
+
     req: null,
 
     res: null,
 
     init: function (aReq, aRes) {
-        console.log("Paciente_Model.init() called.");
+        self = this;
         req = aReq;
         res = aRes;
     },
 
     updateDataAndCall: function (patient, cif, pos, value, func) {
-        if (!pos) {
+        self = this;
+        if (isNaN(pos)) {
             var error = new Error("argumento pos não especificado");
             if (func !== undefined) {
                 func(patient, cif, undefined, error);
@@ -166,6 +169,12 @@ var Paciente_Model = Class.extend({
 
 });
 
+GLOBAL._paciente_model_initialized = false;
+
 module.exports = function (req, res) {
-    return new Paciente_Model(req, res);
+    if (!GLOBAL._paciente_model_initialized) {
+        GLOBAL._paciente_model = new Paciente_Model(req, res);
+        GLOBAL._paciente_model_initialized = true;
+    }
+    return GLOBAL._paciente_model;
 };

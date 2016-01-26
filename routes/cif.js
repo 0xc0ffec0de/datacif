@@ -173,8 +173,8 @@ module.exports = function(app, passport) {
   };
 
   // Salva alteração da CIF no banco de dados.
-  router.post('/save/:cif/:position/:value', function(req, res) {
-    console.log("save called with", req.body);
+  router.post('/save/:cif/:position/:value', app.isLoggedIn, function(req, res) {
+    console.log("save called.");
     var Paciente_Model = require('../models/paciente.model')(req, res);
     var CIF_Model = require('../models/cif.model')(req, res);
     var patient = req.body.id;
@@ -184,7 +184,7 @@ module.exports = function(app, passport) {
     var data = req.db.collection('dados');
 
     // Obtem valor antigo do dado do paciente.
-    Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values, error) {
+    Paciente_Model.readDataAndCall(patient, cif, undefined, function(patient, cif, values, error) {
       if (!error) {
         // Atualiza um item em cascata.
         console.log('values = ' + values);
@@ -193,7 +193,7 @@ module.exports = function(app, passport) {
 
         Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
             // Processa nós de nível mais baixo.
-            CIF_Model.processCIFDownwards(patient, cif);
+            CIF_Model.processCIFDownwards(patient, cif, pos);
 
             console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
             res.send(error ? {r: 'ERROR'} : {r: 'OK'});
@@ -201,6 +201,7 @@ module.exports = function(app, passport) {
       }
       else
       {
+        console.log("save got error: ", error.message);
         res.send({r: 'ERROR'});
       }
     })
