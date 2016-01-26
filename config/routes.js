@@ -10,7 +10,6 @@ module.exports = function(app, db, passport) {
 
   // Torna BD accessível pelo roteador.
   app.use(function(req, res, next) {
-	console.log("Connection attached to req: ");
 	req.db = db;
 	next();
   });

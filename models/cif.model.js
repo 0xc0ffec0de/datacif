@@ -3,6 +3,8 @@ require('./class');
 
 var CIF_Model = Class.extend({
 
+    self: null,
+
     res: null,
 
     req: null,
@@ -11,6 +13,7 @@ var CIF_Model = Class.extend({
         console.log("CIF_Model.init() called.");
         req = aReq;
         res = aRes;
+        self = this;
     },
 
     /**
@@ -53,7 +56,7 @@ var CIF_Model = Class.extend({
             if (node.items) {
                 for (index in node.items) {
                     console.log("collectCIF(%s)", node.items[index]);
-                    list = this.collectCIF(list, node.items[index]);
+                    list = self.collectCIF(list, node.items[index]);
                 }
             }
         }
@@ -61,33 +64,78 @@ var CIF_Model = Class.extend({
         return list;
     },
 
-    writeParentNodeData: function (patient, jsParent, node, value) {
+    /**
+     *
+     * @param patient
+     * @param jsParent
+     * @param node
+     * @param value
+     */
+    writeParentNodeData: function (patient, jsParent) {
+        console.log("writeParentNodeData() called.");
         var Patient_Model = require('./paciente.class')(req, res);
-        var cif = node.substr(0, node.length - 1);
+        var sum = 0;
 
         for (var index in jsParent.items) {
-            // Encontrado!
-            if (jsParent.items[index].cif == cif) {
-                Patient_Model.writeDataAndCall(patient, cif, value);
+            Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, function (pacient, cif, values) {
+                sum += values[0];
+            });
+        }
+
+        console.log("Sum = ", sum);
+    },
+
+    /**
+     * Encontra o ramo parente imediato de nó
+     * @param jsParent o ramo da busca
+     * @param node o nó filho
+     * @returns {*}
+     */
+    findAdjacentParent: function (jsParent, node) {
+        // Condição de parada encontrada.
+        if (node.length == jsParent.cif.length + 1) {
+            return jsParent;
+        }
+        else
+        {
+            var name = node.substr(0, jsParent.cif.length + 1);
+            var found = false;
+
+            for (var item in jsParent.items) {
+                if (item.cif == name) {
+                    found = true;
+                    jsParent = item;
+                    break;
+                }
             }
+            return found ? self.findAdjacentParent(jsParent, node) : null;
         }
     },
 
+    /**
+     *
+     * @param patient
+     * @param jsParent
+     * @param node
+     */
     recursiveWriter: function (patient, jsParent, node) {
+        console.log("recursiveWriter() called.");
         // Condição de parada: retorna sem fazer nada.
         if (node.length == jsParent.cif.length) {
             return;
         }
         // Obtem o parente adjacente ao nível do nó.
         else if (node.length > jsParent.cif.length + 1) {
-            var parent = node.substr(0, node.length - 1);
-            this.writeParentNodeData(patient, jsParent, parent, value);
+            jsNewParent = self.findAdjacentParent(jsParent, node);
+            console.log("findAdjacentParent returned ", jsNewParent);
+            self.writeParentNodeData(patient, jsNewParent, node);
             var next = parent.substr(0, parent.length - 1);
-            this.bla(patient, jsParent, next, value);
+            self.recursiveWriter(patient, jsParent, next);
         }
         // Parente já é adjacente.
         else {
-            this.writeParentNodeData(patient, jsParent, node, value);
+            //console.log("this = ", self);
+            self.writeParentNodeData(patient, jsParent, node);
         }
     },
 
@@ -96,19 +144,23 @@ var CIF_Model = Class.extend({
      * @param cif o código da CIF.
      * @param func função a ser executada quando o resultado for retornado.
      */
-    processCIFBranch: function (cif, func) {
+    processCIFBranch: function (patient, parent, cif, func) {
+        console.log("processCIFBranch() called with: ", parent, ": ", cif);
         var items = req.db.collection('itens');
 
+        // Acha o item parente no banco de dados.
         items.aggregate([
-            {$match: {cif: cif}},
+            {$match: {cif: parent}},
             {$project: {_id: 0, cif: "$cif", description: "$description", items: "$items"}},
             {$sort: {cif: 1}}
-        ]).toArray(function (err, result) {
-            if (err) {
-                console.log("processCIFBranch(): ", err);
+        ]).toArray(function (error, result) {
+            if (error) {
+                console.log("processCIFBranch(): ", error.message);
             } else if (result.length == 1) {
                 console.log("processCIFBranch() encontrou 1 resultado");
-                func(result[0]);
+                if (func !== undefined) {
+                    func(patient, result[0], cif);
+                }
             } else {
                 // Nada encontrado.
                 console.log("processCIFBranch(): nenhum dado encontrado.");
@@ -123,18 +175,22 @@ var CIF_Model = Class.extend({
      * @param value o valor alterado.
      */
     // Propaga valor da CIF para níveis mais baixos.
-    processCIFDownwards: function (patient, cif, value) {
+    processCIFDownwards: function (patient, cif) {
+        console.log("processCIFDownwards() called.");
         // 1# nível?
         switch (cif.length) {
             case 4: // 1o nível
+                console.log("processCIFDownwards: nothing to do.");
                 return;
             case 5: // 2o nível
-                var term = cif.substr(0, 3);
-                this.processCIFBranch(db, term, cif, bla);
+                var parent = cif.substr(0, 4);
+                console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
+                self.processCIFBranch(patient, parent, cif, self.recursiveWriter);
                 break;
             case 6: // 3o nível
-                var term = cif.substr(0, 3);
-                this.processCIFBranch(db, term, cif, bla);
+                var parent = cif.substr(0, 4);
+                console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
+                self.processCIFBranch(patient, parent, cif, self.recursiveWriter);
                 break;
         }
     }

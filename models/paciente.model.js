@@ -84,7 +84,7 @@ var Paciente_Model = Class.extend({
 
     // Propaga valor da CIF para níveis mais altos (em direção às folhas).
     cascadeUpdate: function(patient, cif, values, func) {
-        var CIF_Model = require('./cif.class')(req, res);
+        var CIF_Model = require('./cif.model')(req, res);
         var items = req.db.collection('itens');
         var data = req.db.collection('dados');
         var that = this;

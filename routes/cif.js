@@ -4,7 +4,7 @@ module.exports = function(app, passport) {
   var ObjectId = require('mongodb').ObjectId;
 
   router.get('/itens/:cif', function(req, res) {
-    var CIF_Model = require('../models/cif.class')(req, res);
+    var CIF_Model = require('../models/cif.model')(req, res);
     var cif = req.params.cif;
     CIF_Model.sendAsJSON(cif);
   });
@@ -175,23 +175,27 @@ module.exports = function(app, passport) {
   // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
-    var Paciente_Model = require('../models/paciente.class')(req, res);
+    var Paciente_Model = require('../models/paciente.model')(req, res);
+    var CIF_Model = require('../models/cif.model')(req, res);
     var patient = req.body.id;
     var cif = req.params.cif;
     var value = req.params.value;
     var pos = req.params.position - 1;
     var data = req.db.collection('dados');
 
+    //CIF_Model.processCIFDownwards(patient, cif);
+
     // Obtem valor antigo do dado do paciente.
     Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values) {
       // Atualiza um item em cascata.
       values[pos] = value;
       console.log('values = ' + values);
+
       Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
         console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
         res.send(error ? { r : 'ERROR' } : { r : 'OK' });
       });
-    });
+    })
   });
 
   // Carrega e envia dados preenchidos do paciente.
