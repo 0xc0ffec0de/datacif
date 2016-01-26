@@ -3,14 +3,11 @@ require('../library/class');
 
 var CIF_Model = Class.extend({
 
-    self: null,
-
     res: null,
 
     req: null,
 
     init: function (aReq, aRes) {
-        self = this;
         req = aReq;
         res = aRes;
     },
@@ -55,7 +52,7 @@ var CIF_Model = Class.extend({
             if (node.items) {
                 for (index in node.items) {
                     console.log("collectCIF(%s)", node.items[index]);
-                    list = self.collectCIF(list, node.items[index]);
+                    list = this.collectCIF(list, node.items[index]);
                 }
             }
         }
@@ -98,10 +95,15 @@ var CIF_Model = Class.extend({
      * Escreve o valor no nó pai de acordo com o conteúdo dos filhos.
      * @param patient
      * @param jsParent
-     * @param node
-     * @param value
+     * @param pos
+     * @param func
      */
-    writeParentNodeData: function (patient, jsParent, pos) {
+    writeParentNodeData: function (patient, jsParent, pos, func) {
+        if (!jsParent) {
+            console.log('Parâmetro `jsParent` não pode ser nulo.');
+            return;
+        }
+
         console.log("writeParentNodeData() called with pos = ", pos);
         var Patient_Model = require('./paciente.model')(req, res);
         var sum = 0;
@@ -111,16 +113,17 @@ var CIF_Model = Class.extend({
             Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, undefined, function (pacient, cif, values, error) {
                 if (!error) {
                     counter++;
-                    console.log(counter + "] sum = " + sum + " + " + values[pos]);
+                    //console.log(counter + "] sum = " + sum + " + " + values[pos]);
                     if (!isNaN(values[pos])) {
-                        sum += parseInt(values[pos]);
+                        sum += parseFloat(values[pos]);
                     }
 
                     // Último item somado.
                     if (counter == jsParent.items.length) {
+                        console.log("writeParentNodeData) value = " + sum + " / " + counter + " = " + (sum / counter));
                         var value = sum / counter;
                         console.log("[0]value = " + value);
-                        Patient_Model.updateDataAndCall(patient, jsParent.cif, pos, value);
+                        Patient_Model.updateDataAndCall(patient, jsParent.cif, pos, value, func);
                     }
                 }
             });
@@ -170,15 +173,17 @@ var CIF_Model = Class.extend({
         {
             var name = node.substr(0, jsParent.cif.length + 1);
             var found = false;
+            console.log("findAdjacentParent between ", jsParent.cif, "and ", name, " first.");
 
-            for (var item in jsParent.items) {
-                if (item.cif == name) {
+            for (var index in jsParent.items) {
+                console.log("findAdjacentParent: ", jsParent.cif, "and ", name, " first.");
+                if (jsParent.items[index].cif == name) {
                     found = true;
-                    jsParent = item;
+                    jsParent = jsParent.items[index];
                     break;
                 }
             }
-            return found ? self.findAdjacentParent(jsParent, node) : null;
+            return found ? this.findAdjacentParent(jsParent, node) : null;
         }
     },
 
@@ -196,16 +201,17 @@ var CIF_Model = Class.extend({
         }
         // Obtem o parente adjacente ao nível do nó.
         else if (node.length > jsParent.cif.length + 1) {
-            jsNewParent = self.findAdjacentParent(jsParent, node);
+            console.log("findAdjacentParent between ", jsParent.cif, "and ", node);
+            jsNewParent = GLOBAL._cif_model.findAdjacentParent(jsParent, node);
             console.log("findAdjacentParent returned ", jsNewParent);
-            self.writeParentNodeData(patient, jsNewParent, pos);
-            var next = parent.substr(0, parent.length - 1);
-            self.recursiveWriter(patient, jsParent, next, pos);
+            GLOBAL._cif_model.writeParentNodeData(patient, jsNewParent, pos, function(patient, cif, values, error) {
+                GLOBAL._cif_model.recursiveWriter(patient, jsParent, jsNewParent.cif, pos);
+            });
         }
         // Parente já é adjacente.
         else {
-            //console.log("this = ", self);
-            self.writeParentNodeData(patient, jsParent, pos);
+            //console.log("this = ", this.;
+            this.writeParentNodeData(patient, jsParent, pos);
         }
     },
 
@@ -255,12 +261,12 @@ var CIF_Model = Class.extend({
             case 5: // 2o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                self.processCIFBranch(patient, parent, cif, pos, self.recursiveWriter);
+                this.processCIFBranch(patient, parent, cif, pos, this.recursiveWriter);
                 break;
             case 6: // 3o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                self.processCIFBranch(patient, parent, cif, pos, self.recursiveWriter);
+                this.processCIFBranch(patient, parent, cif, pos, this.recursiveWriter);
                 break;
         }
     }

@@ -4,22 +4,18 @@ require('../library/error.class');
 
 var Paciente_Model = Class.extend({
 
-    self: null,
-
     req: null,
 
     res: null,
 
     init: function (aReq, aRes) {
-        self = this;
         req = aReq;
         res = aRes;
     },
 
     updateDataAndCall: function (patient, cif, pos, value, func) {
-        self = this;
         if (isNaN(pos)) {
-            var error = new Error("argumento pos não especificado");
+            var error = new Error("argumento `pos` não especificado");
             if (func !== undefined) {
                 func(patient, cif, undefined, error);
             }
@@ -27,10 +23,10 @@ var Paciente_Model = Class.extend({
             return;
         }
 
-        self.readDataAndCall(patient, cif, undefined, function (patient, cif, values, error) {
+        this.readDataAndCall(patient, cif, undefined, function (patient, cif, values, error) {
             if (!error) {
                 values[pos] = value;
-                self.writeDataAndCall(patient, cif, values, func);
+                GLOBAL._paciente_model.writeDataAndCall(patient, cif, values, func);
             }
             else {
                 if (func !== undefined) {
@@ -118,7 +114,7 @@ var Paciente_Model = Class.extend({
             }
 
             // Chama função com o resultado obtido.
-            console.log("readDataAndCall() returned ", value)
+            console.log("readDataAndCall(" + cif + ") returned:", value)
             if (func !== undefined) {
                 func(patient, cif, value);
             }
@@ -148,7 +144,7 @@ var Paciente_Model = Class.extend({
                 var operations = 0;
                 var errors = false;
                 var jsNode = CIF_Model.findStructure(result[0], cif);
-                console.log("jsSelf = " + jsNode);
+                console.log("jsNode = " + jsNode);
                 var list = CIF_Model.collectCIF([], jsNode);
                 console.log("list = ", list);
 
