@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
 /**
+ * Constants.
+ */
+require('../config/constants');
+
+/**
  * Module dependencies.
  */
 

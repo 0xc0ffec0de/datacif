@@ -2,14 +2,12 @@ module.exports = function(app, passport) {
   var express   = require('express');
   var router    = express.Router();
   var ObjectId  = require("mongolian").ObjectId;
-  var mappings  = require('./mappings');
 
   router.get('/itens/:cif', function(req, res) {
     var cif = req.params.cif;
-    var db = req.db2;
-    var itens = db.collection('itens');
+    var items = req.db.collection('itens');
 
-    itens.aggregate([
+    items.aggregate([
       { $match: { cif : cif } },
       { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
       { $sort: { cif : 1 } }
@@ -28,7 +26,7 @@ module.exports = function(app, passport) {
     });
   });
 
-  loadCIF = function(collection, cif, func) {
+  var loadCIF = function(collection, cif, func) {
     console.log("loadCIF(%s)", cif);
 
     collection.aggregate([
@@ -41,7 +39,7 @@ module.exports = function(app, passport) {
         func(undefined);
       } else if (result.length == 1) {
         console.log("loadCIF(", cif, ") retornou OK.");
-        //console.log("Resultado encontrado para", cif, ':', result[0]);
+        //console.log("Resultado encontrado para ", cif, ':', result[0]);
         func(result[0]);
       } else {
         console.log("erro: nenhum dado encontrado para", cif);
@@ -50,7 +48,7 @@ module.exports = function(app, passport) {
     });
   };
 
-  renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
+  var renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
     //console.log("renderCIF(%s, %i)", );
     subset[i] = result;
 
@@ -70,7 +68,7 @@ module.exports = function(app, passport) {
     return len - 1;
   };
 
-  sendCIF = function(req, res, id, subset, result, i, len) {
+  var sendCIF = function(req, res, id, subset, result, i, len) {
     console.log("sendCIF() called with len = ", len);
     subset[i] = result;
 
@@ -87,7 +85,7 @@ module.exports = function(app, passport) {
     return len - 1;
   };
 
-  processChapterData = function(db, chapter, func) {
+  var processChapterData = function(db, chapter, func) {
     var screens = db.collection('telas');
 
     result = screens.aggregate([
@@ -109,10 +107,9 @@ module.exports = function(app, passport) {
     var chapter = req.params.chapter;
     var page = req.params.page - 1;
     var id = req.body.id;
-    var db = req.db2;
-    var items = db.collection('itens');
+    var items = req.db.collection('itens');
 
-    processChapterData(db, chapter, function(subdomain) {
+    processChapterData(req.db, chapter, function(subdomain) {
       var length = subdomain['conteudo'][page]['nos'].length;
       var subset = Array(length);
 
@@ -130,10 +127,9 @@ module.exports = function(app, passport) {
   router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
     var chapter = req.params.chapter;
     var id = req.body.id;
-    var db = req.db2;
-    var itens = db.collection('itens');
+    var itens = req.db.collection('itens');
 
-    processChapterData(db, chapter, function(data) {
+    processChapterData(req.db, chapter, function(data) {
       //console.log("data = ", data);
       var subdomain = data['conteudo'][0]['nos'];
       var subset = Array(subdomain.length);
@@ -155,8 +151,7 @@ module.exports = function(app, passport) {
 
   router.get('/:id', function(req, res) {
     var id = req.params.id;
-    var db = req.db;
-    var pacientes = db.collection('pacientes');
+    var pacientes = req.db.collection('pacientes');
 
     // pacientes.findOne({ _id: id }, {}, function(err, docs) {
     pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
@@ -235,6 +230,62 @@ module.exports = function(app, passport) {
     });
   };
 
+  var processCIFBranch = function(db, cif, func) {
+    var items = db.collection('itens');
+
+    items.aggregate([
+      { $match: { cif : cif } },
+      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
+      { $sort: { cif : 1 } }
+    ]).toArray(function(err, result) {
+      if (err) {
+        console.log("processCIFBranch(): ", err);
+      } else if (result.length == 1) {
+        console.log("processCIFBranch() encontrou 1 resultado");
+        func(result[0]);
+      } else {
+        // Nada encontrado.
+        console.log("processCIFBranch(): nenhum dado encontrado.");
+      }
+    });
+  };
+
+  var bla = function(db, jsParent, node, gatheredNodes) {
+    // Obtem o parente adjacente ao nível do nó.
+    if (node.length > jsParent.cif.length + 1) {
+      var parent = node.substr(0, node.length - 1);
+      writePatientData()
+
+
+
+      var nodes = bla(db, newParent, node, []);
+    }
+
+    for (var lol in jsParent.items) {
+      if (jsParent.items[lol] == node) {
+        gatheredNodes
+      }
+    }
+  }
+
+  // Propaga valor da CIF para níveis mais baixos.
+  var processCIFDownwards = function(db, patient, cif, value, res) {
+
+    // 1# nível?
+    switch (cif.length) {
+      case 4: // 1o nível
+        return;
+      case 5: // 2o nível
+        var term = cif.substr(0, 3);
+        processCIFBranch(db, term, cif, bla(db, result));
+      case 6: // 3o nível
+        var term = cif.substr(0, 3);
+        processCIFBranch(db, term, cif, function (result) {
+
+        });
+    }
+  };
+
   // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
@@ -242,8 +293,7 @@ module.exports = function(app, passport) {
     var cif = req.params.cif;
     var value = req.params.value;
     var pos = req.params.position - 1;
-    var db = req.db2;
-    var data = db.collection('dados');
+    var data = req.db.collection('dados');
 
     // Obtem valor antigo do dado do paciente.
     data.aggregate([
@@ -265,7 +315,7 @@ module.exports = function(app, passport) {
       // Atualiza um item em cascata.
       values[pos] = value;
       console.log('values = ' + values);
-      cascadeUpdate(db, patient, cif, values, res);
+      cascadeUpdate(req.db, patient, cif, values, res);
     });
 
   });
@@ -273,8 +323,7 @@ module.exports = function(app, passport) {
   // Carrega e envia dados preenchidos do paciente.
   sendPatientData = function(req, res, patient, func) {
     console.log("sendPatientData() called.");
-    var db = req.db2;
-    var data = db.collection('dados');
+    var data = req.db.collection('dados');
 
     data.aggregate([
       { $match: { p : patient } },

@@ -193,8 +193,7 @@ module.exports = function(app, passport) {
 
   // Menu inicial.
   router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
-    var db = req.db2;
-    var pacientes = db.collection('pacientes');
+    var pacientes = req.db.collection('pacientes');
     var id = req.params.id;
 
     pacientes.aggregate([
@@ -219,7 +218,7 @@ module.exports = function(app, passport) {
 
   // Menu de função e estrutura.
   router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
-    var db = req.db2;
+    var db = req.db;
     var pacientes = db.collection('pacientes');
     var id = req.params.id;
 

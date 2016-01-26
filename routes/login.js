@@ -11,7 +11,7 @@ module.exports = function(app, passport) {
     });
   });
 
-  router.post('/credentials', passport.authenticate('local-login', {
+  router.post('/login/credentials', passport.authenticate('local-login', {
       successRedirect : '/paciente/lista',
       failureRedirect : '/login',
       failureFlash    : true // allow flash messages

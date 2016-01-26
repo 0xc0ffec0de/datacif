@@ -1,0 +1,153 @@
+extends form-layout
+
+block content
+  h1= title
+  form#formAdicionaPaciente(name="adicionaPaciente", method="post", action="#{address}")
+    input#cidlist(type="hidden", value="")
+
+    div.firstColumn
+      if locals._id
+        input(type="hidden", name="_id", value="#{_id}")
+      p Nome
+        input(type="text", placeholder="Nome do paciente", name="nome", value="#{nome}")
+      p Data de nascimento
+        input#nasc(type="text", placeholder="Data de nascimento", name="dataNascimento" value="#{dataNascimento}")
+        script.
+          $(function() {
+            $("input#nasc").datepicker();
+          });
+
+      p Sexo
+        span.radio
+          input(type="radio", name="sexo", value="m", checked=sexo)
+          label.radio Masculino
+          input(type="radio", name="sexo", value="f", checked=!sexo)
+          label.radio Feminino
+
+      p Peso (kg)
+        input#peso(type="text", placeholder="Peso do paciente", name="peso", value="#{peso}")
+
+      p Altura (metros)
+        input#altura(type="text", placeholder="Altura do paciente", name="altura", value="#{altura}")
+
+      p Índice de massa corporal
+        input#imc(type="text", name="imc", value="0.0", readonly="readonly", disabled="disabled")
+
+      script.
+        var calculaIMC = function(peso, altura) {
+          peso = parseFloat(peso.replace(',', '.'));
+          altura = parseFloat(altura.replace(',', '.'));
+          return altura > 0 ? peso / (altura * altura) : 0;
+        };
+
+        var formCalculaIMC = function() {
+          var result = parseInt(10 * calculaIMC($("input#peso").val(), $("input#altura").val()));
+
+          if (result > 0) {
+            var s = result.toString();
+            var left = s.length > 1 ? s.substring(0, s.length - 1) : '0';
+            var right = s.substring(s.length - 1, s.length);
+            $("input#imc").val(left + ',' + right);
+          } else {
+            $("input#imc").val("#INVÁLIDO#");
+          }
+        };
+
+        $("input#peso").change(function() {
+          formCalculaIMC();
+        });
+
+        $("input#altura").change(function() {
+          formCalculaIMC();
+        });
+
+        $(function() { formCalculaIMC(); });
+
+      p CPF (obrigatório)
+        input(type="text", placeholder="CPF do paciente", name="cpf", value="#{cpf}")
+
+      p Dependente?
+        span.radio
+          input(type="radio", name="dependente", value="t", checked=dependente)
+          label.radio Sim
+          input(type="radio", name="dependente", value="f", checked=!dependente)
+          label.radio Não
+
+      // Morbidades
+      div#listaRegistros
+        script.
+          var adicionaRegistro = function(label, value) {
+            var $registros = $("input#numRegistros");
+            console.log("registros = ", $registros.val());
+            var num = $registros.val();
+            var divId = "itemRegistro" + num;
+            var $div = inputRegistro(divId, label, value);
+            $registros.val(parseInt($registros.val()) + 1);
+            $("div#listaRegistros").append($div);
+            return false;
+          }
+
+        // Item 0 descartado
+        input(type="hidden", name="tiposRegistro", value="")
+        input(type="hidden", name="registros", value="")
+
+        if registros
+          input#numRegistros(type="hidden", value="#{registros.length}")
+          each registro, i in registros
+            script.
+              $(function() { adicionaRegistro("#{registro.nome}", "#{registro.valor}"); });
+        else
+          input#numRegistros(type="hidden", value="0")
+
+      p
+        button(onclick="return adicionaRegistro();") Adiciona registro
+
+      p Endereço
+        input(type="text", placeholder="Logradouro", name="logradouro", value="#{logradouro}")
+      p &nbsp;
+        input(type="text", placeholder="Complemento", name="complemento" value="#{complemento}")
+      p &nbsp;
+        input(type="text", placeholder="Bairro", name="bairro" value="#{bairro}")
+      p &nbsp;
+        input(type="text", placeholder="CEP", name="cep" value="#{cep}")
+
+      // Morbidades
+      div#listaMorbidades
+        script.
+          var adicionaMorbidade = function(cid) {
+            var $morbidades = $("input#numMorbidades");
+            console.log("morbidades = ", $morbidades.val());
+            var num = $morbidades.val();
+            var label = num > 0 ? "Comorbidade (CID)" : "Morbidade (CID)";
+            var divId = "itemMorbidade" + num;
+            var $div = comboCID(divId, label, "morbidades", cid);
+            $morbidades.val(parseInt($morbidades.val()) + 1);
+            $("div#listaMorbidades").append($div);
+            return false;
+          }
+
+        // Item 0 descartado
+        input(type="hidden", name="morbidades", value="")
+
+        if morbidades
+          input#numMorbidades(type="hidden", value="#{morbidades.length}")
+          each morbidade, i in morbidades
+            script.
+              $(function() { adicionaMorbidade("#{morbidade}"); });
+        else
+          input#numMorbidades(type="hidden", value="0")
+
+      p
+        button(onclick="return adicionaMorbidade('');") Adicionar Morbidade
+
+    div.secondColumn
+      p Informações adicionais
+        textarea.anamnese(name="anamnese")
+          | #{anamnese}
+
+      script.
+        $(function() { $("div.secondColumn").height($("div.firstColumn").height()); });
+
+    div.controlPanel
+      button#btnSubmit.inline(type="submit") Salvar
+      button.inline(onclick="window.location='/paciente/lista'; return false;") Cancelar
