@@ -1,7 +1,8 @@
 module.exports = function(app, db, passport) {
   console.log("Configurando rotas...");
-  var path      = require('path');
-  var Constants = require("./constants");  
+  var path          = require('path');
+  var Constants     = require("./constants");  
+  var flash         = require('connect-flash');
 
   // Inicializa configuração de app usando o passport.
   app.use(passport.initialize());
@@ -48,8 +49,10 @@ module.exports = function(app, db, passport) {
 		error: {}
 	});
   });
-
+  
   // Exive mensagem de erro com o módulo flash.
+  app.use(flash());
+  
   app.get('/flash', function(req, res) {
 	// Define uma mensagem flash ao passar a chave e valor para req.flash().
     req.flash('info', 'Flash is back!');

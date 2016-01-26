@@ -9,8 +9,6 @@ module.exports = function(passport) {
   var bodyParser    = require('body-parser');
   var cookieParser  = require('cookie-parser');
   var session       = require('express-session');
-  var flash         = require('connect-flash');
-  var MongoClient   = require("mongodb").MongoClient;
   var Constants     = require("./constants");
 
   // Configuração de visão (MVC)
@@ -29,7 +27,6 @@ module.exports = function(passport) {
             resave: false,
             saveUninitialized: false }));
             // cookie: { maxAge: 600000 }}));
-  app.use(flash());
 
   // Static files at public.
   app.use(express.static(path.join(Constants.ROOT_PATH, 'public')));
