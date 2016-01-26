@@ -154,65 +154,6 @@ module.exports = function(app, passport) {
     });
   });
 
-  // Varre estrutura de dados da CIF procurando códigos da CIF.
-  var collectCIF = function(list, node) {
-    if (node && node.cif) {
-      list.push(node.cif);
-
-      if (node.items) {
-        for (index in node.items) {
-          console.log("collectCIF(%s)", node.items[index]);
-          list = collectCIF(list, node.items[index]);
-        }
-      }
-    }
-
-    return list;
-  }
-
-  // Propaga valor da CIF para níveis mais altos (em direção às folhas).
-  var cascadeUpdate = function(db, patient, cif, values, res) {
-    var CIF_Model = require('../models/cif.class')(req, res);
-    var items = db.collection('itens');
-    var data = db.collection('dados');
-    console.log("cascadeUpdate called.", cif);
-
-    items.aggregate([
-      { $match: { cif : cif } },
-      { $project: { cif : "$cif", items : "$items" } }
-    ]).toArray(function(err, result) {
-      console.log("aggregate returned ", result[0]);
-
-      if (err) {
-        res.send("Erro ao tentar encontrar CIF");
-        return false;
-      } else if (result[0] && result[0].items) {
-        var list = [];
-        list = CIF_Model.collectCIF(list, result[0]); // collectCIF(list, result[0]);
-        console.log("list = ", list);
-
-        // Atualiza todos os itens daquele ramo.
-        for (index in list) {
-          data.findAndModify(
-            { p : patient, c: list[index] }, // query
-            [[ 'c', 1 ]], // sort
-            { $set: { v: values } }, // replacement
-            { upsert: true }, // options
-            function(err, docs) {
-              if (err) {
-                console.log(err.message);
-                res.send({ r: 'ERR' });
-              } else {
-                res.send({ r: 'OK' });
-              }
-            }
-          );
-        }
-
-      }
-    });
-  };
-
   // Propaga valor da CIF para níveis mais baixos.
   var processCIFDownwards = function(db, patient, cif, value, res) {
 
@@ -234,6 +175,7 @@ module.exports = function(app, passport) {
   // Salva alteração da CIF no banco de dados.
   router.post('/save/:cif/:position/:value', function(req, res) {
     console.log("save called with", req.body);
+    var Paciente_Model = require('../models/paciente.class')(req, res);
     var patient = req.body.id;
     var cif = req.params.cif;
     var value = req.params.value;
@@ -241,28 +183,14 @@ module.exports = function(app, passport) {
     var data = req.db.collection('dados');
 
     // Obtem valor antigo do dado do paciente.
-    data.aggregate([
-      { $match: { p: patient, c: cif } },
-      { $project: { v : "$v" } }
-    ]).toArray(function(err, result) {
-      var result = result[0];
-      var values;
-
-      if (err) {
-        res.send("Erro ao tentar encontrar dados do paciente.");
-        return false;
-      } else if (!result) {
-        values = [];
-      } else {
-        values = result.v;
-      }
-
+    Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values) {
       // Atualiza um item em cascata.
       values[pos] = value;
       console.log('values = ' + values);
-      cascadeUpdate(req.db, patient, cif, values, res);
+      Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
+        console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
+      });
     });
-
   });
 
   // Carrega e envia dados preenchidos do paciente.
