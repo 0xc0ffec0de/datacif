@@ -73,16 +73,17 @@ var CIF_Model = Class.extend({
      */
     writeParentNodeData: function (patient, jsParent) {
         console.log("writeParentNodeData() called.");
-        var Patient_Model = require('./paciente.class')(req, res);
+        var Patient_Model = require('./paciente.model')(req, res);
         var sum = 0;
 
         for (var index in jsParent.items) {
             Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, function (pacient, cif, values) {
                 sum += values[0];
+                console.log("[0]Sum = " + sum);
             });
         }
 
-        console.log("Sum = ", sum);
+        console.log("[1]Sum = ", sum);
     },
 
     /**
