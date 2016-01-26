@@ -9,7 +9,7 @@ module.exports = function(passport) {
   var bodyParser    = require('body-parser');
   var cookieParser  = require('cookie-parser');
   var session       = require('express-session');
-  var Constants     = require("./constants");
+  var Constants     = require("../config/constants");
 
   // Configuração de visão do MVC.
   app.set('views', path.join(Constants.ROOT_PATH, 'views'));
