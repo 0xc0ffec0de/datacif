@@ -4,7 +4,7 @@ module.exports = function(app, passport) {
   var ObjectId  = require("mongolian").ObjectId;
 
   router.get('/itens/:cif', function(req, res) {
-    var CIF_Model = require('../models/cif.class.js')(req, res);
+    var CIF_Model = require('../models/cif.class')(req, res);
     var cif = req.params.cif;
     CIF_Model.sendAsJSON(cif);
   });
@@ -170,13 +170,13 @@ module.exports = function(app, passport) {
     return list;
   }
 
-  // Propaga valor da CIF para níveis mais altos.
+  // Propaga valor da CIF para níveis mais altos (em direção às folhas).
   var cascadeUpdate = function(db, patient, cif, values, res) {
+    var CIF_Model = require('../models/cif.class')(req, res);
     var items = db.collection('itens');
     var data = db.collection('dados');
     console.log("cascadeUpdate called.", cif);
 
-    //items.find({ cif : cif }).toArray(function(err, result) {
     items.aggregate([
       { $match: { cif : cif } },
       { $project: { cif : "$cif", items : "$items" } }
@@ -188,7 +188,7 @@ module.exports = function(app, passport) {
         return false;
       } else if (result[0] && result[0].items) {
         var list = [];
-        list = collectCIF(list, result[0]);
+        list = CIF_Model.collectCIF(list, result[0]); // collectCIF(list, result[0]);
         console.log("list = ", list);
 
         // Atualiza todos os itens daquele ramo.
@@ -212,44 +212,6 @@ module.exports = function(app, passport) {
       }
     });
   };
-
-  var processCIFBranch = function(db, cif, func) {
-    var items = db.collection('itens');
-
-    items.aggregate([
-      { $match: { cif : cif } },
-      { $project: { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
-      { $sort: { cif : 1 } }
-    ]).toArray(function(err, result) {
-      if (err) {
-        console.log("processCIFBranch(): ", err);
-      } else if (result.length == 1) {
-        console.log("processCIFBranch() encontrou 1 resultado");
-        func(result[0]);
-      } else {
-        // Nada encontrado.
-        console.log("processCIFBranch(): nenhum dado encontrado.");
-      }
-    });
-  };
-
-  var bla = function(db, jsParent, node, gatheredNodes) {
-    // Obtem o parente adjacente ao nível do nó.
-    if (node.length > jsParent.cif.length + 1) {
-      var parent = node.substr(0, node.length - 1);
-      writePatientData()
-
-
-
-      var nodes = bla(db, newParent, node, []);
-    }
-
-    for (var lol in jsParent.items) {
-      if (jsParent.items[lol] == node) {
-        gatheredNodes
-      }
-    }
-  }
 
   // Propaga valor da CIF para níveis mais baixos.
   var processCIFDownwards = function(db, patient, cif, value, res) {

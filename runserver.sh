@@ -1,3 +1,3 @@
 #!/bin/sh
 #
-DEBUG=my-application ./bin/www
+DEBUG=my-application bin/www
