@@ -203,6 +203,8 @@ saveCIF = function(cif, pos, value) {
     if (response['r'] != 'OK') {
       // TODO: tratamento de erros.
       console.log(response);
+    } else {
+      console.log("saveCIF() got an OK.");
     }
   });
 };
@@ -258,18 +260,20 @@ addRadio = function($parent, cif, id, name, text, checked, value) {
 // Se usuário selecionar opção em funcionalidade.
 onSelectFunctionOption = function(e, ui) {
   console.log("onSelectFunctionOption called =", this);
+  var converter = [ 5, 25, 50, 96, "NE", "NA" ];
   var $select = $(this);
   var name = $select.attr("name")
+  // TODO: arrumar jeito mais failproof de obter posição?
   // último caracter de selectmenu1, selectmenu2 ou selectmenu3.
   var pos = parseInt(name[name.length - 1]);
-  var value = $select.find("option:selected").val().match(/\d/);
+  var value = $select.find("option:selected").val();
   var $div = $(this).parent().parent().parent();
   var $span = $($div.find("td > span")[0]);
   var cif = $span.text();
   console.log("id=", id);
 
   if (pos != undefined && value != undefined) {
-    saveCIF(cif, pos, value);
+    saveCIF(cif, pos, converter[value]);
   }
 }
 
@@ -320,9 +324,9 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     var option;
 
     if ((value - 1) === i) {
-      option = $("<option selected>" + options[i] + "</option>");
+      option = $("<option value='" + i + "' selected>" + options[i] + "</option>");
     } else {
-      option = $("<option>" + options[i] + "</option>");
+      option = $("<option value='" + i + "'>" + options[i] + "</option>");
     }
 
     $select.append(option);
@@ -355,7 +359,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
-    saveCIF(cif, pos, 8);
+    saveCIF(cif, pos, 'NE');
   });
   $ne.parent().find('label').addClass('fix-radio');
 
@@ -364,7 +368,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     var $select = $parent.find("select");
     var pos = parseInt(name[name.length - 1]);
     $select.selectmenu("option", "disabled", true);
-    saveCIF(cif, pos, 9);
+    saveCIF(cif, pos, 'NA');
   });
   $na.parent().find('label').addClass('fix-radio');
 

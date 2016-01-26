@@ -189,6 +189,7 @@ module.exports = function(app, passport) {
       console.log('values = ' + values);
       Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
         console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
+        res.send(error ? { r : 'ERROR' } : { r : 'OK' });
       });
     });
   });
