@@ -1,6 +1,6 @@
 module.exports = function(app, passport) {
-  var express = require('express');
-  var router = express.Router();
+  var express  = require('express');
+  var router   = express.Router();
 
   // Login
   router.get('/', function(req, res) {

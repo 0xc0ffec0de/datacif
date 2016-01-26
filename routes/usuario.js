@@ -1,6 +1,6 @@
 module.exports = function(app, passport) {
   var express = require('express');
-  var router = express.Router();
+  var router  = express.Router();
 
   router.get('/', app.isLoggedIn, function(req, res) {
     res.location("/usuario/lista");
@@ -9,7 +9,6 @@ module.exports = function(app, passport) {
 
   // Create a new user
   router.get('/novo', app.isLoggedIn, function(req, res) {
-    var db = req.db;
     res.render('usuario', {
       title : 'Dados do usuário',
       address : '/usuario/adiciona'
@@ -17,8 +16,8 @@ module.exports = function(app, passport) {
   });
 
   router.post('/adiciona', app.isLoggedIn, function(req, res) {
-    var db = req.db;
-    var users = db.collection('usuarios');
+    // TODO: usando req.db ao invés de req.db2
+    var users = req.db.collection('usuarios');
 
     var user = {
       nome : req.body.nome,
@@ -40,8 +39,8 @@ module.exports = function(app, passport) {
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
-    var db = req.db;
-    var users = db.collection('usuarios');
+    // TODO: usando req.db ao invés de req.db2
+    var users = req.db.collection('usuarios');
 
     users.find().sort({ 'nome' : 1 }).toArray(function(err, result) {
       if (err) {
@@ -57,8 +56,7 @@ module.exports = function(app, passport) {
 
   router.get('/profissao/:desc', function(req, res) {
     var descricao = new RegExp(req.params.desc, 'i');
-    var db = req.db2;
-    var profissoes = db.collection('profissoes');
+    var profissoes = req.db.collection('profissoes');
 
     // profissoes.find({ descricao: descricao }).toArray(function(err, result) {
     profissoes.aggregate([

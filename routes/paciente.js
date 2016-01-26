@@ -1,8 +1,8 @@
 module.exports = function(app, passport) {
-  var express   = require('express');
-  var router    = express.Router();
-  var ObjectId  = require('mongolian').ObjectId;
-  var mongodb   = require('mongodb');
+  var express  = require('express');
+  var router   = express.Router();
+  var mongodb  = require('mongodb');
+  var ObjectId = require('mongodb').ObjectId;
 
   router.get('/', app.isLoggedIn, function(req, res) {
     // res.location("/paciente/lista");

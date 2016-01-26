@@ -1,7 +1,7 @@
 module.exports = function(app, passport) {
-  var express   = require('express');
-  var router    = express.Router();
-  var ObjectId  = require("mongolian").ObjectId;
+  var express  = require('express');
+  var router   = express.Router();
+  var ObjectId = require('mongodb').ObjectId;
 
   router.get('/itens/:cif', function(req, res) {
     var CIF_Model = require('../models/cif.class')(req, res);

@@ -1,12 +1,12 @@
 module.exports = function(app) {
-  var express = require('express');
-  var router = express.Router();
+  var express  = require('express');
+  var router   = express.Router();
 
   router.get('/:cid', function(req, res) {
     var cid = req.params.cid;
-    var db = req.db;
-    var itens = db.collection('cid10Itens');
-    var grupos = db.collection('cid10Grupos');
+    // TODO: usando req.db ao invés de req.db2
+    var itens = req.db.collection('cid10Itens');
+    var grupos = req.db.collection('cid10Grupos');
 
     itens.findOne({ nome: cid }, {}, function(err, item) {
       if (err) {
@@ -28,8 +28,7 @@ module.exports = function(app) {
 
   router.get('/descricao/:desc', function(req, res) {
     var desc = new RegExp(req.params.desc, 'i');
-    var db2 = req.db2;
-    var itens = db2.collection('cid10Itens');
+    var itens = req.db.collection('cid10Itens');
 
     itens.aggregate([
       { $match: { descricao: desc } },
