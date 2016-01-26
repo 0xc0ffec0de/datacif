@@ -183,19 +183,28 @@ module.exports = function(app, passport) {
     var pos = req.params.position - 1;
     var data = req.db.collection('dados');
 
-    //CIF_Model.processCIFDownwards(patient, cif);
-
     // Obtem valor antigo do dado do paciente.
-    Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values) {
-      // Atualiza um item em cascata.
-      values[pos] = value;
-      console.log('values = ' + values);
+    Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values, error) {
+      if (!error) {
+        // Atualiza um item em cascata.
+        console.log('values = ' + values);
+        values[pos] = value;
+        console.log('values = ' + values);
 
-      Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
-        console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
-        res.send(error ? { r : 'ERROR' } : { r : 'OK' });
-      });
+        Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
+            // Processa nós de nível mais baixo.
+            CIF_Model.processCIFDownwards(patient, cif);
+
+            console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
+            res.send(error ? {r: 'ERROR'} : {r: 'OK'});
+        });
+      }
+      else
+      {
+        res.send({r: 'ERROR'});
+      }
     })
+
   });
 
   // Carrega e envia dados preenchidos do paciente.
