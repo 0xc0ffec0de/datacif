@@ -4,17 +4,29 @@
 
 var screen = {
 
+    /**
+     * Atualiza um controle com um valor por tipo de controle.
+     * @param control
+     * @param value
+     */
     updateControl: function(control, value) {
+        console.log('updateControl() called with', control, ', ', value);
+        value = value[0];
+    
         if (value === 0) {
             // Capacidade
+            console.log('updateControl(): ', value, ' = capacidade');
         }
         else if (!isNaN(value)) {
+            console.log('updateControl(): ', value, ' = incapacidade');
             // Incapacidade
         }
         else if (value == "NE") {
+            console.log('updateControl(): ', value, ' = NE');
             // Não especificado
         }
         else if (value == "NA") {
+            console.log('updateControl(): ', value, ' = NA');
             // Não aplicável
         }
     },
@@ -26,9 +38,10 @@ var screen = {
     update: function (jsonData) {
         console.log("screen.update() called.");
 
-        for (var index in jsonData.elements) {
-            var cntrl = jsonData.elements[index].pop();
-            var value = jsonData.elements[index].pop();
+        for (var index in jsonData) {
+            var cntrl = jsonData[index]['c'];
+            var value = jsonData[index]['v'];
+
             this.updateControl(cntrl, value)
         }
     },

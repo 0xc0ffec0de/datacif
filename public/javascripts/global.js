@@ -205,6 +205,7 @@ saveCIF = function(cif, pos, value) {
       console.log(response);
     } else {
       console.log("saveCIF() got an OK.");
+      screen.update(response['d']);
     }
   });
 };

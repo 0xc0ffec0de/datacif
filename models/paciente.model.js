@@ -74,6 +74,31 @@ var Paciente_Model = Class.extend({
     },
 
     /**
+     * Recupera um ramo de dados de um capítulo da CIF.
+     * @param patient o id do paciente
+     * @param cif o código da CIF de identificador do ramo de dados
+     * @param func(patient, cif, result[, error]) a função a executar após o processamento, com ou sem erro.
+     */
+    readBranchData: function(patient, cif, func) {
+        var data = req.db.collection('dados');
+        var parent = new RegExp("^" + cif.substr(0, 4));
+
+        // Obtem valor antigo do dado do paciente.
+        data.aggregate([
+            {$match: {p: patient, c: parent }},
+            {$project: {_id: 0, c: "$c", v: "$v"}}
+        ]).toArray(function (error, result) {
+            if (error) {
+                console.log("readBranchData(): " + error.message);
+                if (func !== undefined) func(patient, cif, undefined, error);
+            } else {
+                console.log("readBranchData() returned " + result);
+                if (func !== undefined) func(patient, cif, result);
+            }
+        });
+    },
+
+    /**
      * Le dados do paciente e chama função especificada.
      * @param patient o id do paciente
      * @param cif o código da CIF do dado a ser lido
