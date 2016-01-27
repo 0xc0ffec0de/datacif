@@ -312,8 +312,8 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   var criteria = [
     function (x) { return x >= 5  && x <= 24;  },
     function (x) { return x >= 25 && x <= 49;  },
-    function (x) { return x >= 50 && x <= 74;  },
-    function (x) { return x >= 75 && x <= 100; }
+    function (x) { return x >= 50 && x <= 95;  },
+    function (x) { return x >= 96 && x <= 100; }
   ];
   var enabled = false;
   var $select = $("<select id='" + cif + "-" + name + "'>");
@@ -323,7 +323,6 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
     "3 : disfunção severa, 50%-95%",
     "4 : disfunção total, 96%-100%"
   ];
-
   $select.attr("name", cif + "-" + name);
 
   for (var i = 0; i < options.length; ++i) {
@@ -352,7 +351,7 @@ addFunctionOptions = function($parent, cif, name, value, parOptions, width) {
   });
   $f.parent().find('label').addClass('fix-radio-left');
 
-  var $i = addRadio($rightSpan, cif, 2, cif + "-" + name + "-radio", ["I", "Incapacidade"], !isNaN(value)).change(function() {
+  var $i = addRadio($rightSpan, cif, 2, cif + "-" + name + "-radio", ["I", "Incapacidade"], value > 0).change(function() {
     var $parent = $(this).parent().parent().parent();
     var $select = $parent.find("select");
     $select.selectmenu("option", "disabled", false);

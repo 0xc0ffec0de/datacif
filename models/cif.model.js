@@ -65,7 +65,7 @@ var CIF_Model = Class.extend({
      * @param array
      * @returns {Array|*}
      */
-    zerify: function(array) {
+    zerify: function (array) {
         result = new Array(array.length);
         for (var index in result) {
             result[index] = 0;
@@ -78,16 +78,16 @@ var CIF_Model = Class.extend({
      * @param cif
      * @returns {number[]}
      */
-    zero: function(cif) {
+    zero: function (cif) {
         switch (cif.substr(0, 1)) {
             case 'b':
-                return [ 0 ];
+                return [0];
             case 's':
-                return [ 0, 0 ]; // adicional sugerido
+                return [0, 0]; // adicional sugerido
             case 'd':
-                return [ 0 ];
+                return [0];
             case 'e':
-                return [ 0 ];
+                return [0];
         }
     },
 
@@ -143,8 +143,7 @@ var CIF_Model = Class.extend({
         if (jsStructure.cif == cif) {
             return jsStructure;
         }
-        else
-        {
+        else {
             var name = cif.substr(0, jsStructure.cif.length + 1);
             var found = false;
 
@@ -171,8 +170,7 @@ var CIF_Model = Class.extend({
         if (node.length == jsParent.cif.length + 1) {
             return jsParent;
         }
-        else
-        {
+        else {
             var name = node.substr(0, jsParent.cif.length + 1);
             var found = false;
             console.log("findAdjacentParent between ", jsParent.cif, "and ", name, " first.");
@@ -210,7 +208,7 @@ var CIF_Model = Class.extend({
             console.log("findAdjacentParent between ", jsParent.cif, "and ", node);
             jsNewParent = _cif_model.findAdjacentParent(jsParent, node);
             console.log("findAdjacentParent returned ", jsNewParent);
-            _cif_model.writeParentNodeData(patient, jsNewParent, pos, function(patient, cif, values, error) {
+            _cif_model.writeParentNodeData(patient, jsNewParent, pos, function (patient, cif, values, error) {
                 if (!error) {
                     _cif_model.recursiveWriter(patient, jsParent, jsNewParent.cif, pos, func);
                 } else {
@@ -220,14 +218,14 @@ var CIF_Model = Class.extend({
         }
         // Parente já é adjacente.
         else {
-            this.writeParentNodeData(patient, jsParent, pos, function(patient, cif, values, error) {
+            this.writeParentNodeData(patient, jsParent, pos, function (patient, cif, values, error) {
                 if (func !== undefined) func(error);
             });
         }
     },
 
     /**
-     * Processa o ramo da CIF.
+     * Processa o ramo da CIF executando a função func na estrutura onde o nó se encontra.
      * @param patient o código do paciente
      * @param parent o código CIF do nó parente inicial do ramo
      * @param cif o código da CIF.
@@ -268,7 +266,8 @@ var CIF_Model = Class.extend({
     // Propaga valor da CIF para níveis mais baixos.
     processCIFDownwards: function (patient, cif, pos, func) {
         console.log("processCIFDownwards() called.");
-        // 1# nível?
+        var recursiveWriter = this.recursiveWriter.bind(this);
+
         switch (cif.length) {
             case 4: // 1o nível
                 console.log("processCIFDownwards: nothing to do.");
@@ -277,9 +276,9 @@ var CIF_Model = Class.extend({
             case 5: // 2o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                _cif_model.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
+                this.processCIFBranch(patient, parent, cif, pos, function (patient, jsParent, node, pos, error) {
                     if (!error) {
-                        _cif_model.recursiveWriter(patient, jsParent, node, pos, func);
+                        recursiveWriter(patient, jsParent, node, pos, func);
                     } else {
                         if (func !== undefined) func(error);
                     }
@@ -288,9 +287,9 @@ var CIF_Model = Class.extend({
             case 6: // 3o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                _cif_model.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
+                this.processCIFBranch(patient, parent, cif, pos, function (patient, jsParent, node, pos, error) {
                     if (!error) {
-                        _cif_model.recursiveWriter(patient, jsParent, node, pos, func);
+                        recursiveWriter(patient, jsParent, node, pos, func);
                     } else {
                         if (func !== undefined) func(error);
                     }

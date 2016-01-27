@@ -111,8 +111,7 @@ var Paciente_Model = Class.extend({
                     return CIF_Model.zero(cif);
                 }
             }
-            else
-            {
+            else {
                 // Provavelmente não inicializado.
                 if (pos) {
                     value = 0;
