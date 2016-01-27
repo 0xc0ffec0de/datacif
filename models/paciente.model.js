@@ -13,13 +13,19 @@ var Paciente_Model = Class.extend({
         res = aRes;
     },
 
+    /**
+     * Atualiza um dado de qualificador da CIF de um determinado paciente
+     * @param patient o id do paciente
+     * @param cif o código da CIF a atualizar
+     * @param pos o qualificador da CIF do dado a ser atualizado
+     * @param value o valor a ser atualizado
+     * @param func(patient, cif, values[, error]) a função executada ao fim do processo, com ou sem erro.
+     */
     updateDataAndCall: function (patient, cif, pos, value, func) {
         if (isNaN(pos)) {
             var error = new Error("argumento `pos` não especificado");
-            if (func !== undefined) {
-                func(patient, cif, undefined, error);
-            }
             console.log("updateDataAndCall: " + error.message);
+            if (func !== undefined) func(patient, cif, undefined, error);
             return;
         }
 
@@ -29,10 +35,8 @@ var Paciente_Model = Class.extend({
                 GLOBAL._paciente_model.writeDataAndCall(patient, cif, values, func);
             }
             else {
-                if (func !== undefined) {
-                    func(patient, cif, undefined, error);
-                }
                 console.log("updateDataAndCall: " + error.message);
+                if (func !== undefined) func(patient, cif, undefined, error);
             }
         });
     },
@@ -74,7 +78,7 @@ var Paciente_Model = Class.extend({
      * @param patient o id do paciente
      * @param cif o código da CIF do dado a ser lido
      * @param pos a posição do valor da CIF a ser lido, podendo ser nulo para retornar tudo.
-     * @param func a função a ser executada com o dado obtido
+     * @param func(patient, cif, values[, error]) a função a ser executada ao terminar o processo, com ou sem erro.
      */
     readDataAndCall: function (patient, cif, pos, func) {
         var CIF_Model = require('./cif.model')(req, res);
@@ -89,9 +93,11 @@ var Paciente_Model = Class.extend({
             var value;
 
             if (error) {
-                func(patient, cif, undefined, error);
+                console.log("readDataAndCall: " + error.message);
+                if (func !== undefined) func(patient, cif, undefined, error);
                 return;
-            } else if (result instanceof Object) {
+            }
+            else if (result instanceof Object) {
                 if (pos && result['v']) {
                     value = result.v[pos];
                 }
@@ -104,7 +110,9 @@ var Paciente_Model = Class.extend({
                     // Erro de parsing?
                     return CIF_Model.zero(cif);
                 }
-            } else {
+            }
+            else
+            {
                 // Provavelmente não inicializado.
                 if (pos) {
                     value = 0;
@@ -114,10 +122,8 @@ var Paciente_Model = Class.extend({
             }
 
             // Chama função com o resultado obtido.
-            console.log("readDataAndCall(" + cif + ") returned:", value)
-            if (func !== undefined) {
-                func(patient, cif, value);
-            }
+            console.log("readDataAndCall was successful.");
+            if (func !== undefined) func(patient, cif, value);
         });
     },
 

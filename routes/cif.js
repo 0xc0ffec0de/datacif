@@ -192,16 +192,18 @@ module.exports = function(app, passport) {
         console.log('values = ' + values);
 
         Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
+          if (!error) {
             // Processa nós de nível mais baixo.
-            CIF_Model.processCIFDownwards(patient, cif, pos);
-
-            console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
-            res.send(error ? {r: 'ERROR'} : {r: 'OK'});
+            CIF_Model.processCIFDownwards(patient, cif, pos, function(error) {
+              console.log(error ? "save() failed: " + error.message : "save() successful.");
+              res.send(error ? {r: 'ERROR'} : {r: 'OK'});
+            });
+          }
         });
       }
       else
       {
-        console.log("save got error: ", error.message);
+        console.log("save() failed: ", error.message);
         res.send({r: 'ERROR'});
       }
     })
