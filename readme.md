@@ -20,6 +20,6 @@
 
 ## Contribuidores
 
-- [Paulo Barbosa, @phfabarbosa] (https://github.com/phfabarbosa)
+- [Paulo Barbosa, @phfabarbosa](https://github.com/phfabarbosa)
 - [Pedro Medeiros, @0xc0ffec0de](https://github.com/0xc0ffec0de)
 - [Tiago Mergulhão, @tmergulhao](https://github.com/tmergulhao)
