@@ -11,23 +11,26 @@ var screen = {
      */
     updateControl: function(control, value) {
         console.log('updateControl() called with', control, ', ', value);
-        value = value[0];
-    
-        if (value === 0) {
-            // Capacidade
-            console.log('updateControl(): ', value, ' = capacidade');
-        }
-        else if (!isNaN(value)) {
-            console.log('updateControl(): ', value, ' = incapacidade');
-            // Incapacidade
-        }
-        else if (value == "NE") {
-            console.log('updateControl(): ', value, ' = NE');
-            // Não especificado
-        }
-        else if (value == "NA") {
-            console.log('updateControl(): ', value, ' = NA');
-            // Não aplicável
+
+        if (control.substr(0, 1) == 'b') {
+            value = value.pop();
+
+            if (value === 0) {
+                // Capacidade
+                console.log('updateControl(): ', value, ' = capacidade');
+            }
+            else if (!isNaN(value)) {
+                console.log('updateControl(): ', value, ' = incapacidade');
+                // Incapacidade
+            }
+            else if (value == "NE") {
+                console.log('updateControl(): ', value, ' = NE');
+                // Não especificado
+            }
+            else if (value == "NA") {
+                console.log('updateControl(): ', value, ' = NA');
+                // Não aplicável
+            }
         }
     },
 
