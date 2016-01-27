@@ -1,0 +1,260 @@
+/* menu.jade */
+
+.panel {
+  width: 1200px;
+  margin: auto;
+}
+
+.left-container {
+  width: 300px;
+  float: left;
+  position: relative;
+}
+
+.middle-container {
+  width: 300px;
+  float: left;
+  position: relative;
+  margin-left: 100px;
+}
+
+a.center {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%);
+}
+
+.map {
+  width: 100%;
+  position: relative;
+}
+
+.domain {
+  width: 100%;
+  text-align: center;
+}
+
+#chapter {
+  width: 1000px;
+}
+
+#b1, #b2, #b3, #b4, #b5, #b6, #b7 {
+  position: absolute;
+  background-color: transparent;
+  cursor: crosshair;
+  width: 32px;
+  height: 32px;
+  border: 0px;
+}
+
+#s1, #s2, #s3, #s4, #s5, #s6, #s7, #s8 {
+  position: absolute;
+  background-color: Transparent;
+  cursor: crosshair;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: solid 1px gray;
+}
+
+.display-button {
+  background: url('/images/seletor.png') no-repeat top left;
+}
+
+div#man, div#woman {
+  & > div#map {
+    & > #b1, & > #b2, & > #b3, & > #b4, & > #b5, & > #b6, & > #b7, & > #b8 {
+      &:hover {
+        background: url('/images/seletor.png') no-repeat top left;
+      }
+    }
+  }
+}
+
+div#man > div#map {
+
+  & > #b1 {
+    top: 110px;
+    left: 103px;
+  }
+
+  & > #b2 {
+    top: 205px;
+    left: 210px;
+  }
+
+  & > #b3 {
+    top: 165px;
+    left: 103px;
+  }
+
+  & > #b4 {
+    top: 245px;
+    left: 147px;
+  }
+
+  & > #b5 {
+    top: 350px;
+    left: 130px;
+  }
+
+  & > #b6 {
+    top: 395px;
+    left: 120px;
+  }
+
+  & > #b7 {
+    top: 520px;
+    left: 133px;
+  }
+
+  & > #b8 {
+    top: 600px;
+    left: 175px;
+  }
+
+  & > #s1 {
+    top: 130px;
+    left: 183px;
+    width: 10px;
+  }
+
+  & > #s2 {
+    top: 150px;
+    left: 157px;
+    width: 10px;
+  }
+
+  & > #s3 {
+    top: 170px;
+    left: 185px;
+    width: 10px;
+  }
+
+  & > #s4 {
+    top: 255px;
+    left: 195px;
+    width: 10px;
+  }
+
+  & > #s5 {
+    top: 355px;
+    left: 195px;
+    width: 10px;
+  }
+
+  & > #s6 {
+    top: 385px;
+    left: 197px;
+    width: 10px;
+  }
+
+  & > #s7 {
+    top: 510px;
+    left: 165px;
+    width: 10px;
+  }
+
+  & > #s8 {
+    top: 620px;
+    left: 175px;
+    width: 10px;
+  }
+
+}
+
+
+
+div#woman > div#map {
+
+  & > #b1 {
+    top: 135px;
+    left: 121px;
+  }
+
+  & > #b2 {
+    top: 225px;
+    left: 255px;
+  }
+
+  & > #b3 {
+    top: 175px;
+    left: 119px;
+  }
+
+  & > #b4 {
+    top: 255px;
+    left: 120px;
+  }
+
+  & > #b5 {
+    top: 345px;
+    left: 120px;
+  }
+
+  & > #b6 {
+    top: 395px;
+    left: 125px;
+  }
+
+  & > #b7 {
+    top: 520px;
+    left: 193px;
+  }
+
+  & > #b8 {
+    top: 600px;
+    left: 173px;
+  }
+
+  & > #s1 {
+    top: 134px;
+    left: 169px;
+    width: 10px;
+  }
+
+  & > #s2 {
+    top: 155px;
+    left: 146px;
+    width: 10px;
+  }
+
+  & > #s3 {
+    top: 170px;
+    left: 171px;
+    width: 10px;
+  }
+
+  & > #s4 {
+    top: 255px;
+    left: 177px;
+    width: 10px;
+  }
+
+  & > #s5 {
+    top: 345px;
+    left: 182px;
+    width: 10px;
+  }
+
+  & > #s6 {
+    top: 375px;
+    left: 184px;
+    width: 10px;
+  }
+
+  & > #s7 {
+    top: 515px;
+    left: 162px;
+    width: 10px;
+  }
+
+  & > #s8 {
+    top: 635px;
+    left: 183px;
+    width: 10px;
+  }
+
+}
