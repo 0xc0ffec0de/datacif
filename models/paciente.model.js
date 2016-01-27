@@ -177,12 +177,13 @@ var Paciente_Model = Class.extend({
 
 });
 
-GLOBAL._paciente_model_initialized = false;
+// Espaço para objeto singleton.
+GLOBAL._paciente_model = null;
 
 module.exports = function (req, res) {
-    if (!GLOBAL._paciente_model_initialized) {
+    // Impede a reinstanciação e retorna o objeto já criado.
+    if (!GLOBAL._paciente_model) {
         GLOBAL._paciente_model = new Paciente_Model(req, res);
-        GLOBAL._paciente_model_initialized = true;
     }
     return GLOBAL._paciente_model;
 };

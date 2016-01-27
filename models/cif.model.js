@@ -208,11 +208,11 @@ var CIF_Model = Class.extend({
         // Obtem o parente adjacente ao nível do nó.
         else if (node.length > jsParent.cif.length + 1) {
             console.log("findAdjacentParent between ", jsParent.cif, "and ", node);
-            jsNewParent = GLOBAL._cif_model.findAdjacentParent(jsParent, node);
+            jsNewParent = _cif_model.findAdjacentParent(jsParent, node);
             console.log("findAdjacentParent returned ", jsNewParent);
-            GLOBAL._cif_model.writeParentNodeData(patient, jsNewParent, pos, function(patient, cif, values, error) {
+            _cif_model.writeParentNodeData(patient, jsNewParent, pos, function(patient, cif, values, error) {
                 if (!error) {
-                    GLOBAL._cif_model.recursiveWriter(patient, jsParent, jsNewParent.cif, pos, func);
+                    _cif_model.recursiveWriter(patient, jsParent, jsNewParent.cif, pos, func);
                 } else {
                     if (func !== undefined) func(error);
                 }
@@ -277,9 +277,9 @@ var CIF_Model = Class.extend({
             case 5: // 2o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                this.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
+                _cif_model.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
                     if (!error) {
-                        this.recursiveWriter(patient, jsParent, node, pos, func);
+                        _cif_model.recursiveWriter(patient, jsParent, node, pos, func);
                     } else {
                         if (func !== undefined) func(error);
                     }
@@ -288,9 +288,9 @@ var CIF_Model = Class.extend({
             case 6: // 3o nível
                 var parent = cif.substr(0, 4);
                 console.log("processCIFDownwards: calling processCIFBranch() with " + parent);
-                this.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
+                _cif_model.processCIFBranch(patient, parent, cif, pos, function(patient, jsParent, node, pos, error) {
                     if (!error) {
-                        this.recursiveWriter(patient, jsParent, node, pos, func);
+                        _cif_model.recursiveWriter(patient, jsParent, node, pos, func);
                     } else {
                         if (func !== undefined) func(error);
                     }
@@ -301,12 +301,13 @@ var CIF_Model = Class.extend({
 
 });
 
-GLOBAL._cif_model_initialized = false;
+// Espaço para objeto singleton.
+GLOBAL._cif_model = null;
 
 module.exports = function (req, res) {
-    if (!GLOBAL._cif_model_initialized) {
+    // Impede a reinstanciação e retorna o objeto já criado.
+    if (!GLOBAL._cif_model) {
         GLOBAL._cif_model = new CIF_Model(req, res);
-        GLOBAL._cif_model_initialized = true;
     }
     return GLOBAL._cif_model;
 };
