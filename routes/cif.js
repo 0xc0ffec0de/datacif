@@ -188,7 +188,7 @@ module.exports = function(app, passport) {
       if (!error) {
         // Atualiza um item em cascata.
         console.log('values = ' + values);
-        values[pos] = value;
+        values[pos] = isNaN(value) ? value : parseFloat(value);
         console.log('values = ' + values);
 
         Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {

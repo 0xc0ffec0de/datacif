@@ -127,7 +127,13 @@ var Paciente_Model = Class.extend({
         });
     },
 
-    // Propaga valor da CIF para níveis mais altos (em direção às folhas).
+    /**
+     * Propaga valor da CIF para níveis mais altos (em direção às folhas).
+     * @param patient o id do paciente a ter os dados atualizados
+     * @param cif o código da CIF do qualificador a ser atualizado
+     * @param values o valor dos qualificadores a serem atualizados
+     * @param func(patient, cif, values[, error]) a função a ser executada ao fim do processo, com o sem erro.
+     */
     cascadeUpdate: function (patient, cif, values, func) {
         var CIF_Model = require('./cif.model')(req, res);
         var items = req.db.collection('itens');
