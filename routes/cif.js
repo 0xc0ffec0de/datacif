@@ -187,7 +187,6 @@ module.exports = function(app, passport) {
     Paciente_Model.readDataAndCall(patient, cif, undefined, function(patient, cif, values, error) {
       if (!error) {
         // Atualiza um item em cascata.
-        console.log('values = ' + values);
         values[pos] = isNaN(value) ? value : parseFloat(value);
         console.log('values = ' + values);
 
@@ -196,13 +195,29 @@ module.exports = function(app, passport) {
             // Processa nós de nível mais baixo.
             CIF_Model.processCIFDownwards(patient, cif, pos, function(error) {
               console.log(error ? "save() failed: " + error.message : "save() successful.");
-              res.send(error ? {r: 'ERROR'} : {r: 'OK'});
+
+              if (!error) {
+                // Devolve os dados afetados pela alteração para o cliente.
+                Paciente_Model.readBranchData(patient, cif, function(patient, cif, result, error) {
+                  if (!error) {
+                    console.log("Result :", result);
+                    res.send({r: 'OK', d: result});
+                  } else {
+                    console.log("save() failed: ", error.message);
+                    res.send({r: 'ERROR'});
+                  }
+                });
+              } else {
+                console.log("save() failed: ", error.message);
+                res.send({r: 'ERROR'});
+              }
             });
+          } else {
+            console.log("save() failed: ", error.message);
+            res.send({r: 'ERROR'});
           }
         });
-      }
-      else
-      {
+      } else {
         console.log("save() failed: ", error.message);
         res.send({r: 'ERROR'});
       }
