@@ -1,4 +1,5 @@
 // Carrega classe pai.
+sprintf = require('sprintf').sprintf;
 require('../library/class');
 require('../library/error.class');
 
@@ -32,7 +33,7 @@ var Paciente_Model = Class.extend({
         this.readDataAndCall(patient, cif, undefined, function (patient, cif, values, error) {
             if (!error) {
                 values[pos] = value;
-                GLOBAL._paciente_model.writeDataAndCall(patient, cif, values, func);
+                this.writeDataAndCall(patient, cif, values, func);
             }
             else {
                 console.log("updateDataAndCall: " + error.message);
