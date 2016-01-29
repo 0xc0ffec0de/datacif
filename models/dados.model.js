@@ -3,7 +3,7 @@ sprintf = require('sprintf').sprintf;
 require('../library/class');
 require('../library/error.class');
 
-var Paciente_Model = Class.extend({
+var Dados_Model = Class.extend({
 
     req: null,
 
@@ -205,12 +205,12 @@ var Paciente_Model = Class.extend({
 });
 
 // Espaço para objeto singleton.
-GLOBAL._paciente_model = null;
+GLOBAL._dados_model = null;
 
 module.exports = function (req, res) {
     // Impede a reinstanciação e retorna o objeto já criado.
-    if (!GLOBAL._paciente_model) {
-        GLOBAL._paciente_model = new Paciente_Model(req, res);
+    if (!GLOBAL._dados_model) {
+        GLOBAL._dados_model = new Dados_Model(req, res);
     }
-    return GLOBAL._paciente_model;
+    return GLOBAL._dados_model;
 };

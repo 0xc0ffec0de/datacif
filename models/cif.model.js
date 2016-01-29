@@ -105,13 +105,13 @@ var CIF_Model = Class.extend({
         }
 
         console.log("writeParentNodeData() called with pos = ", pos);
-        var Patient_Model = require('./paciente.model')(req, res);
+        var Dados_Model = require('./dados.model')(req, res);
         var sum = 0;
         var counter = 0;
         var override = false;
 
         for (var index in jsParent.items) {
-            Patient_Model.readDataAndCall(patient, jsParent.items[index].cif, undefined, function (pacient, cif, values, error) {
+            Dados_Model.readDataAndCall(patient, jsParent.items[index].cif, undefined, function (pacient, cif, values, error) {
                 if (!error) {
                     counter++;
 
@@ -126,7 +126,7 @@ var CIF_Model = Class.extend({
                         var value = sum / counter;
                         console.log("[0]value = " + value);
 
-                        if (override) Patient_Model.updateDataAndCall(patient, jsParent.cif, pos, value, func);
+                        if (override) Dados_Model.updateDataAndCall(patient, jsParent.cif, pos, value, func);
                         else func(patient, jsParent.cif, value);
                     }
                 } else {
