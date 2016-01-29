@@ -1,2 +1,2 @@
 @set DEBUG=my-application
-@start "" /MAX node bin\www
+@node bin\www

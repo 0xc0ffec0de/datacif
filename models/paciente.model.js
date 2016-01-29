@@ -23,6 +23,8 @@ var Paciente_Model = Class.extend({
      * @param func(patient, cif, values[, error]) a função executada ao fim do processo, com ou sem erro.
      */
     updateDataAndCall: function (patient, cif, pos, value, func) {
+        var writeDataAndCall = this.writeDataAndCall.bind(this);
+
         if (isNaN(pos)) {
             var error = new Error("argumento `pos` não especificado");
             console.log("updateDataAndCall: " + error.message);
@@ -33,7 +35,7 @@ var Paciente_Model = Class.extend({
         this.readDataAndCall(patient, cif, undefined, function (patient, cif, values, error) {
             if (!error) {
                 values[pos] = value;
-                this.writeDataAndCall(patient, cif, values, func);
+                writeDataAndCall(patient, cif, values, func);
             }
             else {
                 console.log("updateDataAndCall: " + error.message);
