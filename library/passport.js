@@ -1,8 +1,9 @@
-module.exports = function(app, db) {
-  console.log("Carregando módulo passport...");
-  var passport = require('passport');
+module.exports      = function(app, db) {
+  var passport      = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
-  var ObjectId = require('mongodb').ObjectId;
+  var ObjectId      = require('mongodb').ObjectId;
+  var flash         = require('connect-flash');
+  console.log("Carregando módulo passport...");
 
   // Setup de sessão.
   passport.serializeUser(function(user, done) {

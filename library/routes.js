@@ -1,7 +1,7 @@
 module.exports = function(app, db, passport) {
   console.log("Configurando rotas...");
   var path          = require('path');
-  var Constants     = require("./constants");  
+  var constants     = require("../config/constants");  
   var flash         = require('connect-flash');
 
   // Inicializa configuração de app usando o passport.
@@ -10,17 +10,16 @@ module.exports = function(app, db, passport) {
 
   // Torna BD accessível pelo roteador.
   app.use(function(req, res, next) {
-	console.log("Connection attached to req: ");
 	req.db = db;
 	next();
   });
 	  
   // Define rotas.
-  for (var index in Constants.ROUTES) {
-	  var file = path.join(Constants.ROOT_PATH, Constants.ROUTE_PATH, Constants.ROUTES[index]);
+  for (var index in constants.ROUTES) {
+	  var file = path.join(constants.ROOT_PATH, constants.ROUTE_PATH, constants.ROUTES[index]);
 	  console.log("Carregando rota '" + file + "'");
 	  var route = require(file)(app, passport);
-	  app.use(Constants.URLS[index], route);
+	  app.use(constants.URLS[index], route);
   }  
 
   // Captura 404 e redireciona para o controle.

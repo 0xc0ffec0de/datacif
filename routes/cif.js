@@ -4,7 +4,7 @@ module.exports = function(app, passport) {
   var ObjectId = require('mongodb').ObjectId;
 
   router.get('/itens/:cif', function(req, res) {
-    var CIF_Model = require('../models/cif.class')(req, res);
+    var CIF_Model = require('../models/cif.model')(req, res);
     var cif = req.params.cif;
     CIF_Model.sendAsJSON(cif);
   });
@@ -173,9 +173,10 @@ module.exports = function(app, passport) {
   };
 
   // Salva alteração da CIF no banco de dados.
-  router.post('/save/:cif/:position/:value', function(req, res) {
-    console.log("save called with", req.body);
-    var Paciente_Model = require('../models/paciente.class')(req, res);
+  router.post('/save/:cif/:position/:value', app.isLoggedIn, function(req, res) {
+    console.log("save called.");
+    var Dados_Model = require('../models/dados.model')(req, res);
+    var CIF_Model = require('../models/cif.model')(req, res);
     var patient = req.body.id;
     var cif = req.params.cif;
     var value = req.params.value;
@@ -183,14 +184,45 @@ module.exports = function(app, passport) {
     var data = req.db.collection('dados');
 
     // Obtem valor antigo do dado do paciente.
-    Paciente_Model.readDataAndCall(patient, cif, function(patient, cif, values) {
-      // Atualiza um item em cascata.
-      values[pos] = value;
-      console.log('values = ' + values);
-      Paciente_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
-        console.log(error ? "cascadeUpdate() failed." : "cascadeUpdate() successful.");
-      });
-    });
+    Dados_Model.readDataAndCall(patient, cif, undefined, function(patient, cif, values, error) {
+      if (!error) {
+        // Atualiza um item em cascata.
+        values[pos] = isNaN(value) ? value : parseFloat(value);
+        console.log('values = ' + values);
+
+        Dados_Model.cascadeUpdate(patient, cif, values, function(patient, cif, values, error) {
+          if (!error) {
+            // Processa nós de nível mais baixo.
+            CIF_Model.processCIFDownwards(patient, cif, pos, function(error) {
+              console.log(error ? "save() failed: " + error.message : "save() successful.");
+
+              if (!error) {
+                // Devolve os dados afetados pela alteração para o cliente.
+                Dados_Model.readBranchData(patient, cif, function(patient, cif, result, error) {
+                  if (!error) {
+                    console.log("Result :", result);
+                    res.send({r: 'OK', d: result});
+                  } else {
+                    console.log("save() failed: ", error.message);
+                    res.send({r: 'ERROR'});
+                  }
+                });
+              } else {
+                console.log("save() failed: ", error.message);
+                res.send({r: 'ERROR'});
+              }
+            });
+          } else {
+            console.log("save() failed: ", error.message);
+            res.send({r: 'ERROR'});
+          }
+        });
+      } else {
+        console.log("save() failed: ", error.message);
+        res.send({r: 'ERROR'});
+      }
+    })
+
   });
 
   // Carrega e envia dados preenchidos do paciente.
