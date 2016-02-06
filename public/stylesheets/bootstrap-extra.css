@@ -1,0 +1,19 @@
+
+/* Bootstrap fix */
+/*.btn-group > .btn {*/
+.btn-group-fix {
+    float: none;
+    margin-top: -10px;
+    /*vertical-align: middle;*/
+}
+
+.btn-group-fix2 {
+    float: none;
+    margin-top: 5px;
+    /*vertical-align: middle;*/
+}
+
+.selector-fix {
+    float: none;
+    margin-left: 5px;
+}
