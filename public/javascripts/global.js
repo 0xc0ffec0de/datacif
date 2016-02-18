@@ -201,7 +201,7 @@ onChangeCID = function (input, event) {
     });
 };
 
-// Salva os dados da CIF do paciente.
+// Salva os dados da CIF do sujeito.
 saveCIF = function (cif, pos, value) {
     var id = $("input#id").val();
     var address = "/cif/save/" + cif + "/" + pos + "/" + value;

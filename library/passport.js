@@ -44,7 +44,7 @@ module.exports      = function(app, db) {
             return done(null, false, req.flash('message', 'Senha incorreta.'));
           }
 
-          console.log("OK");
+          console.log("passport login: OK");
           return done(null, user);
         });
       });

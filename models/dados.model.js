@@ -15,8 +15,8 @@ var Dados_Model = Class.extend({
     },
 
     /**
-     * Atualiza um dado de qualificador da CIF de um determinado paciente
-     * @param patient o id do paciente
+     * Atualiza um dado de qualificador da CIF de um determinado sujeito
+     * @param patient o id do sujeito
      * @param cif o código da CIF a atualizar
      * @param pos o qualificador da CIF do dado a ser atualizado
      * @param value o valor a ser atualizado
@@ -45,8 +45,8 @@ var Dados_Model = Class.extend({
     },
 
     /**
-     * Escreve dados da CIF do paciente.
-     * @param patient o ID do paciente
+     * Escreve dados da CIF do sujeito.
+     * @param patient o ID do sujeito
      * @param cif o código CIF do dado
      * @param pos posição do dado no array
      * @param value o valor do dado propriamente dito
@@ -78,7 +78,7 @@ var Dados_Model = Class.extend({
 
     /**
      * Recupera um ramo de dados de um capítulo da CIF.
-     * @param patient o id do paciente
+     * @param patient o id do sujeito
      * @param cif o código da CIF de identificador do ramo de dados
      * @param func(patient, cif, result[, error]) a função a executar após o processamento, com ou sem erro.
      */
@@ -86,7 +86,7 @@ var Dados_Model = Class.extend({
         var data = req.db.collection('dados');
         var parent = new RegExp("^" + cif.substr(0, 4));
 
-        // Obtem valor antigo do dado do paciente.
+        // Obtem valor antigo do dado do sujeito.
         data.aggregate([
             {$match: {p: patient, c: parent }},
             {$project: {_id: 0, c: "$c", v: "$v"}}
@@ -102,8 +102,8 @@ var Dados_Model = Class.extend({
     },
 
     /**
-     * Le dados do paciente e chama função especificada.
-     * @param patient o id do paciente
+     * Le dados do sujeito e chama função especificada.
+     * @param patient o id do sujeito
      * @param cif o código da CIF do dado a ser lido
      * @param pos a posição do valor da CIF a ser lido, podendo ser nulo para retornar tudo.
      * @param func(patient, cif, values[, error]) a função a ser executada ao terminar o processo, com ou sem erro.
@@ -112,7 +112,7 @@ var Dados_Model = Class.extend({
         var CIF_Model = require('./cif.model')(req, res);
         var data = req.db.collection('dados');
 
-        // Obtem valor antigo do dado do paciente.
+        // Obtem valor antigo do dado do sujeito.
         data.aggregate([
             {$match: {p: patient, c: cif}},
             {$project: {v: "$v"}}
@@ -156,7 +156,7 @@ var Dados_Model = Class.extend({
 
     /**
      * Propaga valor da CIF para níveis mais altos (em direção às folhas).
-     * @param patient o id do paciente a ter os dados atualizados
+     * @param patient o id do sujeito a ter os dados atualizados
      * @param cif o código da CIF do qualificador a ser atualizado
      * @param values o valor dos qualificadores a serem atualizados
      * @param func(patient, cif, values[, error]) a função a ser executada ao fim do processo, com o sem erro.

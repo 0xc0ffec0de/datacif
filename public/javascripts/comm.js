@@ -4,7 +4,7 @@
 
 var comm = {
     /**
-     * Salva os dados da CIF do paciente.
+     * Salva os dados da CIF do sujeito.
      * @param cif
      * @param pos
      * @param value

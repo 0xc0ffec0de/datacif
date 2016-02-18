@@ -93,7 +93,7 @@ var CIF_Model = Class.extend({
 
     /**
      * Escreve um valor no nó pai de acordo com o conteúdo dos filhos.
-     * @param patient o id do paciente
+     * @param patient o id do sujeito
      * @param jsParent a estrutura do nó parente a ser escrita
      * @param pos o qualificador na CIF do dado a ser escrito
      * @param func(patient, cif, values[, error]) a função a ser executada ao fim do processo, com ou sem erro.
@@ -193,7 +193,7 @@ var CIF_Model = Class.extend({
 
     /**
      * Escreve recursivamente nos nós parentes ao nó especificado.
-     * @param patient o id do paciente
+     * @param patient o id do sujeito
      * @param jsParent a estrutura a ser atualizada
      * @param node o nó do elemento atual
      * @param pos o qualificador da CIF a ser atualizado
@@ -230,7 +230,7 @@ var CIF_Model = Class.extend({
 
     /**
      * Processa o ramo da CIF executando a função func na estrutura onde o nó se encontra.
-     * @param patient o código do paciente
+     * @param patient o código do sujeito
      * @param parent o código CIF do nó parente inicial do ramo
      * @param cif o código da CIF.
      * @param pos a identificação de qualificador da CIF
@@ -262,7 +262,7 @@ var CIF_Model = Class.extend({
 
     /**
      * Propaga os valores da CIF para níveis mais baixos (em direção à raiz).
-     * @param patient id do paciente.
+     * @param patient id do sujeito.
      * @param cif código da cif cujo valor foi alterado.
      * @param value o valor alterado.
      * @param func([error]) função executada ao terminar o processo, com ou sem erro

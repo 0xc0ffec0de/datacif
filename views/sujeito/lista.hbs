@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    {{> head }}
+</head>
+
+<body role="document">
+    {{> menu}}
+
+    <!--<script src="/javascripts/global.js"></script>-->
+    <!--<script src="/javascripts/screen.js"></script>-->
+    <!--<script src="/javascripts/comm.js"></script>-->
+
+    <h1>{{title}}</h1>
+    <ul>
+        <table>
+            <tr>
+                <th width="550px">Nome</th>
+                <th width="170px">Data de Nascimento</th>
+                <th width="150px">Sexo</th>
+                <th width="120px">CPF</th>
+                <th width="60px">CIF</th>
+                <th width="60px">Dados</th>
+            </tr>
+            {{#each sujeitos}}
+                {{> sujeito/item sujeito=this }}
+            {{/each}}
+        </table>
+    </ul>
+    <form method="get" action="/paciente/novo">
+        <button type="submit">Novo paciente</button>
+    </form>
+    <script>//comm.bla1();
+    //screen.xpt1();</script>
+    </body>
+</html>

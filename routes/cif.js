@@ -139,7 +139,7 @@ module.exports = function(app, passport) {
     // pacientes.findOne({ _id: id }, {}, function(err, docs) {
     pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
       if (err) {
-        res.send("Erro ao tentar editar um paciente");
+        res.send("Erro ao tentar editar um sujeito");
       } else if (docs) {
         var queryResult = {
           title : docs.nome,
@@ -183,7 +183,7 @@ module.exports = function(app, passport) {
     var pos = req.params.position - 1;
     var data = req.db.collection('dados');
 
-    // Obtem valor antigo do dado do paciente.
+    // Obtem valor antigo do dado do sujeito.
     Dados_Model.readDataAndCall(patient, cif, undefined, function(patient, cif, values, error) {
       if (!error) {
         // Atualiza um item em cascata.
@@ -225,7 +225,7 @@ module.exports = function(app, passport) {
 
   });
 
-  // Carrega e envia dados preenchidos do paciente.
+  // Carrega e envia dados preenchidos do sujeito.
   sendPatientData = function(req, res, patient, func) {
     console.log("sendPatientData() called.");
     var data = req.db.collection('dados');
