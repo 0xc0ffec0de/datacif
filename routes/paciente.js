@@ -133,8 +133,7 @@ module.exports = function(app, db, passport) {
         res.send("Erro ao tentar inserir um novo sujeito");
       } else {
         var id = item._id.toString();
-        // res.location("/paciente/dominio/" + id);
-        res.redirect("/paciente/" + id + "/dominio");
+        res.redirect("/dominio/" + id);
       }
     });
   });
@@ -187,34 +186,9 @@ module.exports = function(app, db, passport) {
         if (err) {
           res.send("Erro ao tentar alterar um sujeito");
         } else {
-          res.redirect("/paciente/" + id + "/dominio");
+          res.redirect("/dominio/" + id);
         }
       });
-  });
-
-  // Menu inicial.
-  router.get('/:id/dominio', app.isLoggedIn, function(req, res) {
-    var pacientes = req.db.collection('pacientes');
-    var id = req.params.id;
-
-    pacientes.aggregate([
-      { $match : { _id : mongodb.ObjectId(id) } },
-      { $project : { _id : 0, sexo : 1 } },
-    ], function(err, result) {
-      console.log("result = ", result);
-      if (err) {
-        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
-      } else if (result) {
-        var sexo = result.pop().sexo;
-        // res.render("dominio", { id : req.params['id'] });
-        res.render("cif/dominio",
-          {
-            id      : req.params.id,
-            sex     : sexo ? sexo : 'm'
-          });
-        }
-      }
-    );
   });
 
   // Menu de função e estrutura.
@@ -224,7 +198,7 @@ module.exports = function(app, db, passport) {
     var id = req.params.id;
 
     pacientes.aggregate([
-      { $match : { _id : mongodb.ObjectId(id) } },
+      { $match : { _id : new ObjectId(id) } },
       { $project : { _id : 0, sexo : 1 } },
     ], function(err, result) {
       console.log("result = ", result);
@@ -264,7 +238,7 @@ module.exports = function(app, db, passport) {
     var id = req.params.id;
 
     pacientes.aggregate([
-      { $match : { _id : mongodb.ObjectId(id) } }
+      { $match : { _id : new ObjectId(id) } }
     ], function(err, result) {
       if (err) {
         res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
@@ -482,7 +456,7 @@ module.exports = function(app, db, passport) {
     var id = req.params.id;
 
     pacientes.aggregate([
-      { $match : { _id : mongodb.ObjectId(id) } }
+      { $match : { _id : new ObjectId(id) } }
     ], function(err, result) {
       if (err) {
         res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });

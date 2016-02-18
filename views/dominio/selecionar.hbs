@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/menu.css">
+    <script src="/jquery/jquery.js"></script>
+    <script src="/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/sprintf/sprintf.min.js"></script>
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.min.css">
+    <base href="/html/">
+</head>
+
+<body>
+
+<script src="/javascripts/global.js"></script>
+<script src="/javascripts/screen.js"></script>
+<script src="/javascripts/comm.js"></script>
+
+<div class="panel"><h3>Selecione o domínio desejado</h3>
+    <div class="left-container">
+        <h2 class="domain">Estrutura e função</h2>
+        {{#if sujeito.masc}}
+            <a href="/dominio/{{sujeito._id}}/funcao_e_estrutura" class="center">
+                <img src="/images/man_small.png" alt="Estrutura e função" height="300">
+            </a>
+        {{/if}}
+        {{#unless sujeito.masc}}
+            <a href="/dominio/{{sujeito._id}}/funcao_e_estrutura" class="center">
+                <img src="/images/woman_small.png" alt="Estrutura e função" height="300">
+            </a>
+        {{/unless}}
+    </div>
+    <div class="middle-container">
+        <h2 class="domain">Atividade e participação</h2>
+        <a href="/paciente/{{sujeito._id}}/atividade_e_participacao" class="center">
+            <img src="/images/activity_participation_small.png" alt="Atividade e participação">
+    </a>
+    </div>
+    <div class="middle-container">
+        <h2 class="domain">Ambiente</h2>
+        <a href="/paciente/{{sujeito._id}}/ambiente">
+            <img src="/images/world_small.png" alt="Fatores ambientais">
+        </a>
+    </div>
+</div>
+<script>//comm.bla1();
+//screen.xpt1();</script>
+</body>
+
+</html>
