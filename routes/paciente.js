@@ -5,10 +5,10 @@ module.exports = function(app, db, passport) {
   var ObjectId = require('mongodb').ObjectId;
 
   router.get('/', app.isLoggedIn, function(req, res) {
-    res.redirect("/paciente/lista");
+    res.redirect("/paciente/listar");
   });
 
-  router.get('/lista', app.isLoggedIn, function(req, res) {
+  router.get('/listar', app.isLoggedIn, function(req, res) {
     var pacientes = db.collection('pacientes');
 
     pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, item)
@@ -19,20 +19,19 @@ module.exports = function(app, db, passport) {
         res.send(message);
       }
 
-      res.render('sujeito/lista', {
+      res.render('sujeito/listar', {
         title : 'Lista de sujeitos',
         sujeitos : item
       });
     });
   });
 
-  router.get('/edita/:id', app.isLoggedIn, function(req, res) {
+  router.get('/editar/:id', app.isLoggedIn, function(req, res) {
     var id = req.params.id;
-    var db = req.db;
     var pacientes = db.collection('pacientes');
 
-    // pacientes.findOne({ _id: id }, {}, function(err, item) {
-    pacientes.findOne({ _id: new ObjectId(id) }, function(err, item) {
+    pacientes.findOne({ _id: new ObjectId(id) }, function(err, item)
+    {
       if (err) {
         res.send("Erro ao tentar editar um sujeito");
       } else if (item) {
@@ -53,11 +52,11 @@ module.exports = function(app, db, passport) {
           registros       : item.registros,
           morbidades      : item.morbidades,
           anamnese        : item.anamnese ? item.anamnese : '',
-          address         : '/paciente/altera'
+          address         : '/paciente/alterar'
         };
 
         console.log("[edt]sujeito = ", queryResult);
-        res.render('paciente', queryResult);
+        res.render('sujeito/editar', queryResult);
       } else {
         res.send({});
       }
@@ -87,7 +86,7 @@ module.exports = function(app, db, passport) {
   });
 
   router.get('/adiciona', app.isLoggedIn, function(req, res) {
-    res.redirect("/paciente/lista");
+    res.redirect("/paciente/listar");
   });
 
   router.post('/adiciona', app.isLoggedIn, function(req, res) {
@@ -138,13 +137,12 @@ module.exports = function(app, db, passport) {
     });
   });
 
-  router.get('/altera', app.isLoggedIn, function(req, res) {
-    res.location("/paciente/lista");
-    res.redirect("/paciente/lista");
+  router.get('/alterar', app.isLoggedIn, function(req, res) {
+    //res.location("/paciente/listar");
+    res.redirect("/paciente/listar");
   });
 
-  router.post('/altera', app.isLoggedIn, function(req, res) {
-    var db = req.db;
+  router.post('/alterar', app.isLoggedIn, function(req, res) {
     var id = new ObjectId(req.body._id);
 
     var values = req.body.registros.slice(1, req.body.registros.length);
@@ -203,7 +201,7 @@ module.exports = function(app, db, passport) {
     ], function(err, result) {
       console.log("result = ", result);
       if (err) {
-        res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
       } else if (result) {
         var sexo = result.pop().sexo;
         // res.render("dominio", { id : req.params['id'] });
@@ -229,7 +227,7 @@ module.exports = function(app, db, passport) {
     ], function(err, result) {
       console.log("result = ", result);
       if (err) {
-        res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
       } else if (result) {
         var sexo = result.pop().sexo;
         res.render("funcao_e_estrutura",
@@ -267,7 +265,7 @@ module.exports = function(app, db, passport) {
       { $match : { _id : mongodb.ObjectId(id) } }
     ], function(err, result) {
       if (err) {
-        res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
       } else if (result) {
         for (var index in result) {
           paciente = result[index];
@@ -278,7 +276,7 @@ module.exports = function(app, db, passport) {
             { $sort  : { c : 1 } }
           ], function(err, result) {
             if (err) {
-              res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+              res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
             } else {
               // result.forEach(function(datum, index) {});
             }
@@ -485,7 +483,7 @@ module.exports = function(app, db, passport) {
       { $match : { _id : mongodb.ObjectId(id) } }
     ], function(err, result) {
       if (err) {
-        res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
       } else if (result) {
         for (var index in result) {
           paciente = result[index];
@@ -497,7 +495,7 @@ module.exports = function(app, db, passport) {
           ], function(err, generic) {
             if (err) {
               console.log('Erro ao ler dados de sujeito');
-              res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito default') });
+              res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito default') });
             } else {
               for (var index in generic) {
                 datum = generic[index];
@@ -510,7 +508,7 @@ module.exports = function(app, db, passport) {
                     { $sort  : { c : 1 } }
                   ], function(err, result) {
                     if (err) {
-                      res.render('/lista', { messages: req.flash('Erro ao ler dados de sujeito') });
+                      res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
                     } else {
                       for (var index in result) {
                         datum = result[index];
