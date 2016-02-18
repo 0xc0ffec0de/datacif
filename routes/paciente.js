@@ -209,7 +209,7 @@ module.exports = function(app, passport) {
         res.render("dominio",
           {
             id      : req.params.id,
-            sex     : sexo ? sexo : 'm'
+            sex     : 'm' // sexo ? sexo : 'm'
           });
         }
       }
