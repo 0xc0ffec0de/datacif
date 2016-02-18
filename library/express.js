@@ -9,14 +9,15 @@ module.exports = function(passport) {
   var bodyParser    = require('body-parser');
   var cookieParser  = require('cookie-parser');
   var session       = require('express-session');
-  var Constants     = require("../config/constants");
+  var constants     = require("../config/constants");
 
   // Configuração de visão do MVC.
-  app.set('views', path.join(Constants.ROOT_PATH, 'views'));
-  app.set('view engine', 'jade');
+  app.set('views', path.join(constants.ROOT_PATH, 'views'));
+  // app.set('view engine', 'jade');
+  app.set('view engine', 'hbs');
 
   // uncomment after placing your favicon in /public
-  //app.use(favicon(Constants.ROOT_PATH + '/public/favicon.ico'));
+  //app.use(favicon(constants.ROOT_PATH + '/public/favicon.ico'));
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +30,7 @@ module.exports = function(passport) {
             // cookie: { maxAge: 600000 }}));
 
   // Arquivos em "public" são estáticos.
-  app.use(express.static(path.join(Constants.ROOT_PATH, 'public')));
+  app.use(express.static(path.join(constants.ROOT_PATH, 'public')));
 
   // Rota de middleware que testa se usuário está autenticado.
   app.isLoggedIn = function(req, res, next) {
