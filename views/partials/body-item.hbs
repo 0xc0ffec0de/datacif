@@ -1,0 +1,41 @@
+<p>
+    <div class="btn-group btc">
+        <button type="button" class="btn btn-lg btn-default">{{cif}}</button>
+        <button id="label-btn" type="button" class="btn btn-lg btn-default">{{descricao}}</button>
+    </div>
+    
+    <span class="btn-group shrink-right" data-toggle="buttons">
+                <label id="{{cif}}-option1-label" class="btn btn-lg btn-primary active" onclick="clickCheckboxButton('{{cif}}', 1)">
+                    <input type="checkbox" name="{{cif}}-options" id="{{cif}}-option1" value="1" autocomplete="off" checked>
+                    F
+                </label>
+            </span>
+    
+    <div name="{{cif}}-dropdown-group" class="btn-group shrink-right">
+        <button name="{{cif}}-dropdown" type="button" class="btn btn-lg btn-default dropdown-toggle" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            1: disfunção leve: 5%-24%
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+            <li><a name="{{cif}}.1-link" href="#" onclick="updateDropdown('{{cif}}', 1);">1: disfunção leve: 5%-24%</a></li>
+            <li><a name="{{cif}}.2-link" href="#" onclick="updateDropdown('{{cif}}', 2);">2: disfunção moderada: 25%-49%</a></li>
+            <li><a name="{{cif}}.3-link" href="#" onclick="updateDropdown('{{cif}}', 3);">3: disfunção severa: 50%-95%</a></li>
+            <li><a name="{{cif}}.4-link" href="#" onclick="updateDropdown('{{cif}}', 4);">4: disfunção total: 96%-100%</a></li>
+        </ul>
+    </div>
+    
+    <div id="{{cif}}-btn-group" class="btn-group shrink-right" data-toggle="buttons">
+        <label class="btn btn-lg btn-danger">
+            <input type="radio" name="{{cif}}-options" id="{{cif}}-option2" value="2" autocomplete="off" onchange="clickCheckboxButton('{{cif}}', 2)">
+            I
+        </label>
+        <label class="btn btn-lg btn-default">
+            <input type="radio" name="{{cif}}-options" id="{{cif}}-option3" value="3" autocomplete="off" onchange="clickCheckboxButton('{{cif}}', 3)">
+            NE
+        </label>
+        <label class="btn btn-lg btn-default">
+            <input type="radio" name="{{cif}}-options" id="{{cif}}-option4" value="4" autocomplete="off" onchange="clickCheckboxButton('{{cif}}', 4)">
+            NA
+        </label>
+    </div>
+</p>

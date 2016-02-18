@@ -1,19 +1,13 @@
 
-/* Bootstrap fix */
-/*.btn-group > .btn {*/
-.btn-group-fix {
-    float: none;
-    margin-top: -10px;
-    /*vertical-align: middle;*/
+#label-btn {
+    text-align: left;
 }
 
-.btn-group-fix2 {
-    float: none;
-    margin-top: 5px;
-    /*vertical-align: middle;*/
-}
+/*.btc {*/
+    /*overflow: auto;*/
+    /*flex: 1;*/
+/*}*/
 
-.selector-fix {
-    float: none;
-    margin-left: 5px;
-}
+/*.shrink-right {*/
+    /*float: right;*/
+/*}*/

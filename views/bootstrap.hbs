@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{> head}}
+
+<body role="document">
+
+{{> menu}}
+
+<div class="container theme-showcase" role="main">
+
+    <div class="page-header">
+        <h1>Buttons</h1>
+    </div>
+
+    <p>
+        <div class="btn-group btc">
+            <button type="button" class="btn btn-lg btn-default">b140</button>
+            <button id="label-btn" type="button" class="btn btn-lg btn-default">Funções da atenção</button>
+        </div>
+
+        <span class="btn-group shrink-right" data-toggle="buttons">
+            <label id="b110-option1-label" class="btn btn-lg btn-primary active" onclick="clickCheckboxButton('b110', 1)">
+                <input type="checkbox" name="b110-options" id="b110-option1" value="1" autocomplete="off" checked>
+                F
+            </label>
+        </span>
+
+        <div name="b110-dropdown-group" class="btn-group shrink-right">
+            <button name="b110-dropdown" type="button" class="btn btn-lg btn-default dropdown-toggle" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                1: disfunção leve: 5%-24%
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dLabel">
+                <li><a name="b110.1-link" href="#" onclick="updateDropdown('b110', 1);">1: disfunção leve: 5%-24%</a></li>
+                <li><a name="b110.2-link" href="#" onclick="updateDropdown('b110', 2);">2: disfunção moderada: 25%-49%</a></li>
+                <li><a name="b110.3-link" href="#" onclick="updateDropdown('b110', 3);">3: disfunção severa: 50%-95%</a></li>
+                <li><a name="b110.4-link" href="#" onclick="updateDropdown('b110', 4);">4: disfunção total: 96%-100%</a></li>
+            </ul>
+        </div>
+
+        <div id="b110-btn-group" class="btn-group shrink-right" data-toggle="buttons">
+            <label class="btn btn-lg btn-danger">
+                <input type="radio" name="b110-options" id="b110-option2" value="2" autocomplete="off" onchange="clickCheckboxButton('b110', 2)">
+                I
+            </label>
+            <label class="btn btn-lg btn-default">
+                <input type="radio" name="b110-options" id="b110-option3" value="3" autocomplete="off" onchange="clickCheckboxButton('b110', 3)">
+                NE
+            </label>
+            <label class="btn btn-lg btn-default">
+                <input type="radio" name="b110-options" id="b110-option4" value="4" autocomplete="off" onchange="clickCheckboxButton('b110', 4)">
+                NA
+            </label>
+        </div>
+
+        <script>
+            (function() {
+                resizeDropdown(arguments[0]);
+                //$('button#label-btn').width('450px');
+            })('b110'); // TODO: call this from somewhere else.
+            function resizeDropdown(cif) {
+                console.log("cif = ", cif);
+                var $dropdown = $(sprintf("button[name='%s-dropdown']", cif));
+                console.log("button.name = ", $dropdown);
+                $dropdown.width("300px");
+            }
+            function updateDropdown(cif, value) {
+                console.log("updateDropdown() called: ", value);
+                var $dropdown = $(sprintf("button[name='%s-dropdown']", cif));
+                var $link = $(sprintf("a[name='%s.%d-link']", cif, value));
+                console.log($dropdown.attr('name'), ' = ', $link.attr('name'));
+                $dropdown.text($link.text());
+                return false;
+            }
+            function clickCheckboxButton(cif, type) {
+                console.log("clickCheckboxButton(%s, %s) called: ", cif, type);
+                var $radio = $(sprintf("input#%s-option%d", cif, type));
+                var $labelF = $(sprintf("label#%s-option1-label", cif));
+                var $labelGroup = $(sprintf("div#%s-btn-group", cif)).children();
+                var $radioF = $(sprintf("input#%s-option1", cif));
+                var $radioI = $(sprintf("input#%s-option2", cif));
+                var $dropdown = $(sprintf("button[name='%s-dropdown']", cif));
+                console.log("dropdown = ", $dropdown);
+
+                if ($radio.is($radioF)) {
+                    $labelF.prop('checked', 'false');
+                    $labelF.removeClass('active');
+                    $labelGroup.button('reset');
+                    $labelGroup.removeClass('active');
+                    $dropdown.addClass('disabled');
+                } else if ($radio.is($radioI)) {
+                    $labelF.button('reset');
+                    $labelF.removeClass('active');
+                    $dropdown.removeClass('disabled');
+                } else {
+                    $labelF.button('reset');
+                    $labelF.removeClass('active');
+                    $dropdown.addClass('disabled');
+                }
+            }
+        </script>
+    </p>
+
+</div> <!-- /container -->
+</body>
+</html>

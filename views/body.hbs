@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt">
+  {{> head}}
+
+  <body role="document">
+    {{> menu}}
+    {{> body_start}}
+    {{#each data}}
+        {{> body_item cif=this.cif descricao=this.descricao }}
+    {{/each}}
+  </body>
+
+</html>
