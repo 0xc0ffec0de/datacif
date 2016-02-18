@@ -2,6 +2,7 @@ module.exports = function(passport) {
   console.log("Carregando servidor express...");
 
   // Configura o express
+  var constants     = require("../config/constants");
   var express       = require('express');
   var app           = express();
   var path          = require('path');
@@ -9,7 +10,7 @@ module.exports = function(passport) {
   var bodyParser    = require('body-parser');
   var cookieParser  = require('cookie-parser');
   var session       = require('express-session');
-  var constants     = require("../config/constants");
+  var flash         = require('connect-flash');
 
   // Configuração de visão do MVC.
   app.set('views', path.join(constants.ROOT_PATH, 'views'));
@@ -31,6 +32,9 @@ module.exports = function(passport) {
 
   // Arquivos em "public" são estáticos.
   app.use(express.static(path.join(constants.ROOT_PATH, 'public')));
+
+  // Mensagens de erro via flash.
+  app.use(flash());
 
   // Rota de middleware que testa se usuário está autenticado.
   app.isLoggedIn = function(req, res, next) {
