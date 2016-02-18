@@ -1,4 +1,4 @@
-module.exports = function(app, passport) {
+module.exports = function(app, db, passport) {
   var express  = require('express');
   var router   = express.Router();
 

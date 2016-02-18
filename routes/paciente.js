@@ -1,21 +1,22 @@
-module.exports = function(app, passport) {
+module.exports = function(app, db, passport) {
   var express  = require('express');
   var router   = express.Router();
   var mongodb  = require('mongodb');
   var ObjectId = require('mongodb').ObjectId;
 
   router.get('/', app.isLoggedIn, function(req, res) {
-    // res.location("/paciente/lista");
     res.redirect("/paciente/lista");
   });
 
   router.get('/lista', app.isLoggedIn, function(req, res) {
-    var db = req.db;
     var pacientes = db.collection('pacientes');
-    pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, item) {
 
+    pacientes.find().sort({ 'nome' : 1 }).toArray(function(err, item)
+    {
       if (err) {
-        res.send("Erro ao tentar listar pacientes");
+        var message = 'Erro ao tentar listar pacientes.';
+        console.log(message);
+        res.send(message);
       }
 
       res.render('pacientes', {
