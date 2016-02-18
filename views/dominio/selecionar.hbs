@@ -21,16 +21,14 @@
 <div class="panel"><h3>Selecione o domínio desejado</h3>
     <div class="left-container">
         <h2 class="domain">Estrutura e função</h2>
-        {{#if sujeito.masc}}
-            <a href="/dominio/{{sujeito._id}}/funcao_e_estrutura" class="center">
+        <a href="/dominio/{{sujeito._id}}/sf" class="center">
+            {{#if sujeito.masc}}
                 <img src="/images/man_small.png" alt="Estrutura e função" height="300">
-            </a>
-        {{/if}}
-        {{#unless sujeito.masc}}
-            <a href="/dominio/{{sujeito._id}}/funcao_e_estrutura" class="center">
+            {{/if}}
+            {{#unless sujeito.masc}}
                 <img src="/images/woman_small.png" alt="Estrutura e função" height="300">
-            </a>
-        {{/unless}}
+            {{/unless}}
+        </a>
     </div>
     <div class="middle-container">
         <h2 class="domain">Atividade e participação</h2>

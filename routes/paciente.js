@@ -191,32 +191,6 @@ module.exports = function(app, db, passport) {
       });
   });
 
-  // Menu de função e estrutura.
-  router.get('/:id/funcao_e_estrutura', app.isLoggedIn, function(req, res) {
-    var db = req.db;
-    var pacientes = db.collection('pacientes');
-    var id = req.params.id;
-
-    pacientes.aggregate([
-      { $match : { _id : new ObjectId(id) } },
-      { $project : { _id : 0, sexo : 1 } },
-    ], function(err, result) {
-      console.log("result = ", result);
-      if (err) {
-        res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
-      } else if (result) {
-        var sexo = result.pop().sexo;
-        res.render("funcao_e_estrutura",
-          {
-            id      : req.params.id,
-            address : '/cif/capitulo/',
-            sex     : sexo ? sexo : 'm'
-          });
-        }
-      }
-    );
-  });
-
   // Menu de atividade e partipação.
   router.get('/:id/atividade_e_participacao', app.isLoggedIn, function(req, res) {
     res.render("atividade_e_participacao", {

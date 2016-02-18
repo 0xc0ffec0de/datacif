@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head><title></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/menu.css">
+    <script src="/jquery/jquery.js"></script>
+    <script src="/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/sprintf/sprintf.min.js"></script>
+    <link rel="stylesheet" href="/jquery-ui/jquery-ui.min.css">
+    <base href="/html/">
+</head>
+<body>
+
+<script src="/javascripts/global.js"></script>
+<script src="/javascripts/screen.js"></script>
+<script src="/javascripts/comm.js"></script>
+
+<h2>Passe o cursor e clique na região de interesse para selecionar o capítulo</h2>
+<form name="funcao" method="POST" action="/cif/capitulo/" class="panel">
+    <input id="id" type="hidden" name="id" value="{{sujeito._id}}">
+    <script>
+        setCanvasObject = function ($canvas, image, action) {
+            $canvas.first = true;
+            $canvas.out = true;
+            console.log("canvas ", $canvas);
+            loadCanvasImage($canvas, image);
+
+            $canvas.on('mouseover', function (e) {
+                if (isTransparentUnderMouse(this, e)) {
+                    setTimeout(function () {
+                        $('.my-tooltip').hide();
+                    }, 0);
+                }
+            });
+
+            $canvas.on('mousemove', function (e) {
+                if (!isTransparentUnderMouse(this, e)) {
+                    if ($canvas.first) {
+                        $('.my-tooltip').show();
+                        $canvas.first = false;
+                    }
+                    if ($canvas.out) {
+                        $('.my-tooltip').show();
+                        $canvas.out = false;
+                    }
+                    return true;
+                }
+                else {
+                    if (!$canvas.out) {
+                        $('.my-tooltip').hide();
+                        $canvas.out = true;
+                    }
+                    return true;
+                }
+            });
+
+            $canvas.on('mouseleave', function (e) {
+                $('.my-tooltip').hide();
+                $canvas.out = true;
+            });
+
+            $canvas.on('click', function (e) {
+                sendAction(this, action);
+            });
+        };
+    </script>
+
+    {{#if masc}}
+    <div id="man" class="left-container"><h1 class="topic">Funções do corpo</h1>
+        <div id="map" width="416px" height="622px">
+            <canvas width="416px" height="622px" title="Funções da pele e estruturas relacionadas"></canvas>
+            <script>$(function () {
+                var $canvas = $("div#man.left-container > div > canvas");
+                setCanvasObject($canvas, '/images/funcoes_homem.png', 'b8');
+            });
+            </script>
+            <input id="b1" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções mentais">
+            <input id="b2" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções sensoriais">
+            <input id="b3" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções da voz e da fala">
+            <input id="b4" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório">
+            <input id="b5" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções dos sistemas digestivo, metabólico e endócrino">
+            <input id="b6" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções geniturinárias e reprodutivas">
+            <input id="b7" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                   title="Funções neuromusculo-esqueléticas e relacionadas ao movimento">
+        </div>
+    </div>
+    <div id="man" class="middle-container">
+        <button onclick='return sendAction(this, "b1");' style="width: 298px;"
+                onmouseover="display('input#b1');" onmouseout="hide('input#b1');">Funções mentais
+        </button>
+        <button onclick='return sendAction(this, "b2");' style="width: 298px;"
+                onmouseover="display('input#b2');" onmouseout="hide('input#b2');">Funções sensoriais
+        </button>
+        <button onclick='return sendAction(this, "b3");' style="width: 298px;"
+                onmouseover="display('input#b3');" onmouseout="hide('input#b3');">Funções da voz e
+            da fala
+        </button>
+        <button onclick='return sendAction(this, "b4");' style="width: 298px;"
+                onmouseover="display('input#b4');" onmouseout="hide('input#b4');">Funções dos
+            sistemas cardiovascular, hematológico, imunológico, respiratório
+        </button>
+        <button onclick='return sendAction(this, "b5");' style="width: 298px;"
+                onmouseover="display('input#b5');" onmouseout="hide('input#b5');">Funções dos
+            sistemas digestivo, metabólico e endócrino
+        </button>
+        <button onclick='return sendAction(this, "b6");' style="width: 298px;"
+                onmouseover="display('input#b6');" onmouseout="hide('input#b6');">Funções
+            geniturinárias e reprodutivas
+        </button>
+        <button onclick='return sendAction(this, "b7");' style="width: 298px;"
+                onmouseover="display('input#b7');" onmouseout="hide('input#b7');">Funções
+            neuromusculo-esqueléticas e relacionadas ao movimento
+        </button>
+        <button onclick='return sendAction(this, "b8");' style="width: 298px;"
+                onmouseover="display('input#b8');" onmouseout="hide('input#b8');">Funções da pele e
+            estruturas relacionadas
+        </button>
+    </div>
+    {{/if}}
+
+    {{#unless masc}}
+        <div id="woman" class="left-container"><h1 class="topic">Funções do corpo</h1>
+            <div id="map" width="416px" height="622px">
+                <canvas width="416px" height="622px" title="Funções da pele e estruturas relacionadas"></canvas>
+                <script>$(function () {
+                    var $canvas = $("div#woman.left-container > div > canvas");
+                    setCanvasObject($canvas, '/images/funcoes_mulher.png', 'b8');
+                });
+                </script>
+                <input id="b1" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções mentais">
+                <input id="b2" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções sensoriais">
+                <input id="b3" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções da voz e da fala">
+                <input id="b4" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções dos sistemas cardiovascular, hematológico, imunológico, respiratório">
+                <input id="b5" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções dos sistemas digestivo, metabólico e endócrino">
+                <input id="b6" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções geniturinárias e reprodutivas">
+                <input id="b7" type="submit" name="chapters" onclick="return sendAction(this);" value=""
+                       title="Funções neuromusculo-esqueléticas e relacionadas ao movimento">
+            </div>
+        </div>
+        <div id="woman" class="middle-container">
+            <button onclick='return sendAction(this, "b1");' style="width: 298px;"
+                    onmouseover="display('input#b1');" onmouseout="hide('input#b1');">Funções mentais
+            </button>
+            <button onclick='return sendAction(this, "b2");' style="width: 298px;"
+                    onmouseover="display('input#b2');" onmouseout="hide('input#b2');">Funções sensoriais
+            </button>
+            <button onclick='return sendAction(this, "b3");' style="width: 298px;"
+                    onmouseover="display('input#b3');" onmouseout="hide('input#b3');">Funções da voz e
+                da fala
+            </button>
+            <button onclick='return sendAction(this, "b4");' style="width: 298px;"
+                    onmouseover="display('input#b4');" onmouseout="hide('input#b4');">Funções dos
+                sistemas cardiovascular, hematológico, imunológico, respiratório
+            </button>
+            <button onclick='return sendAction(this, "b5");' style="width: 298px;"
+                    onmouseover="display('input#b5');" onmouseout="hide('input#b5');">Funções dos
+                sistemas digestivo, metabólico e endócrino
+            </button>
+            <button onclick='return sendAction(this, "b6");' style="width: 298px;"
+                    onmouseover="display('input#b6');" onmouseout="hide('input#b6');">Funções
+                geniturinárias e reprodutivas
+            </button>
+            <button onclick='return sendAction(this, "b7");' style="width: 298px;"
+                    onmouseover="display('input#b7');" onmouseout="hide('input#b7');">Funções
+                neuromusculo-esqueléticas e relacionadas ao movimento
+            </button>
+            <button onclick='return sendAction(this, "b8");' style="width: 298px;"
+                    onmouseover="display('input#b8');" onmouseout="hide('input#b8');">Funções da pele e
+                estruturas relacionadas
+            </button>
+        </div>
+    {{/unless}}
+
+    <script>$(function () {
+        $(document).tooltip({track: true, tooltipClass: "my-tooltip"});
+    });
+    $(function () {
+        $('button').button();
+    });</script>
+</form>
+
+<script>//comm.bla1();
+//screen.xpt1();</script>
+</body>
+</html>
