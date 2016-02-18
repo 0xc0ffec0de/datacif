@@ -5,5 +5,17 @@ module.exports = function(func) {
 
     hbs.registerPartials(constants.ROOT_PATH + '/views/partials');
 
+    hbs.registerHelper("debug", function(optionalValue) {
+        console.log("Current Context");
+        console.log("====================");
+        console.log(this);
+
+        if (optionalValue) {
+            console.log("Value");
+            console.log("====================");
+            console.log(optionalValue);
+        }
+    });
+
     return hbs;
 };

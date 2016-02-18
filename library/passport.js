@@ -25,7 +25,6 @@ module.exports      = function(app, db) {
       passReqToCallback : true
     },
 	function(req, login, pass, done) {
-	  var db = req.db;
       var users = db.collection('usuarios');
 
       process.nextTick(function() {
@@ -37,12 +36,12 @@ module.exports      = function(app, db) {
 
           if (!user) {
             console.log("Usuário não encontrado.");
-            return done(null, false, req.flash('loginMessage', 'Usuário não encontrado.'));
+            return done(null, false, req.flash('message', 'Usuário não encontrado.'));
           }
 
           if (user.senha != pass) {
             console.log("Senha incorreta.");
-            return done(null, false, req.flash('loginMessage', 'Senha incorreta.'));
+            return done(null, false, req.flash('message', 'Senha incorreta.'));
           }
 
           console.log("OK");
