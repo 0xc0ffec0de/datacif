@@ -36,22 +36,24 @@ module.exports = function(app, db, passport) {
         res.send("Erro ao tentar editar um sujeito");
       } else if (item) {
         var queryResult = {
-          title           : "Edita sujeito",
-          _id             : item._id,
-          nome            : item.nome,
-          dataNascimento  : item.dataNascimento,
-          sexo            : item.sexo == 'm' ? true : false,
-          peso            : item.peso,
-          altura          : item.altura,
-          cpf             : item.cpf,
-          dependente      : item.dependente,
-          logradouro      : item.endereco.logradouro,
-          complemento     : item.endereco.complemento,
-          bairro          : item.endereco.bairro,
-          cep             : item.endereco.cep,
-          registros       : item.registros,
-          morbidades      : item.morbidades,
-          anamnese        : item.anamnese ? item.anamnese : '',
+          title           : "Editar sujeito",
+          sujeito         : {
+            _id             : item._id,
+            nome            : item.nome,
+            dataNascimento  : item.dataNascimento,
+            sexo            : item.sexo == 'm' ? true : false,
+            peso            : item.peso,
+            altura          : item.altura,
+            cpf             : item.cpf,
+            dependente      : item.dependente,
+            logradouro      : item.endereco.logradouro,
+            complemento     : item.endereco.complemento,
+            bairro          : item.endereco.bairro,
+            cep             : item.endereco.cep,
+            registros       : item.registros,
+            morbidades      : item.morbidades,
+            anamnese        : item.anamnese ? item.anamnese : ''
+          },
           address         : '/paciente/alterar'
         };
 
@@ -205,7 +207,7 @@ module.exports = function(app, db, passport) {
       } else if (result) {
         var sexo = result.pop().sexo;
         // res.render("dominio", { id : req.params['id'] });
-        res.render("dominio",
+        res.render("cif/dominio",
           {
             id      : req.params.id,
             sex     : sexo ? sexo : 'm'

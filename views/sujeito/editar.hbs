@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{> head }}
+
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/form.css">
+    <base href="/html/">
+</head>
+
+<body>
+<h1>{{title}}</h1>
+
+<form id="formAdicionaPaciente" name="adicionaPaciente" method="post" action="{{address}}">
+    <input id="cidlist" type="hidden" value="">
+
+    <div class="firstColumn">
+        <input type="hidden" name="_id" value="{{sujeito._id}}">
+        <p>Nome
+            <input type="text" placeholder="Nome do sujeito" name="nome" value="fulano teste">
+        </p>
+
+        <p>Data de nascimento
+            <input id="nasc" type="text" placeholder="Data de nascimento" name="dataNascimento"
+                   value="{{sujeito.dataNascimento}}">
+            <script>$(function () {
+                $("input#nasc").datepicker();
+            });
+            </script>
+        </p>
+
+        <p>Sexo
+            <span class="radio">
+                <input type="radio" name="sexo" value="{{sujeito.sexo}}" {{#if sujeito.sexo}}checked{{/if}}>
+                <label class="radio">Masculino</label>
+                <input type="radio" name="sexo" value="f" {{#unless sujeito.sexo}}checked{{/unless}}>
+                <label class="radio">Feminino</label>
+            </span>
+        </p>
+
+        <p>Peso (kg)
+            <input id="peso" type="text" placeholder="Peso do paciente" name="peso" value="{{sujeito.peso}}">
+        </p>
+
+        <p>Altura (metros)
+            <input id="altura" type="text" placeholder="Altura do paciente" name="altura" value="{{sujeito.altura}}">
+        </p>
+
+        <p>Índice de massa corporal
+            <input id="imc" type="text" name="imc" value="0.0" readonly="readonly" disabled="disabled">
+        </p>
+
+        <script>var calculaIMC = function (peso, altura) {
+            peso = parseFloat(peso.replace(',', '.'));
+            altura = parseFloat(altura.replace(',', '.'));
+            return altura > 0 ? peso / (altura * altura) : 0;
+        };
+
+        var formCalculaIMC = function () {
+            var result = parseInt(10 * calculaIMC($("input#peso").val(), $("input#altura").val()));
+
+            if (result > 0) {
+                var s = result.toString();
+                var left = s.length > 1 ? s.substring(0, s.length - 1) : '0';
+                var right = s.substring(s.length - 1, s.length);
+                $("input#imc").val(left + ',' + right);
+            } else {
+                $("input#imc").val("#INVÁLIDO#");
+            }
+        };
+
+        $("input#peso").change(function () {
+            formCalculaIMC();
+        });
+
+        $("input#altura").change(function () {
+            formCalculaIMC();
+        });
+
+        $(function () {
+            formCalculaIMC();
+        });
+        </script>
+
+        <p>CPF (obrigatório)
+            <input type="text" placeholder="CPF do paciente" name="cpf" value="">
+        </p>
+
+        <p>Dependente?
+            <span class="radio">
+                <input type="radio" name="dependente" value="t" {{#if sujeito.dependente}}checked{{/if}}>
+                <label class="radio">Sim</label>
+                <input type="radio" name="dependente" value="f" {{#unless sujeito.dependente}}checked{{/unless}}>
+                <label class="radio">Não</label>
+            </span>
+        </p>
+
+        {{! Morbidades }}
+        <div id="listaRegistros">
+            <script>
+                var adicionaRegistro = function (label, value) {
+                    var $registros = $("input#numRegistros");
+                    console.log("registros = ", $registros.val());
+                    var num = $registros.val();
+                    var divId = "itemRegistro" + num;
+                    var $div = inputRegistro(divId, label, value);
+                    $registros.val(parseInt($registros.val()) + 1);
+                    $("div#listaRegistros").append($div);
+                    return false;
+                }
+            </script>
+
+            {{! Item 0 descartado }}
+            <input type="hidden" name="tiposRegistro" value=""><input type="hidden" name="registros" value="">
+            <input id="numRegistros" type="hidden" value="{{sujeito.registros}}">
+        </div>
+        <p>
+            <button onclick="return adicionaRegistro();">Adiciona registro</button>
+        </p>
+        <p>Endereço
+            <input type="text" placeholder="Logradouro" name="logradouro" value="{{sujeito.logradouro}}">
+        </p>
+        <p>&nbsp;
+            <input type="text" placeholder="Complemento" name="complemento" value="{{sujeito.complemento}}">
+        </p>
+        <p>&nbsp;
+            <input type="text" placeholder="Bairro" name="bairro" value="{{sujeito.bairro}}">
+        </p>
+        <p>&nbsp;
+            <input type="text" placeholder="CEP" name="cep" value="{{sujeito.cep}}">
+        </p>
+
+        {{! Morbidades }}
+        <div id="listaMorbidades">
+            <script>
+                var adicionaMorbidade = function (cid) {
+                    var $morbidades = $("input#numMorbidades");
+                    console.log("morbidades = ", $morbidades.val());
+                    var num = $morbidades.val();
+                    var label = num > 0 ? "Comorbidade (CID)" : "Morbidade (CID)";
+                    var divId = "itemMorbidade" + num;
+                    var $div = comboCID(divId, label, "morbidades", cid);
+                    $morbidades.val(parseInt($morbidades.val()) + 1);
+                    $("div#listaMorbidades").append($div);
+                    return false;
+                }
+            </script>
+
+            {{! item 0 descartado }}
+            <input type="hidden" name="morbidades" value="">
+            <input id="numMorbidades" type="hidden" value="{{sujeito.morbidades.length}}">
+        </div>
+        <p>
+            <button onclick="return adicionaMorbidade('');">Adicionar Morbidade</button>
+        </p>
+    </div>
+    <div class="secondColumn">
+        <p>Informações adicionais
+            <textarea name="anamnese" class="anamnese"></textarea>
+        </p>
+
+        <script>
+            $(function () {
+                $("div.secondColumn").height($("div.firstColumn").height());
+            });
+        </script>
+    </div>
+    <div class="controlPanel">
+        <button id="btnSubmit" type="submit" class="inline">Salvar</button>
+        <button onclick="window.location='/paciente/lista'; return false;" class="inline">Cancelar</button>
+    </div>
+</form>
+<script src="/javascripts/screen.js"></script>
+<script src="/javascripts/comm.js"></script>
+<script src="/javascripts/global.js"></script>
+</body>
+</html>
