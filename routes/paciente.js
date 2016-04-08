@@ -540,5 +540,22 @@ module.exports = function(app, passport) {
     });
   });
 
+  // Monta XML
+  router.get('/:id/xml', app.isLoggedIn, function(req, res) {
+    var pacientes = db.collection('pacientes');
+    var dados = db.collection('dados');
+    var id = req.params.id;
+
+    pacientes.aggregate([
+      { $match : { _id : mongodb.ObjectId(id) } }
+    ], function(err, result) {
+      if (err) {
+        res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
+      } else if (result) {
+        for (var index in result) {
+          paciente = result[index];
+          paciente.cif = {};
+
+
   return router;
 };

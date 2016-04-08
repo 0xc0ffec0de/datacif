@@ -1,4 +1,4 @@
-module.exports = function(passport) {  
+module.exports = function(passport) {
   console.log("Carregando servidor express...");
 
   // Configura o express
@@ -48,6 +48,6 @@ module.exports = function(passport) {
       res.redirect('/paciente/lista');
     }
   };
-  
+
   return app;
 }
