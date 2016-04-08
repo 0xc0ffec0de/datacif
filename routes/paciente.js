@@ -130,7 +130,8 @@ module.exports = function(app, passport) {
       if (err) {
         res.send("Erro ao tentar inserir um novo paciente");
       } else {
-        var id = item._id.toString();
+        var novo = item.ops.pop();
+        var id = novo._id.toString();
         // res.location("/paciente/dominio/" + id);
         res.redirect("/paciente/" + id + "/dominio");
       }
