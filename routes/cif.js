@@ -1,4 +1,4 @@
-module.exports = function(app, passport) {
+module.exports = function(app, db, passport) {
   var express  = require('express');
   var router   = express.Router();
   var ObjectId = require('mongodb').ObjectId;
@@ -32,14 +32,14 @@ module.exports = function(app, passport) {
   };
 
   var renderCIF = function(req, res, id, chapter, titles, subset, result, i, len) {
-    //console.log("renderCIF(%s, %i)", );
+    console.log("renderCIF() called: ", id);
     subset[i] = result;
 
     if (len == 1) {
       sendPatientData(req, res, id, function(data) {
-        console.log("renderCIF() called with data = ", data);
-        res.render("capitulo", {
-          id      : id,
+        console.log("renderCIF() called with id: " + id);
+        res.render('cif/capitulo', {
+          _id     : id,
           chapter : chapter,
           titles  : JSON.stringify(titles),
           page    : JSON.stringify(subset),
@@ -68,7 +68,8 @@ module.exports = function(app, passport) {
     return len - 1;
   };
 
-  var processChapterData = function(db, chapter, func) {
+  var processChapterData = function(chapter, func) {
+    console.log('processsChapterData() called.');
     var screens = db.collection('telas');
 
     result = screens.aggregate([
@@ -90,9 +91,9 @@ module.exports = function(app, passport) {
     var chapter = req.params.chapter;
     var page = req.params.page - 1;
     var id = req.body.id;
-    var items = req.db.collection('itens');
+    var items = db.collection('itens');
 
-    processChapterData(req.db, chapter, function(subdomain) {
+    processChapterData(chapter, function(subdomain) {
       var length = subdomain['conteudo'][page]['nos'].length;
       var subset = Array(length);
 
@@ -108,11 +109,12 @@ module.exports = function(app, passport) {
   });
 
   router.post('/capitulo/:chapter', app.isLoggedIn, function(req, res) {
+    console.log("/cif/capitulo/:chapter called.");
     var chapter = req.params.chapter;
     var id = req.body.id;
-    var itens = req.db.collection('itens');
+    var itens = db.collection('itens');
 
-    processChapterData(req.db, chapter, function(data) {
+    processChapterData(chapter, function(data) {
       //console.log("data = ", data);
       var subdomain = data['conteudo'][0]['nos'];
       var subset = Array(subdomain.length);
@@ -134,7 +136,7 @@ module.exports = function(app, passport) {
 
   router.get('/:id', function(req, res) {
     var id = req.params.id;
-    var pacientes = req.db.collection('pacientes');
+    var pacientes = db.collection('pacientes');
 
     // pacientes.findOne({ _id: id }, {}, function(err, docs) {
     pacientes.findOne({ _id: new ObjectId(id) }, function(err, docs) {
@@ -181,7 +183,7 @@ module.exports = function(app, passport) {
     var cif = req.params.cif;
     var value = req.params.value;
     var pos = req.params.position - 1;
-    var data = req.db.collection('dados');
+    var data = db.collection('dados');
 
     // Obtem valor antigo do dado do sujeito.
     Dados_Model.readDataAndCall(patient, cif, undefined, function(patient, cif, values, error) {
@@ -228,7 +230,7 @@ module.exports = function(app, passport) {
   // Carrega e envia dados preenchidos do sujeito.
   sendPatientData = function(req, res, patient, func) {
     console.log("sendPatientData() called.");
-    var data = req.db.collection('dados');
+    var data = db.collection('dados');
 
     data.aggregate([
       { $match: { p : patient } },

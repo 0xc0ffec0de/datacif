@@ -4,6 +4,9 @@
 
 var screen = {
 
+    createChapter: function (id, $accordion, chapter, titles, page, jsonData) {
+        console.log("createChapterPage() called.");
+    },
     /**
      *
      * @param radio

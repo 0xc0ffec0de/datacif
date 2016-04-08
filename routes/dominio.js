@@ -35,7 +35,7 @@ module.exports   = function(app, db, passport) {
     // Menu de função e estrutura.
     router.get('/:id/sf', app.isLoggedIn, function(req, res)
     {
-        console.log('/dominio/id/sf called().');
+        console.log('/dominio/:id/sf called().');
         var pacientes = db.collection('pacientes');
         var id = req.params.id;
 
@@ -48,9 +48,11 @@ module.exports   = function(app, db, passport) {
                     res.render('/listar', { messages: req.flash('Erro ao ler dados de sujeito') });
                 } else if (result) {
                     var sexo = result.pop().sexo;
-                    res.render('sf',
+                    res.render('dominio/sf',
                         {
-                            id      : req.params.id,
+                            sujeito : {
+                                _id : req.params.id
+                            },
                             address : '/cif/capitulo/',
                             masc    : sexo == 'm'
                         });

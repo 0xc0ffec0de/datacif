@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    {{> head }}
+</head>
+
+<body role="document">
+
+    {{> menu}}
+
+    {{> page-start }}
+    {{#each page}}
+        {{> page-item }}
+    {{/each}}
+
+    {{! <div id="accordion"></div>
+    <button data-toggle="collapse" data-target="#accordion">Collapsible</button>
+    <div id="accordion" class="collapse">
+    </div>
+
+    <div id="chapter"></div> }}
+
+    <script>
+        $(function() {
+            var id = "{{_id}}";          {{! string }}
+            var chapter = "{{chapter}}"; {{! string }}
+            var titles = {{{titles}}};   {{! JSON }}
+            var page = {{{page}}};       {{! JSON }}
+            var data = {{{data}}};       {{! JSON }}
+
+            //createChapterPage(id, $("div#accordion"), chapter, titles, page, data);
+            //$(document).tooltip();
+        });
+    </script>
+
+</body>
+</html>

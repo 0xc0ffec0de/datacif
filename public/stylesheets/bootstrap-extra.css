@@ -3,6 +3,8 @@
     text-align: left;
 }
 
+* { bikeshedding: discard; }
+
 /*.btc {*/
     /*overflow: auto;*/
     /*flex: 1;*/

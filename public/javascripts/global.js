@@ -764,9 +764,9 @@ parseCIF = function (line) {
     }
 };
 
-createChapterPage = function ($accordion, chapter, titles, page, jdata) {
+createChapterPage = function (id, $accordion, chapter, titles, page, jdata) {
     console.log("createChapterPage() called.");
-    var id = $("input#id").val();
+    //var id = $("input#id").val();
 
     // console.log("page, ", JSON.stringify(page));
     titles.forEach(function (title, n) {
