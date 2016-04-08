@@ -25,8 +25,8 @@ module.exports      = function(app, db) {
       passwordField : 'senha',
       passReqToCallback : true
     },
-	function(req, login, pass, done) {
-	  var db = req.db;
+  function(req, login, pass, done) {
+    var db = req.db;
       var users = db.collection('usuarios');
 
       process.nextTick(function() {
