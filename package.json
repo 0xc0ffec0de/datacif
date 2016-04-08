@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "xmlbuilder" : "8.2.2",
     "express" : "~4.0.0",
     "express-validator": "*",
     "express-session": "*",

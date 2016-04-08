@@ -1,8 +1,9 @@
-module.exports = function(app, passport) {
-  var express  = require('express');
-  var router   = express.Router();
-  var mongodb  = require('mongodb');
-  var ObjectId = require('mongodb').ObjectId;
+module.exports    = function(app, passport) {
+  var express     = require('express');
+  var router      = express.Router();
+  var mongodb     = require('mongodb');
+  var ObjectId    = require('mongodb').ObjectId;
+  var xmlBuilder  = require('xmlbuilder');
 
   router.get('/', app.isLoggedIn, function(req, res) {
     // res.location("/paciente/lista");
@@ -542,8 +543,8 @@ module.exports = function(app, passport) {
 
   // Monta XML
   router.get('/:id/xml', app.isLoggedIn, function(req, res) {
+    var db = req.db;
     var pacientes = db.collection('pacientes');
-    var dados = db.collection('dados');
     var id = req.params.id;
 
     pacientes.aggregate([
@@ -552,10 +553,34 @@ module.exports = function(app, passport) {
       if (err) {
         res.render('/lista', { messages: req.flash('Erro ao ler dados de paciente') });
       } else if (result) {
-        for (var index in result) {
-          paciente = result[index];
-          paciente.cif = {};
+        var paciente = result.pop();
+        delete paciente['_id'];
+        console.log('y', paciente);
 
+        var root = xmlBuilder.create('paciente');
+        root.ele('nome', paciente['nome']);
+        root.ele('nascimento', paciente['dataNascimento']);
+        root.ele('sexo', paciente['sexo']);
+        root.ele('peso', paciente['peso']);
+        root.ele('altura', paciente['altura']);
+        root.ele('dependente', paciente['dependente']);
+        root.ele('cpf', paciente['cpf']);
+
+        var endereco = root.ele('endereco')
+        endereco.ele('logradouro', paciente['endereco']['logradouro']);
+        endereco.ele('complemento', paciente['endereco']['complemento'])
+        endereco.ele('bairro', paciente['endereco']['bairro'])
+        endereco.ele('cep', paciente['endereco']['cep']);
+
+        xml = root.end({ pretty: true });
+
+        console.log('z', xml);
+
+        res.set('Content-Type', 'text/xml');
+        res.send(xml);
+      }
+    });
+  });
 
   return router;
 };
