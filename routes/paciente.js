@@ -542,7 +542,7 @@ module.exports    = function(app, passport) {
   });
 
   // Monta XML
-  router.get('/:id/xml', app.isLoggedIn, function(req, res) {
+  router.get('/:id/xml', function(req, res) {
     var db = req.db;
     var pacientes = db.collection('pacientes');
     var id = req.params.id;

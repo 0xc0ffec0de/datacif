@@ -2,6 +2,9 @@ extends form-layout
 
 block content
   h1= title
+    a(href="/paciente/#{_id}/xml")
+      img(src="/images/xml.gif")
+
   form#formAdicionaPaciente(name="adicionaPaciente", method="post", action="#{address}")
     input#cidlist(type="hidden", value="")
 

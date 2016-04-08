@@ -1,7 +1,8 @@
-module.exports = function(app, passport) {
-  var express  = require('express');
-  var router   = express.Router();
-  var ObjectId = require('mongodb').ObjectId;
+module.exports    = function(app, passport) {
+  var express     = require('express');
+  var router      = express.Router();
+  var ObjectId    = require('mongodb').ObjectId;
+  var xmlBuilder  = require('xmlbuilder');
 
   router.get('/itens/:cif', function(req, res) {
     var CIF_Model = require('../models/cif.model')(req, res);
@@ -243,6 +244,48 @@ module.exports = function(app, passport) {
       }
     });
   };
+
+  // Monta XML
+  router.get('/:cif/xml', function(req, res) {
+    var db = req.db;
+    var itens = db.collection('itens');
+    var cif = req.params.cif;
+
+    itens.aggregate([
+      { $match : { cif : cif } },
+      { $project : { _id : 0, cif: "$cif", description : "$description", items : "$items" } },
+      { $sort : { cif : 1 }}
+    ], function(err, result) {
+      if (err) {
+        res.render('/lista', { messages: req.flash('Erro ao ler dados da CIF') });
+      } else if (result) {
+        var cif = result.pop();
+        //delete paciente['_id'];
+        console.log('y', cif);
+
+        //date="1999-01-01" xmlns="http://fce.unb.br"
+        var root = xmlBuilder.create('version', { date: '1999-01-01', xmlns: 'http://fce.unb.br' } );
+        var numChapter = cif['cif'][1];
+
+        var chapter = root.ele('chapter', { no: numChapter });
+        chapter.ele('name', cif['cif']);
+        chapter.ele('description', cif['description']);
+
+        var children = chapter.ele('children');
+        for (var index in cif['items']) {
+          var child = cif['items'][index];
+          console.log("zz", child);
+          var node = children.ele('cif', { id: child['cif'] });
+          node.ele('name', child['description']);
+        }
+
+        xml = root.end({ pretty: true });
+
+        res.set('Content-Type', 'text/xml');
+        res.send(xml);
+      }
+    });
+  });
 
   return router;
 };
